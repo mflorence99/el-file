@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+$cyTabs: 48px;
+
+elterm-root-tabs {
+  display: block;
+  height: $cyTabs;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+elterm-splittable {
+  display: block;
+  height: calc(100% - #{$cyTabs});
+  position: absolute;
+  top: $cyTabs;
+  width: 100%;
+}
+
+.terminal {
+  font-family: 'Roboto Mono';
+  font-size: 0.8rem;
+  margin-left: 16px;
+}

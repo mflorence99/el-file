@@ -1,0 +1,25 @@
+body {
+  background-color: #212121;
+}
+
+.startup-loading {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  opacity: 1;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.startup-wiggle {
+  animation: startup-wiggle 0.5s linear infinite;
+}
+
+@keyframes startup-wiggle {
+  10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); }
+  0%, 20%, 40%, 60%, 80% { transform: rotate(10deg); }
+}

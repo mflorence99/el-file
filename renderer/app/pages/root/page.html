@@ -1,0 +1,180 @@
+<lib-drawer-container>
+
+  <elterm-tabs
+    (editTab)="onEditTab($event)"
+    [tabs]="ctrl.tabs$ | async"
+    [tabIndex]="ctrl.tabIndex$ | async">
+  </elterm-tabs>
+
+  <elterm-splittable
+    [layout]="ctrl.layout$ | async"
+    [menu]="contextMenu"
+    [swapWith]="swapWith"
+    [tab]="ctrl.tab$ | async">
+  </elterm-splittable>
+
+  <lib-drawer-panel
+    #tabDrawer
+    position="top">
+
+    <elterm-tab
+      [tab]="editTab">
+    </elterm-tab>
+
+  </lib-drawer-panel>
+
+  <lib-drawer-panel
+    #prefsDrawer
+    position="bottom">
+
+    <elterm-prefs
+      [prefs]="editPrefs"
+      [prefsID]="editPrefsID">
+    </elterm-prefs>
+
+  </lib-drawer-panel>
+
+  <lib-drawer-panel
+    #searchDrawer
+    position="bottom">
+
+    <elterm-search
+      [search]="editSearch"
+      [searchID]="editSearchID">
+    </elterm-search>
+
+  </lib-drawer-panel>
+
+</lib-drawer-container>
+
+<context-menu>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'reload')">
+    <div>Reload app</div>
+    <div class="terminal">Ctrl+R</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'dev-tools')">
+    <div>Open dev tools...</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    divider="true">
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'copy')"
+    [enabled]="isCopyEnabled.bind(this)">
+    <div>Copy</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'paste')"
+    [enabled]="isPasteEnabled.bind(this)">
+    <div>Paste</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    divider="true">
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    passive="true">
+    <div>Broadcast to all in this tab...</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'clear')">
+    <div class="terminal">clear</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'ctrl+c')">
+    <div class="terminal">CTRL+C</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'bashrc')">
+    <div class="terminal">source ~/.bashrc</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    divider="true">
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'prefs')">
+    <div>Preferences...</div>
+    <div class="terminal">Ctrl+P</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'search')">
+    <div>Search & Highlight...</div>
+    <div class="terminal">Ctrl+F</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    divider="true">
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'swapWith')"
+    [enabled]="isSwapEnabled.bind(this)">
+    <div>Swap with...</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'vertical-')">
+    <div>Split Up</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'vertical+')">
+    <div>Split Down</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'horizontal-')">
+    <div>Split Left</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'horizontal+')">
+    <div>Split Right</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'close')"
+    [enabled]="isCloseEnabled.bind(this)">
+    <div>Close Pane</div>
+    <div class="terminal">Ctrl+W</div>
+  </ng-template>
+
+</context-menu>
+
+<elterm-root-ctrl
+  #ctrl>
+</elterm-root-ctrl>

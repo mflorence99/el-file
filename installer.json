@@ -1,0 +1,12 @@
+{
+  "dest": "build/installers/",
+  "icon": "resources/Icon.png",
+  "categories": [
+    "Utility"
+  ],
+  "name": "elterm",
+  "productName": "El terminador",
+  "lintianOverrides": [
+    "changelog-file-missing-in-native-package"
+  ]
+}
