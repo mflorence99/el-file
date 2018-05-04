@@ -10,18 +10,7 @@ $custom-theme: mat-dark-theme($custom-primary, $custom-accent, $custom-warn);
 
 @include angular-material-theme($custom-theme);
 
-@font-face {
-  font-family: 'Roboto Mono';
-  font-style: normal;
-  font-weight: 400;
-  src: url("assets/RobotoMono.ttf") format("truetype");
-}
-
 // Bridge from Angular Material variables to CSS variables
-
-::-webkit-scrollbar {
-  display: none;
-}
 
 :root {
 
@@ -40,64 +29,4 @@ $custom-theme: mat-dark-theme($custom-primary, $custom-accent, $custom-warn);
 body {
   background-color: var(--background-color);
   color: var(--text-color);
-}
-
-.ngx-contextmenu.dropdown {
-  background-color: var(--mat-grey-800);
-  border: 1px solid var(--mat-grey-200);
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-
-    li {
-
-      &.divider {
-        border-bottom: 1px solid var(--mat-grey-200);
-        margin: 6px 0;
-      }
-
-      &.disabled {
-
-        a {
-          color: var(--mat-grey-500);
-
-          &:hover {
-            background-color: inherit;
-            color: var(--mat-grey-500);
-          }
-
-          .accelerator {
-            visibility: hidden;
-          }
-
-        }
-
-      }
-
-      a {
-        color: var(--mat-grey-200);
-        display: flex;
-        flex-direction: colmns;
-        justify-content: space-between;
-        padding: 6px 16px;
-        text-decoration: none;
-
-        &:hover {
-          background-color: var(--accent-color);
-          color: var(--mat-grey-800);
-        }
-
-        .accelerator {
-          color: var(--mat-grey-400);
-          margin-left: 48px;
-        }
-
-      }
-
-    }
-
-  }
-
 }

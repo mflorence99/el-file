@@ -1,16 +1,16 @@
 {
-  "name": "elterm",
+  "name": "elfile",
   "main": "dist/main.js",
-  "description": "El terminador",
+  "description": "El filador",
   "author": "Mark Florence <mflo999@gmail.com>",
   "version": "1.0.0",
   "license": "MIT",
   "build": {
-    "appId": "elterm"
+    "appId": "elfile"
   },
   "scripts": {
     "build": "rimraf dist && ng build --prod --aot",
-    "deb64": "electron-installer-debian --src build/elterm-linux-x64/ --arch amd64 --config installer.json",
+    "deb64": "electron-installer-debian --src build/elfile-linux-x64/ --arch amd64 --config installer.json",
     "live": "rimraf dist && ng build --prod --aot && tsc -p tsconfig.main.json && electron . --ignore-gpu-blacklist",
     "package": "rimraf dist && ng build --prod --aot && tsc -p tsconfig.main.json && rimraf build && electron-packager ./ --out=build",
     "serve": "ng serve",

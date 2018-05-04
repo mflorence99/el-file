@@ -4,8 +4,8 @@
   "categories": [
     "Utility"
   ],
-  "name": "elterm",
-  "productName": "El terminador",
+  "name": "elfile",
+  "productName": "El filador",
   "lintianOverrides": [
     "changelog-file-missing-in-native-package"
   ]
