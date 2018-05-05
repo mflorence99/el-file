@@ -16,7 +16,6 @@
     "forin": true,
     "import-blacklist": [
       true,
-      "rxjs",
       "rxjs/Rx"
     ],
     "import-spacing": true,
@@ -95,13 +94,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "elterm",
+      "elfile",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "elterm",
+      "elfile",
       "kebab-case"
     ],
     "no-output-on-prefix": true,

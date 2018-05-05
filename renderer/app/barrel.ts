@@ -1,7 +1,5 @@
 import { MatButtonModule, MatButtonToggleModule, MatFormFieldModule, MatInputModule, MatTabsModule, MatTooltipModule } from '@angular/material';
 
-//
-// import { AngularResizedEventModule } from 'angular-resize-event/dist';
 import { AngularSplitModule } from 'angular-split';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
@@ -18,7 +16,6 @@ import { ReactiveFormsModule } from '@angular/forms';
  */
 
 const MODULES = [
-  // AngularResizedEventModule,
   AngularSplitModule,
   BrowserModule,
   BrowserAnimationsModule,

@@ -3,6 +3,7 @@ import { ComponentsModule } from '../../components/module';
 import { NgModule } from '@angular/core';
 import { RootCtrlComponent } from './ctrl';
 import { RootPageComponent } from './page';
+import { ToolbarComponent } from './toolbar';
 
 /**
  * Root page module
@@ -10,7 +11,8 @@ import { RootPageComponent } from './page';
 
 const COMPONENTS = [
   RootCtrlComponent,
-  RootPageComponent
+  RootPageComponent,
+  ToolbarComponent
 ];
 
 const MODULES = [

@@ -7,7 +7,6 @@ import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { NgxsModule } from '@ngxs/store';
 import { RootPageComponent } from './pages/root/page';
 import { RootPageModule } from './pages/root/module';
-import { TerminalService } from './services/terminal';
 import { states } from './state/app';
 
 /**
@@ -21,9 +20,7 @@ const MODULES = [
   RootPageModule
 ];
 
-const SERVICES = [
-  TerminalService
-];
+const SERVICES = [ ];
 
 @NgModule({
 
@@ -44,7 +41,7 @@ const SERVICES = [
       logger: console
     }),
     NgxsStoragePluginModule.forRoot({
-      key: ['layout', 'tabs', 'window'],
+      key: ['layout', 'window'],
       storage: StorageOption.LocalStorage
     })
   ],
@@ -55,4 +52,4 @@ const SERVICES = [
 
 })
 
-export class ELTermModule { }
+export class ELFileModule { }

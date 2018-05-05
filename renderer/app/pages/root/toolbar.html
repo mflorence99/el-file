@@ -1,0 +1,40 @@
+<div>&nbsp;</div>
+
+<mat-button-toggle-group
+  (change)="split($event)">
+
+  <mat-button-toggle
+    [checked]="isStandardOrientation()"
+    value="standard">
+    <i class="fas fa-window-maximize fa-lg"></i>
+  </mat-button-toggle>
+
+  <mat-button-toggle
+    [checked]="isVerticalOrientation()"
+    value="vertical">
+    <i class="fas fa-columns fa-lg"></i>
+  </mat-button-toggle>
+
+  <mat-button-toggle
+    [checked]="isHorizontalOrientation()" 
+    value="horizontal">
+    <i class="fas fa-columns fa-lg" style="transform: rotateZ(-90deg)"></i>
+  </mat-button-toggle>
+
+</mat-button-toggle-group>
+
+<div>&nbsp;</div>
+
+<button
+  (click)="reload()"
+  matTooltip="Reload app"
+  mat-icon-button>
+  <i class="fas fa-sync fa-lg"></i>
+</button>
+
+<button
+  (click)="devTools()"
+  matTooltip="Open dev tools"
+  mat-icon-button>
+  <i class="fas fa-bug fa-lg"></i>
+</button>

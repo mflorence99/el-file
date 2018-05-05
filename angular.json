@@ -1,0 +1,73 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "elterm": {
+      "root": "renderer",
+      "sourceRoot": "renderer",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist",
+            "index": "./renderer/index.html",
+            "main": "./renderer/main.ts",
+            "tsConfig": "./renderer/tsconfig.app.json",
+            "polyfills": "./renderer/polyfills.ts",
+            "assets": [
+              "./renderer/assets"
+            ],
+            "styles": [
+              "node_modules/roboto-fontface/css/roboto/roboto-fontface.css",
+              "node_modules/@fortawesome/fontawesome-free-webfonts/css/fa-brands.css",
+              "node_modules/@fortawesome/fontawesome-free-webfonts/css/fa-solid.css",
+              "node_modules/@fortawesome/fontawesome-free-webfonts/css/fontawesome.css",
+              "node_modules/ellib/css/colors.scss",
+              "node_modules/ellib/css/theme.scss",
+              "./renderer/theme.scss"
+            ],
+            "scripts": [
+              "node_modules/hammerjs/hammer.min.js"
+            ]
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "elterm:build"
+          },
+          "configurations": {
+            "prod": {
+              "browserTarget": "elterm:build:prod"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "elterm:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [],
+            "exclude": []
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "elterm",
+  "schematics": {
+    "@schematics/angular:component": {
+      "prefix": "elterm",
+      "styleext": "scss"
+    },
+    "@schematics/angular:directive": {
+      "prefix": "elterm"
+    }
+  }
+}

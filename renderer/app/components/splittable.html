@@ -1,0 +1,40 @@
+<split
+  (dragProgress)=onSplitSizeChange($event)
+  [direction]="layout.direction"
+  [useTransition]="true"
+  gutterColor="#424242"
+  gutterSize="5">
+
+  <ng-template
+    ngFor
+    let-split
+    [ngForOf]="layout.splits"
+    let-ix="index">
+
+    <split-area
+      [order]="ix"
+      [size]="split.size">
+
+      <ng-container
+        *ngIf="!split.splits; else splittable">
+
+        <elfile-pane
+          [index]="ix"
+          [splitID]="split.id">
+        </elfile-pane>
+
+      </ng-container>
+
+      <ng-template #splittable>
+
+        <elfile-splittable
+          [layout]="split">
+        </elfile-splittable>
+
+      </ng-template>
+
+    </split-area>
+
+  </ng-template>
+
+</split>
