@@ -9,10 +9,11 @@
     "appId": "elfile"
   },
   "scripts": {
-    "build": "rimraf dist && ng build --aot",
+    "build": "rimraf dist && ng build --aot && tsc -p tsconfig.main.json",
     "deb64": "electron-installer-debian --src build/elfile-linux-x64/ --arch amd64 --config installer.json",
-    "live": "rimraf dist && ng build --aot && tsc -p tsconfig.main.json && electron . --ignore-gpu-blacklist",
-    "package": "rimraf dist && ng build --aot && tsc -p tsconfig.main.json && rimraf build && electron-packager ./ --out=build",
+    "live": "npm run build && electron . --ignore-gpu-blacklist",
+    "package": "npm run build && rimraf build && electron-packager ./ --out=build",
+    "postinstall": "electron-rebuild -f && npm rebuild sass",
     "serve": "ng serve",
     "test": "tsc -p tsconfig.main.json && DEV_MODE=1 electron . --ignore-gpu-blacklist",
     "toc": "markdown-toc -i README.md"
@@ -61,6 +62,7 @@
     "electron-devtools-installer": "2",
     "electron-installer-debian": "^0.8.1",
     "electron-packager": "12",
+    "electron-rebuild": "1",
     "eslint": "4",
     "markdown-toc": "1",
     "rimraf": "2",
