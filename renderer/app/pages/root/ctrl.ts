@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LayoutState, LayoutStateModel } from '../../state/layout';
+import { Select, Store } from '@ngxs/store';
 import { WindowState, WindowStateModel } from '../../state/window';
 
 import { ElectronService } from 'ngx-electron';
+import { LoadDir } from '../../state/fs';
 import { Observable } from 'rxjs/Observable';
-import { Select } from '@ngxs/store';
 import { take } from 'rxjs/operators';
 
 /**
@@ -24,13 +25,17 @@ export class RootCtrlComponent {
   @Select(WindowState) window$: Observable<WindowStateModel>;
 
   /** ctor */
-  constructor(private electron: ElectronService) {
+  constructor(private electron: ElectronService,
+              private store: Store) {
     this.window$.pipe(take(1))
       .subscribe((window: WindowStateModel) => {
         const win = this.electron.remote.getCurrentWindow();
         if (window.bounds)
           win.setBounds(window.bounds);
       });
+    // TODO: test
+    this.store.dispatch(new LoadDir('/'));
+    this.store.dispatch(new LoadDir('/home/mflo'));
   }
 
 }

@@ -23,13 +23,13 @@ export interface WindowStateModel {
 }) export class WindowState {
 
   @Action(SetBounds)
-  showBounds({ getState, patchState }: StateContext<WindowStateModel>,
-             { payload }: SetBounds) {
+  setBounds({ patchState }: StateContext<WindowStateModel>,
+            { payload }: SetBounds) {
     patchState({ bounds: payload });
   }
 
   @Action(SetTitle)
-  showTitle({ getState, patchState }: StateContext<WindowStateModel>,
+  showTitle({ patchState }: StateContext<WindowStateModel>,
             { payload }: SetTitle) {
     patchState({ title: payload });
   }
