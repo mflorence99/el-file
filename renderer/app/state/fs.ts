@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-import { Action, State, StateContext, Store } from '@ngxs/store';
+import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
 
 import { ElectronService } from 'ngx-electron';
 import async from 'async-es';
@@ -17,9 +17,14 @@ export class DirUnloaded {
   constructor(public readonly payload: string) { }
 }
 
-export class LoadDir {
-  static readonly type = '[FS] load dir';
-  constructor(public readonly payload: string) { }
+export class ForceLoadDirs {
+  static readonly type = '[FS] force load dirs';
+  constructor(public readonly payload: string[]) { }
+}
+
+export class LoadDirs {
+  static readonly type = '[FS] load dirs';
+  constructor(public readonly payload: string[]) { }
 }
 
 export class UlimitExceeded {
@@ -39,27 +44,15 @@ export interface FSStateModel {
 @State<FSStateModel>({
   name: 'fs',
   defaults: { }
-}) export class FSState {
+}) export class FSState implements NgxsOnInit {
 
   fs: any;
   watcher: any;
 
   /** ctor */
-  constructor(private electron: ElectronService,
-              private store: Store) {
+  constructor(private electron: ElectronService) {
     this.fs = this.electron.remote.require('fs');
     this.watcher = this.electron.remote.require('filewatcher')();
-    // watch for changes
-    this.watcher.on('change', (path, stat) => {
-      this.store.dispatch(stat? new LoadDir(path) : new DirUnloaded(path));
-    });
-    // watch out for fallback
-    this.watcher.on('fallback', function(limit) {
-      console.log(`Ran out of file handles after watching ${limit} files`);
-      console.log('Falling back to polling which uses more CPU');
-      console.log('Run ulimit -n 10000 to increase the limit for open files');
-      this.store.dispatch(new UlimitExceeded(limit));
-    });
   }
 
   @Action(DirLoaded)
@@ -75,28 +68,54 @@ export interface FSStateModel {
               { payload }: DirUnloaded) {
     const updated = { ...getState() };
     delete updated[payload];
-    setState({...updated});
+    setState({ ...updated });
     // stop watching this directory
     this.watcher.remove(payload);
   }
 
-  @Action(LoadDir)
-  loaddir({ dispatch }: StateContext<FSStateModel>,
-          { payload }: LoadDir) {
-    this.fs.readdir(payload, (err, names) => {
-      if (err)
-        dispatch(new DirUnloaded(payload));
-      else {
-        const paths = names.map(name => `${payload}${name}`);
-        async.map(paths, this.fs.stat, (err, stats) => {
-          const nodes = names.reduce((acc, name, ix) => {
-            acc.push({ name, stat: stats[ix] } as FSNode);
-            return acc;
-          }, []);
-          dispatch(new DirLoaded({ path: payload, nodes }));
-        });
-      }
+  @Action(ForceLoadDirs)
+  forceloaddirs(ctx: StateContext<FSStateModel>,
+                action: ForceLoadDirs) {
+    this.loaddirs(ctx, action, true);
+  }
+
+  @Action(LoadDirs)
+  loaddirs({ dispatch, getState }: StateContext<FSStateModel>,
+           { payload }: LoadDirs,
+           force = false) {
+    payload.forEach(path => {
+      this.fs.readdir(path, (err, names) => {
+        if (err)
+          dispatch(new DirUnloaded(path));
+        else if (force || !getState()[path]) {
+          const paths = names.map(name => `${path}${name}`);
+          async.map(paths, this.fs.stat, (err, stats) => {
+            const nodes = names.reduce((acc, name, ix) => {
+              acc.push({ name, stat: stats[ix] } as FSNode);
+              return acc;
+            }, []);
+            dispatch(new DirLoaded({ path, nodes }));
+          });
+        }
+      });
     });
+  }
+
+  // lifecycle methods
+
+  ngxsOnInit(ctx: StateContext<FSStateModel>) {
+    // watch for changes
+    this.watcher.on('change', (path, stat) => {
+      ctx.dispatch(stat? new ForceLoadDirs([path]) : new DirUnloaded(path));
+    });
+    // watch out for fallback
+    this.watcher.on('fallback', function(limit) {
+      console.log(`Ran out of file handles after watching ${limit} files`);
+      console.log('Falling back to polling which uses more CPU');
+      console.log('Run ulimit -n 10000 to increase the limit for open files');
+      ctx.dispatch(new UlimitExceeded(limit));
+    });
+
   }
 
 }
