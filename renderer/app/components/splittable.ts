@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
+import { FSStateModel } from '../state/fs';
 import { LayoutStateModel } from '../state/layout';
 import { Store } from '@ngxs/store';
 import { UpdateSplitSizes } from '../state/layout';
@@ -18,6 +19,7 @@ import { debounce } from 'ellib';
 
 export class SplittableComponent {
 
+  @Input() fs: FSStateModel;
   @Input() layout: LayoutStateModel;
 
   private updateSplitSizes: Function;

@@ -16,6 +16,11 @@ export class MakeSplit {
     {id: string, ix: number, direction: 'horizontal' | 'vertical', before: boolean}) { }
 }
 
+export class MoveTab {
+  static readonly type = '[Layout] move tab';
+  constructor(public readonly payload: { id: string, ix: number, tab: Tab }) { }
+}
+
 export class NewTab {
   static readonly type = '[Layout] new tab';
   constructor(public readonly payload: {id: string, path: string}) { }
@@ -34,12 +39,17 @@ export class Reorient {
 
 export class SelectTab {
   static readonly type = '[Layout] select tab';
-  constructor(public readonly payload: string) { }
+  constructor(public readonly payload: Tab) { }
 }
 
 export class UpdateSplitSizes {
   static readonly type = '[Layout] update split sizes';
   constructor(public readonly payload: {id: string, sizes: number[]}) { }
+}
+
+export class UpdateTab {
+  static readonly type = '[Layout] update tab';
+  constructor(public readonly payload: any) { }
 }
 
 export interface Tab {
@@ -215,6 +225,19 @@ export interface LayoutStateModel {
     setState({ ...updated });
   }
 
+  @Action(MoveTab)
+  moveTab({ getState, setState }: StateContext<LayoutStateModel>,
+          { payload }: MoveTab) {
+    const updated = getState();
+    const split = LayoutState.findSplitByID(updated, payload.id);
+    const { tabs, ix } = LayoutState.findTabIndexByID(updated, payload.tab.id);
+    if (split && (ix !== -1)) {
+      tabs.splice(ix, 1);
+      split.tabs.splice(payload.ix, 0, payload.tab);
+      setState({ ...updated });
+    }
+  }
+
   @Action(NewTab)
   newTab({ getState, setState }: StateContext<LayoutStateModel>,
          { payload }: NewTab) {
@@ -241,7 +264,7 @@ export interface LayoutStateModel {
     if ((tabs.length > 1) && (ix !== -1)) {
       const tab = tabs[ix];
       if (tab.selected)
-        dispatch(new SelectTab(tabs[0].id));
+        dispatch(new SelectTab(tabs[0]));
       tabs.splice(ix, 1);
       setState({ ...updated });
     }
@@ -261,7 +284,7 @@ export interface LayoutStateModel {
   selectTab({ getState, setState }: StateContext<LayoutStateModel>,
             { payload }: SelectTab) {
     const updated = getState();
-    const { tabs, ix } = LayoutState.findTabIndexByID(updated, payload);
+    const { tabs, ix } = LayoutState.findTabIndexByID(updated, payload.id);
     if (ix !== -1) {
       tabs.forEach((tab, iy) => tab.selected = (ix === iy));
       setState({ ...updated });
@@ -269,13 +292,24 @@ export interface LayoutStateModel {
   }
 
   @Action(UpdateSplitSizes)
-  updateLayout({ getState, setState }: StateContext<LayoutStateModel>,
-               { payload }: UpdateSplitSizes) {
+  updateSplitSizes({ getState, setState }: StateContext<LayoutStateModel>,
+                   { payload }: UpdateSplitSizes) {
     const updated = getState();
     const split = LayoutState.findSplitByID(updated, payload.id);
     if (split)
       payload.sizes.forEach((size, ix) => split.splits[ix].size = size);
     setState({ ...updated });
+  }
+
+  @Action(UpdateTab)
+  updateTab({ getState, setState }: StateContext<LayoutStateModel>,
+            { payload }: UpdateTab) {
+    const updated = getState();
+    const { tabs, ix } = LayoutState.findTabIndexByID(updated, payload.id);
+    if (ix !== -1) {
+      Object.assign(tabs[ix], payload);
+      setState({ ...updated });
+    }
   }
 
   // lifecycle methods

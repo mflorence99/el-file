@@ -1,0 +1,41 @@
+<mat-tab-group
+  (selectedIndexChange)="onTabSelect($event)"
+  [selectedIndex]="tabIndex">
+
+  <ng-container
+    *ngFor="let tab of tabs; let ix = index">
+
+    <mat-tab>
+      <ng-template
+        mat-tab-label>
+
+        <div
+          (dropEvent)="onMoveTab($event, ix)"
+          [dropHighlight]="'drop-target'"
+          dropDirective>
+
+          <div
+            [dragDirective]="tab">
+
+            <i
+              (click)="onEditTab($event, tab)"
+              [ngClass]="tab.icon"
+              [ngStyle]="{color: tab.color}"
+              class="icon"
+              matTooltip="Modify tab">
+            </i>
+
+            <span class="label">
+              {{ tab.label }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </ng-template>
+    </mat-tab>
+
+  </ng-container>
+
+</mat-tab-group>

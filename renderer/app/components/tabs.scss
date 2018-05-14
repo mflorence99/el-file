@@ -1,0 +1,16 @@
+:host {
+  background-color: var(--mat-grey-800);
+  display: block;
+}
+
+div.drop-target {
+  outline: 1px solid var(--text-color);
+}
+
+.icon {
+  padding: 4px;
+}
+
+.label {
+  margin-left: 4px;
+}

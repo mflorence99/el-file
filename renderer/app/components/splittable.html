@@ -19,8 +19,10 @@
         *ngIf="!split.splits; else splittable">
 
         <elfile-pane
+          [fs]="fs"
           [index]="ix"
-          [splitID]="split.id">
+          [splitID]="split.id"
+          [tabs]="split.tabs">
         </elfile-pane>
 
       </ng-container>

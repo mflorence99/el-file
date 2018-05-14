@@ -5,6 +5,7 @@
   </elfile-toolbar>
 
   <elfile-splittable
+    [fs]="ctrl.fs$ | async"
     [layout]="ctrl.layout$ | async">
   </elfile-splittable>
 

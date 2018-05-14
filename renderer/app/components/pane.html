@@ -1,1 +1,15 @@
-{{ splitID }}
+<lib-drawer-container>
+
+  <elfile-tabs
+    [splitID]="splitID"
+    [tabs]="tabs"
+    [tabIndex]="tabIndex">
+  </elfile-tabs>
+
+  <elfile-tree
+    [fs]="fs"
+    [splitID]="splitID"
+    [tab]="tab">
+  </elfile-tree>
+
+</lib-drawer-container>
