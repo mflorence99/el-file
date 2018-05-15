@@ -1,4 +1,4 @@
-import { MatButtonModule, MatButtonToggleModule, MatFormFieldModule, MatInputModule, MatTabsModule, MatTooltipModule } from '@angular/material';
+import { MatButtonModule, MatButtonToggleModule, MatFormFieldModule, MatInputModule, MatTabsModule, MatTooltipModule, MatTreeModule } from '@angular/material';
 
 import { AngularSplitModule } from 'angular-split';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -29,6 +29,7 @@ const MODULES = [
   MatInputModule,
   MatTabsModule,
   MatTooltipModule,
+  MatTreeModule,
   NgxElectronModule,
   ReactiveFormsModule
 ];

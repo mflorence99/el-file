@@ -28,7 +28,7 @@ export class NewTab {
 
 export class RemoveTab {
   static readonly type = '[Layout] remove tab';
-  constructor(public readonly payload: string) { }
+  constructor(public readonly payload: Tab) { }
 }
 
 export class Reorient {
@@ -109,7 +109,7 @@ export interface LayoutStateModel {
       return layout;
     if (layout.splits && layout.splits.length) {
       for (const inner of layout.splits) {
-        const split = this.findSplitByID(inner, id);
+        const split = LayoutState.findSplitByID(inner, id);
         if (split)
           return split;
       }
@@ -117,22 +117,39 @@ export interface LayoutStateModel {
     return null;
   }
 
+  /** Deep find a layout's index within its parent by its ID */
+  static findSplitIndexByID(layout: LayoutStateModel,
+                            id: string): { id: string, ix: number } {
+    if (layout.splits && layout.splits.length) {
+      for (let ix = 0; ix < layout.splits.length; ix++) {
+        if (layout.splits[ix].id === id)
+          return { id: layout.id, ix };
+      }
+      for (const inner of layout.splits) {
+        const { id: splitID, ix } = LayoutState.findSplitIndexByID(inner, id);
+        if (ix !== -1)
+          return { id: splitID, ix };
+      }
+    }
+    return { id: layout.id, ix: -1 };
+  }
+
   /** Deep find a tab by its ID */
   static findTabIndexByID(layout: LayoutStateModel,
-                          id: string): { tabs: Tab[], ix: number } {
+                          id: string): { splitID: string, tabs: Tab[], ix: number } {
     if (layout.tabs && layout.tabs.length) {
       const ix = layout.tabs.findIndex(tab => tab.id === id);
       if (ix !== -1)
-        return { tabs: layout.tabs, ix };
+        return { splitID: layout.id, tabs: layout.tabs, ix };
     }
     if (layout.splits && layout.splits.length) {
       for (const inner of layout.splits) {
-        const { tabs, ix } = LayoutState.findTabIndexByID(inner, id);
+        const { splitID, tabs, ix } = LayoutState.findTabIndexByID(inner, id);
         if (ix !== -1)
-          return { tabs, ix };
+          return { splitID, tabs, ix };
       }
     }
-    return { tabs: layout.tabs, ix: -1 };
+    return { splitID: layout.id, tabs: layout.tabs, ix: -1 };
   }
 
   /** Visit each split in a layout */
@@ -226,13 +243,18 @@ export interface LayoutStateModel {
   }
 
   @Action(MoveTab)
-  moveTab({ getState, setState }: StateContext<LayoutStateModel>,
+  moveTab({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
           { payload }: MoveTab) {
     const updated = getState();
     const split = LayoutState.findSplitByID(updated, payload.id);
-    const { tabs, ix } = LayoutState.findTabIndexByID(updated, payload.tab.id);
+    const { splitID, tabs, ix } = LayoutState.findTabIndexByID(updated, payload.tab.id);
     if (split && (ix !== -1)) {
       tabs.splice(ix, 1);
+      if (tabs.length === 0) {
+        const { id, ix: iy } = LayoutState.findSplitIndexByID(updated, splitID);
+        if (iy !== -1)
+          dispatch(new CloseSplit({ id, ix: iy }));
+      }
       split.tabs.splice(payload.ix, 0, payload.tab);
       setState({ ...updated });
     }
@@ -260,7 +282,7 @@ export interface LayoutStateModel {
   removeTab({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
             { payload }: RemoveTab) {
     const updated = getState();
-    const { tabs, ix } = LayoutState.findTabIndexByID(updated, payload);
+    const { tabs, ix } = LayoutState.findTabIndexByID(updated, payload.id);
     if ((tabs.length > 1) && (ix !== -1)) {
       const tab = tabs[ix];
       if (tab.selected)

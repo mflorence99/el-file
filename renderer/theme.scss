@@ -12,6 +12,8 @@ $custom-theme: mat-dark-theme($custom-primary, $custom-accent, $custom-warn);
 
 // Bridge from Angular Material variables to CSS variables
 
+@import '~ellib/css/colors.scss';
+
 :root {
 
   --primary-color: var(--mat-blue-400);
@@ -25,6 +27,8 @@ $custom-theme: mat-dark-theme($custom-primary, $custom-accent, $custom-warn);
 }
 
 // Basic styling
+
+@import '~ellib/css/theme.scss';
 
 body {
   background-color: var(--background-color);

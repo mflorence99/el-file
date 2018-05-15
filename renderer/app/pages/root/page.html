@@ -9,6 +9,17 @@
     [layout]="ctrl.layout$ | async">
   </elfile-splittable>
 
+  <lib-drawer-panel
+    #tabDrawer
+    position="top">
+
+    <elfile-tab
+      [noRemove]="noRemoveTab"
+      [tab]="editTab">
+    </elfile-tab>
+
+  </lib-drawer-panel>
+
 </lib-drawer-container>
 
 <elfile-root-ctrl

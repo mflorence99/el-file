@@ -1,0 +1,52 @@
+:host {
+  background-color: var(--background-color);
+  display: block;
+  padding: 16px;
+  width: auto;
+}
+
+form {
+  display: grid;
+  grid-template-columns: 1fr;
+
+  .buttons {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    margin-top: 16px;
+
+    .okAndCancel {
+      display: grid;
+      grid-gap: 16px;
+      grid-template-columns: auto auto;
+      justify-content: right;
+    }
+
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .iconAndColor {
+    display: grid;
+    grid-gap: 16px;
+    grid-template-columns: 1fr 1fr;
+
+    mat-button-toggle-group {
+      display: grid;
+      grid-template-columns: repeat(4, auto);
+
+      .mat-button-toggle {
+        border: 1px solid transparent;
+      }
+
+      .mat-button-toggle.mat-button-toggle-checked {
+        border: 1px dotted var(--text-color);
+      }
+
+    }
+
+  }
+
+}

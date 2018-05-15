@@ -28,7 +28,7 @@ export class PaneComponent extends LifecycleComponent {
 
   // bind OnChange handlers
 
-  @OnChange('tabs') showKeyboard() {
+  @OnChange('tabs') onTabs() {
     this.tab = this.tabs.find(tab => tab.selected);
     this.tabIndex = this.tabs.findIndex(tab => tab.selected);
   }

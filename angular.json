@@ -24,9 +24,6 @@
               "node_modules/@fortawesome/fontawesome-free-webfonts/css/fa-brands.css",
               "node_modules/@fortawesome/fontawesome-free-webfonts/css/fa-solid.css",
               "node_modules/@fortawesome/fontawesome-free-webfonts/css/fontawesome.css",
-              "node_modules/angular-tree-component/dist/angular-tree-component.css",
-              "node_modules/ellib/css/colors.scss",
-              "node_modules/ellib/css/theme.scss",
               "./renderer/theme.scss"
             ],
             "scripts": [

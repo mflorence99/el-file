@@ -1,0 +1,183 @@
+<form
+  [formGroup]="tabForm"
+  novalidate>
+
+  <mat-form-field>
+    <input
+      formControlName="label"
+      matInput
+      placeholder="Enter a label for this tab"
+      type="text">
+    <button
+      (click)="onClear('label')"
+      aria-label="Clear"
+      mat-button
+      mat-icon-button
+      matSuffix>
+      <i class="fas fa-times"></i>
+    </button>
+  </mat-form-field>
+
+  <div class="iconAndColor">
+
+    <div>
+
+      <div><b>Select an Icon</b></div>
+
+      <mat-button-toggle-group
+        formControlName="icon">
+
+        <mat-button-toggle value="fas fa-laptop">
+          <i class="fas fa-laptop fa-lg"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fas fa-terminal">
+          <i class="fas fa-terminal fa-lg"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fas fa-keyboard">
+          <i class="fas fa-keyboard fa-lg"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fas fa-server">
+          <i class="fas fa-server fa-lg"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fas fa-cloud">
+          <i class="fas fa-cloud fa-lg"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fab fa-apple">
+          <i class="fab fa-apple fa-lg"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fab fa-aws">
+          <i class="fab fa-aws fa-lg"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fab fa-docker">
+          <i class="fab fa-docker fa-lg"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fab fa-github">
+          <i class="fab fa-github fa-lg"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fab fa-linux">
+          <i class="fab fa-linux fa-lg"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fab fa-node-js">
+          <i class="fab fa-node-js fa-lg"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fab fa-windows">
+          <i class="fab fa-windows fa-lg"></i>
+        </mat-button-toggle>
+
+      </mat-button-toggle-group>
+    </div>
+
+    <div>
+
+      <div><b>Select a Color</b></div>
+
+      <mat-button-toggle-group
+        formControlName="color">
+
+        <mat-button-toggle value="var(--mat-grey-100)">
+          <i class="fas fa-square fa-lg" style="color: var(--mat-grey-100)"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-pink-a400)">
+          <i class="fas fa-square fa-lg" style="color: var(--mat-pink-a400)"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-purple-a400)">
+          <i class="fas fa-square fa-lg" style="color: var(--mat-purple-a400)"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-indigo-a400)">
+          <i class="fas fa-square fa-lg" style="color: var(--mat-indigo-a400)"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-blue-a400)">
+          <i class="fas fa-square fa-lg" style="color: var(--mat-blue-a400)"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-cyan-a400)">
+          <i class="fas fa-square fa-lg" style="color: var(--mat-cyan-a400)"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-teal-a400)">
+          <i class="fas fa-square fa-lg" style="color: var(--mat-teal-a400)"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-green-a400)">
+          <i class="fas fa-square fa-lg" style="color: var(--mat-green-a400)"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-lime-a400)">
+          <i class="fas fa-square fa-lg" style="color: var(--mat-lime-a400)"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-yellow-a400)">
+          <i class="fas fa-square fa-lg" style="color: var(--mat-yellow-a400)"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-amber-a400)">
+          <i class="fas fa-square fa-lg" style="color: var(--mat-amber-a400)"></i>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-deep-orange-a400)">
+          <i class="fas fa-square fa-lg" style="color: var(--mat-deep-orange-a400)"></i>
+        </mat-button-toggle>
+
+      </mat-button-toggle-group>
+
+    </div>
+
+  </div>
+
+  <div class="buttons">
+
+    <button
+      (click)="onRemove(false)"
+      [disabled]="noRemove"
+      [class.hidden]="areYouSure"
+      color="accent"
+      mat-raised-button>
+      Remove
+    </button>
+
+    <button
+      (click)="onRemove(true)"
+      [disabled]="noRemove"
+      [class.hidden]="!areYouSure"
+      color="accent"
+      mat-raised-button>
+      Are you sure? Cannot be undone!
+    </button>
+
+    <div class="okAndCancel">
+
+      <a
+        (click)="onCancel()"
+        mat-button>
+        Cancel
+      </a>
+
+      <button
+        (click)="onSubmit()"
+        [disabled]="tabForm.invalid"
+        color="primary"
+        mat-raised-button
+        type="submit">
+        OK
+      </button>
+
+    </div>
+
+  </div>
+
+</form>

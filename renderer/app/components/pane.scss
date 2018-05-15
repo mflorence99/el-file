@@ -1,4 +1,25 @@
 :host {
   display: block;
   height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+$cyTabs: 48px;
+
+elfile-tabs {
+  display: block;
+  height: $cyTabs;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+elfile-tree {
+  display: block;
+  height: calc(100% - #{$cyTabs});
+  overflow-y: auto;
+  position: absolute;
+  top: $cyTabs;
+  width: 100%;
 }

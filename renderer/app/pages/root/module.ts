@@ -27,6 +27,7 @@ const MODULES = [
   ],
 
   exports: [
+    RootCtrlComponent,
     RootPageComponent
   ],
 
