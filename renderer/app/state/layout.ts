@@ -94,10 +94,10 @@ export interface LayoutStateModel {
       size: 100,
       tabs: [{
         color: 'var(--mat-grey-100)',
-        icon: 'fas fa-home',
+        icon: 'fas home',
         id: UUID.UUID(),
         label: 'Home',
-        paths: ['~/'],
+        paths: ['~/Downloads'],
         selected: true
       } as Tab]
     } as LayoutStateModel, overrides);

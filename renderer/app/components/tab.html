@@ -14,7 +14,9 @@
       mat-button
       mat-icon-button
       matSuffix>
-      <i class="fas fa-times"></i>
+      <fa-icon
+        [icon]="['fas', 'times']">
+      </fa-icon>
     </button>
   </mat-form-field>
 
@@ -27,52 +29,88 @@
       <mat-button-toggle-group
         formControlName="icon">
 
-        <mat-button-toggle value="fas fa-laptop">
-          <i class="fas fa-laptop fa-lg"></i>
+        <mat-button-toggle value="fas laptop">
+          <fa-icon
+            [icon]="['fas', 'laptop']"
+            size="lg">
+          </fa-icon>
         </mat-button-toggle>
 
-        <mat-button-toggle value="fas fa-home">
-          <i class="fas fa-home fa-lg"></i>
+        <mat-button-toggle value="fas home">
+          <fa-icon
+            [icon]="['fas', 'home']"
+            size="lg">
+          </fa-icon>
         </mat-button-toggle>
 
-        <mat-button-toggle value="fas fa-keyboard">
-          <i class="fas fa-keyboard fa-lg"></i>
+        <mat-button-toggle value="fas keyboard">
+          <fa-icon
+            [icon]="['fas', 'keyboard']"
+            size="lg">
+          </fa-icon>
         </mat-button-toggle>
 
-        <mat-button-toggle value="fas fa-server">
-          <i class="fas fa-server fa-lg"></i>
+        <mat-button-toggle value="fas server">
+          <fa-icon
+            [icon]="['fas', 'server']"
+            size="lg">
+          </fa-icon>
         </mat-button-toggle>
 
-        <mat-button-toggle value="fas fa-cloud">
-          <i class="fas fa-cloud fa-lg"></i>
+        <mat-button-toggle value="fas cloud">
+          <fa-icon
+            [icon]="['fas', 'cloud']"
+            size="lg">
+          </fa-icon>
         </mat-button-toggle>
 
-        <mat-button-toggle value="fab fa-apple">
-          <i class="fab fa-apple fa-lg"></i>
+        <mat-button-toggle value="fab apple">
+          <fa-icon
+            [icon]="['fab', 'apple']"
+            size="lg">
+          </fa-icon>
         </mat-button-toggle>
 
-        <mat-button-toggle value="fab fa-aws">
-          <i class="fab fa-aws fa-lg"></i>
+        <mat-button-toggle value="fab aws">
+          <fa-icon
+            [icon]="['fab', 'aws']"
+            size="lg">
+          </fa-icon>
         </mat-button-toggle>
 
-        <mat-button-toggle value="fab fa-docker">
-          <i class="fab fa-docker fa-lg"></i>
+        <mat-button-toggle value="fab docker">
+          <fa-icon
+            [icon]="['fab', 'docker']"
+            size="lg">
+          </fa-icon>
         </mat-button-toggle>
 
-        <mat-button-toggle value="fab fa-github">
-          <i class="fab fa-github fa-lg"></i>
+        <mat-button-toggle value="fab github">
+          <fa-icon
+            [icon]="['fab', 'github']"
+            size="lg">
+          </fa-icon>
         </mat-button-toggle>
 
-        <mat-button-toggle value="fab fa-linux">
-          <i class="fab fa-linux fa-lg"></i>
+        <mat-button-toggle value="fab linux">
+          <fa-icon
+            [icon]="['fab', 'linux']"
+            size="lg">
+          </fa-icon>
         </mat-button-toggle>
 
-        <mat-button-toggle value="fab fa-node-js">
-          <i class="fab fa-node-js fa-lg"></i>
+        <mat-button-toggle value="fab node-js">
+          <fa-icon
+            [icon]="['fab', 'node-js']"
+            size="lg">
+          </fa-icon>
         </mat-button-toggle>
 
-        <mat-button-toggle value="fab fa-windows">
-          <i class="fab fa-windows fa-lg"></i>
+        <mat-button-toggle value="fab windows">
+          <fa-icon
+            [icon]="['fab', 'windows']"
+            size="lg">
+          </fa-icon>
         </mat-button-toggle>
 
       </mat-button-toggle-group>
@@ -86,51 +124,99 @@
         formControlName="color">
 
         <mat-button-toggle value="var(--mat-grey-100)">
-          <i class="fas fa-square fa-lg" style="color: var(--mat-grey-100)"></i>
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-grey-100)">
+          </fa-icon>
         </mat-button-toggle>
 
         <mat-button-toggle value="var(--mat-pink-a400)">
-          <i class="fas fa-square fa-lg" style="color: var(--mat-pink-a400)"></i>
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-pink-a400)">
+          </fa-icon>
         </mat-button-toggle>
 
         <mat-button-toggle value="var(--mat-purple-a400)">
-          <i class="fas fa-square fa-lg" style="color: var(--mat-purple-a400)"></i>
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-purple-a400)">
+          </fa-icon>
         </mat-button-toggle>
 
         <mat-button-toggle value="var(--mat-indigo-a400)">
-          <i class="fas fa-square fa-lg" style="color: var(--mat-indigo-a400)"></i>
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-indigo-a400)">
+          </fa-icon>
         </mat-button-toggle>
 
         <mat-button-toggle value="var(--mat-blue-a400)">
-          <i class="fas fa-square fa-lg" style="color: var(--mat-blue-a400)"></i>
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-blue-a400)">
+          </fa-icon>
         </mat-button-toggle>
 
         <mat-button-toggle value="var(--mat-cyan-a400)">
-          <i class="fas fa-square fa-lg" style="color: var(--mat-cyan-a400)"></i>
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-cyan-a400)">
+          </fa-icon>
         </mat-button-toggle>
 
         <mat-button-toggle value="var(--mat-teal-a400)">
-          <i class="fas fa-square fa-lg" style="color: var(--mat-teal-a400)"></i>
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-teal-a400)">
+          </fa-icon>
         </mat-button-toggle>
 
         <mat-button-toggle value="var(--mat-green-a400)">
-          <i class="fas fa-square fa-lg" style="color: var(--mat-green-a400)"></i>
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-green-a400)">
+          </fa-icon>
         </mat-button-toggle>
 
         <mat-button-toggle value="var(--mat-lime-a400)">
-          <i class="fas fa-square fa-lg" style="color: var(--mat-lime-a400)"></i>
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-lime-a400)">
+          </fa-icon>
         </mat-button-toggle>
 
         <mat-button-toggle value="var(--mat-yellow-a400)">
-          <i class="fas fa-square fa-lg" style="color: var(--mat-yellow-a400)"></i>
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-yellow-a400)">
+          </fa-icon>
         </mat-button-toggle>
 
         <mat-button-toggle value="var(--mat-amber-a400)">
-          <i class="fas fa-square fa-lg" style="color: var(--mat-amber-a400)"></i>
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-amber-a400)">
+          </fa-icon>
         </mat-button-toggle>
 
         <mat-button-toggle value="var(--mat-deep-orange-a400)">
-          <i class="fas fa-square fa-lg" style="color: var(--mat-deep-orange-a400)"></i>
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-deep-orange-a400)">
+          </fa-icon>
         </mat-button-toggle>
 
       </mat-button-toggle-group>

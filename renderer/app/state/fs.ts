@@ -47,11 +47,13 @@ export interface FSStateModel {
 }) export class FSState implements NgxsOnInit {
 
   fs: any;
+  path: any;
   watcher: any;
 
   /** ctor */
   constructor(private electron: ElectronService) {
     this.fs = this.electron.remote.require('fs');
+    this.path = this.electron.remote.require('path');
     this.watcher = this.electron.remote.require('filewatcher')();
   }
 
@@ -90,8 +92,8 @@ export interface FSStateModel {
         if (err)
           dispatch(new DirUnloaded(dir));
         else if (force || !getState()[dir]) {
-          const dirs = names.map(name => `${dir}${name}`);
-          async.map(dirs, this.fs.stat, (err, stats) => {
+          const dirs = names.map(name => this.path.join(dir, name));
+          async.map(dirs, this.fs.lstat, (err, stats) => {
             const nodes = names.reduce((acc, name, ix) => {
               acc.push({ name, stat: stats[ix] } as FSNode);
               return acc;

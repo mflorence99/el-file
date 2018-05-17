@@ -1,0 +1,17 @@
+<table>
+  <tr *ngFor="let desc of descriptors">
+
+    <td>
+      <fa-icon
+        [icon]="desc.icon.split(' ')"
+        [ngStyle]="{color: desc.color}"
+        class="fa-fw">
+      </fa-icon>
+    </td>
+
+    <td>
+      {{ desc.name }}
+    </td>
+
+  </tr>
+</table>

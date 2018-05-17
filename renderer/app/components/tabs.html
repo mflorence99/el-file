@@ -17,15 +17,19 @@
           <div
             [dragDirective]="tab">
 
-            <i
+            <button
               (click)="onEditTab($event, tab)"
-              [ngClass]="tab.icon"
-              [ngStyle]="{color: tab.color}"
-              class="fa-lg icon"
+              mat-button
+              mat-icon-button
               matTooltip="Modify tab">
-            </i>
+              <fa-icon
+                [icon]="tab.icon.split(' ')"
+                [ngStyle]="{color: tab.color}"
+                size="lg">
+              </fa-icon>
+            </button>
 
-            <span class="label">
+            <span>
               {{ tab.label }}
             </span>
 

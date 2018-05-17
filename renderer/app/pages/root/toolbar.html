@@ -8,19 +8,28 @@
     <mat-button-toggle
       [checked]="isStandardOrientation()"
       value="standard">
-      <i class="fas fa-square fa-lg"></i>
+      <fa-icon
+        [icon]="['fas', 'square']"
+        size="lg">
+      </fa-icon>
     </mat-button-toggle>
 
     <mat-button-toggle
       [checked]="isVerticalOrientation()"
       value="vertical">
-      <i class="fas fa-arrows-alt-v fa-lg"></i>
+      <fa-icon
+        [icon]="['fas', 'arrows-alt-v']"
+        size="lg">
+      </fa-icon>
     </mat-button-toggle>
 
     <mat-button-toggle
       [checked]="isHorizontalOrientation()"
       value="horizontal">
-      <i class="fas fa-arrows-alt-h fa-lg"></i>
+      <fa-icon
+        [icon]="['fas', 'arrows-alt-h']"
+        size="lg">
+      </fa-icon>
     </mat-button-toggle>
 
   </mat-button-toggle-group>
@@ -31,14 +40,20 @@
     (click)="reload()"
     matTooltip="Reload app"
     mat-icon-button>
-    <i class="fas fa-sync fa-lg"></i>
+    <fa-icon
+      [icon]="['fas', 'sync']"
+      size="lg">
+    </fa-icon>
   </button>
 
   <button
     (click)="devTools()"
     matTooltip="Open dev tools"
     mat-icon-button>
-    <i class="fas fa-bug fa-lg"></i>
+    <fa-icon
+      [icon]="['fas', 'bug']"
+      size="lg">
+    </fa-icon>
   </button>
 
 </nav>
