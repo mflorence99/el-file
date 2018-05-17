@@ -22,7 +22,8 @@
           [fs]="fs"
           [index]="ix"
           [splitID]="split.id"
-          [tabs]="split.tabs">
+          [tabs]="split.tabs"
+          [views]="views">
         </elfile-pane>
 
       </ng-container>
@@ -30,7 +31,9 @@
       <ng-template #splittable>
 
         <elfile-splittable
-          [layout]="split">
+          [fs]="fs"
+          [layout]="split"
+          [views]="views">
         </elfile-splittable>
 
       </ng-template>

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FSState, FSStateModel } from '../../state/fs';
 import { LayoutState, LayoutStateModel } from '../../state/layout';
+import { ViewsState, ViewsStateModel } from '../../state/views';
 import { WindowState, WindowStateModel } from '../../state/window';
 
 import { ElectronService } from 'ngx-electron';
@@ -23,6 +24,7 @@ export class RootCtrlComponent {
 
   @Select(FSState) fs$: Observable<FSStateModel>;
   @Select(LayoutState) layout$: Observable<LayoutStateModel>;
+  @Select(ViewsState) views$: Observable<ViewsStateModel>;
   @Select(WindowState) window$: Observable<WindowStateModel>;
 
   /** ctor */

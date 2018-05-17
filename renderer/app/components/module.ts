@@ -1,4 +1,8 @@
 import { BarrelModule } from '../barrel';
+import { BranchComponent } from './branch';
+import { CellComponent } from './cell';
+import { ColumnComponent } from './column';
+import { HeaderComponent } from './header';
 import { NgModule } from '@angular/core';
 import { PaneComponent } from './pane';
 import { SplittableComponent } from './splittable';
@@ -11,6 +15,10 @@ import { TreeComponent } from './tree';
  */
 
 const COMPONENTS = [
+  BranchComponent,
+  CellComponent,
+  ColumnComponent,
+  HeaderComponent,
   PaneComponent,
   SplittableComponent,
   TabComponent,

@@ -2,6 +2,7 @@ import { NgxsStoragePluginModule, StorageOption } from '@ngxs/storage-plugin';
 
 import { BarrelModule } from './barrel';
 import { ContextMenuModule } from 'ngx-contextmenu';
+import { DictionaryService } from './services/dictionary';
 import { NgModule } from '@angular/core';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { NgxsModule } from '@ngxs/store';
@@ -21,7 +22,9 @@ const MODULES = [
   RootPageModule
 ];
 
-const SERVICES = [ ];
+const SERVICES = [
+  DictionaryService
+];
 
 @NgModule({
 
@@ -42,7 +45,7 @@ const SERVICES = [ ];
       logger: console
     }),
     NgxsStoragePluginModule.forRoot({
-      key: ['layout', 'window'],
+      key: ['layout', 'views', 'window'],
       storage: StorageOption.LocalStorage
     }),
     NgxsReduxDevtoolsPluginModule.forRoot({disabled: !window['DEV_MODE']})

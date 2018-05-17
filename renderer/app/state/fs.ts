@@ -84,17 +84,19 @@ export interface FSStateModel {
            { payload }: LoadDirs,
            force = false) {
     payload.forEach(path => {
-      this.fs.readdir(path, (err, names) => {
+      const home = this.electron.process.env['HOME'];
+      const dir = path.replace(/^~/, home).replace(/^\$HOME/, home);
+      this.fs.readdir(dir, (err, names) => {
         if (err)
-          dispatch(new DirUnloaded(path));
-        else if (force || !getState()[path]) {
-          const paths = names.map(name => `${path}${name}`);
-          async.map(paths, this.fs.stat, (err, stats) => {
+          dispatch(new DirUnloaded(dir));
+        else if (force || !getState()[dir]) {
+          const dirs = names.map(name => `${dir}${name}`);
+          async.map(dirs, this.fs.stat, (err, stats) => {
             const nodes = names.reduce((acc, name, ix) => {
               acc.push({ name, stat: stats[ix] } as FSNode);
               return acc;
             }, []);
-            dispatch(new DirLoaded({ path, nodes }));
+            dispatch(new DirLoaded({ path: dir, nodes }));
           });
         }
       });

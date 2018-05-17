@@ -9,14 +9,31 @@ lib-drawer-container {
   position: absolute;
   width: 100%;
 
-  --nav-height: 48px;
+  --statusbar-height: 24px;
+  --toolbar-height: 48px;
 
   elfile-splittable {
-    height: calc(100% - var(--nav-height));
+    display: block;
+    height: calc(100% - var(--statusbar-height) - var(--toolbar-height));
+    position: absolute;
+    top: var(--toolbar-height);
+    width: 100%;
+  }
+
+  elfile-statusbar {
+    bottom: 0;
+    display: block;
+    height: var(--statusbar-height);
+    position: absolute;
+    width: 100%;
   }
 
   elfile-toolbar {
-    height: var(--nav-height);
+    display: block;
+    height: var(--toolbar-height);
+    position: absolute;
+    top: 0;
+    width: 100%;
   }
 
 }

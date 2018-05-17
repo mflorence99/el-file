@@ -5,17 +5,17 @@ import { Tab } from '../state/layout';
 import { View } from '../state/views';
 
 /**
- * Tree component
+ * Branch component
  */
 
 @Component({
   changeDetection: ChangeDetectionStrategy.Default,
-  selector: 'elfile-tree',
-  templateUrl: 'tree.html',
-  styleUrls: ['tree.scss']
+  selector: 'elfile-branch',
+  templateUrl: 'branch.html',
+  styleUrls: ['branch.scss']
 })
 
-export class TreeComponent {
+export class BranchComponent {
 
   @Input() fs: FSStateModel;
   @Input() tab: Tab;

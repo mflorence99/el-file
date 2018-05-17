@@ -1,40 +1,44 @@
-<div>&nbsp;</div>
+<nav>
 
-<mat-button-toggle-group
-  (change)="split($event)">
+  <div>&nbsp;</div>
 
-  <mat-button-toggle
-    [checked]="isStandardOrientation()"
-    value="standard">
-    <i class="fas fa-square fa-lg"></i>
-  </mat-button-toggle>
+  <mat-button-toggle-group
+    (change)="split($event)">
 
-  <mat-button-toggle
-    [checked]="isVerticalOrientation()"
-    value="vertical">
-    <i class="fas fa-arrows-alt-v fa-lg"></i>
-  </mat-button-toggle>
+    <mat-button-toggle
+      [checked]="isStandardOrientation()"
+      value="standard">
+      <i class="fas fa-square fa-lg"></i>
+    </mat-button-toggle>
 
-  <mat-button-toggle
-    [checked]="isHorizontalOrientation()"
-    value="horizontal">
-    <i class="fas fa-arrows-alt-h fa-lg"></i>
-  </mat-button-toggle>
+    <mat-button-toggle
+      [checked]="isVerticalOrientation()"
+      value="vertical">
+      <i class="fas fa-arrows-alt-v fa-lg"></i>
+    </mat-button-toggle>
 
-</mat-button-toggle-group>
+    <mat-button-toggle
+      [checked]="isHorizontalOrientation()"
+      value="horizontal">
+      <i class="fas fa-arrows-alt-h fa-lg"></i>
+    </mat-button-toggle>
 
-<div>&nbsp;</div>
+  </mat-button-toggle-group>
 
-<button
-  (click)="reload()"
-  matTooltip="Reload app"
-  mat-icon-button>
-  <i class="fas fa-sync fa-lg"></i>
-</button>
+  <div>&nbsp;</div>
 
-<button
-  (click)="devTools()"
-  matTooltip="Open dev tools"
-  mat-icon-button>
-  <i class="fas fa-bug fa-lg"></i>
-</button>
+  <button
+    (click)="reload()"
+    matTooltip="Reload app"
+    mat-icon-button>
+    <i class="fas fa-sync fa-lg"></i>
+  </button>
+
+  <button
+    (click)="devTools()"
+    matTooltip="Open dev tools"
+    mat-icon-button>
+    <i class="fas fa-bug fa-lg"></i>
+  </button>
+
+</nav>

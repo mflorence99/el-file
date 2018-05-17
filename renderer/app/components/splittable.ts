@@ -4,6 +4,7 @@ import { FSStateModel } from '../state/fs';
 import { LayoutStateModel } from '../state/layout';
 import { Store } from '@ngxs/store';
 import { UpdateSplitSizes } from '../state/layout';
+import { ViewsStateModel } from '../state/views';
 import { debounce } from 'ellib';
 
 /**
@@ -21,6 +22,7 @@ export class SplittableComponent {
 
   @Input() fs: FSStateModel;
   @Input() layout: LayoutStateModel;
+  @Input() views: ViewsStateModel;
 
   private updateSplitSizes: Function;
 

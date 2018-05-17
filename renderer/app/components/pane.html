@@ -1,11 +1,19 @@
-<elfile-tabs
-  [splitID]="splitID"
-  [tabs]="tabs"
-  [tabIndex]="tabIndex">
-</elfile-tabs>
+<lib-drawer-container>
 
-<elfile-tree
-  [fs]="fs"
-  [splitID]="splitID"
-  [tab]="tab">
-</elfile-tree>
+  <elfile-tabs
+    [splitID]="splitID"
+    [tabs]="tabs"
+    [tabIndex]="tabIndex">
+  </elfile-tabs>
+
+  <elfile-header
+    [view]="view">
+  </elfile-header>
+
+  <elfile-tree
+    [fs]="fs"
+    [tab]="tab"
+    [view]="view">
+  </elfile-tree>
+
+</lib-drawer-container>

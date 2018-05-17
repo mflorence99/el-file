@@ -6,8 +6,12 @@
 
   <elfile-splittable
     [fs]="ctrl.fs$ | async"
-    [layout]="ctrl.layout$ | async">
+    [layout]="ctrl.layout$ | async"
+    [views]="ctrl.views$ | async">
   </elfile-splittable>
+
+  <elfile-statusbar>
+  </elfile-statusbar>
 
   <lib-drawer-panel
     #tabDrawer

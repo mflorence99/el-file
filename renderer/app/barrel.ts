@@ -1,4 +1,4 @@
-import { MatButtonModule, MatButtonToggleModule, MatFormFieldModule, MatInputModule, MatTabsModule, MatTooltipModule, MatTreeModule } from '@angular/material';
+import { MatButtonModule, MatButtonToggleModule, MatFormFieldModule, MatInputModule, MatTabsModule, MatTooltipModule } from '@angular/material';
 
 import { AngularSplitModule } from 'angular-split';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -6,6 +6,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { DragDropDirectiveModule } from 'angular4-drag-drop';
+import { HttpClientModule } from '@angular/common/http';
+import { InlineSVGModule } from 'ng-inline-svg';
 import { LibModule } from 'ellib';
 import { NgModule } from '@angular/core';
 import { NgxElectronModule } from 'ngx-electron';
@@ -22,6 +24,8 @@ const MODULES = [
   CommonModule,
   ContextMenuModule,
   DragDropDirectiveModule,
+  HttpClientModule,
+  InlineSVGModule,
   LibModule,
   MatButtonModule,
   MatButtonToggleModule,
@@ -29,7 +33,6 @@ const MODULES = [
   MatInputModule,
   MatTabsModule,
   MatTooltipModule,
-  MatTreeModule,
   NgxElectronModule,
   ReactiveFormsModule
 ];

@@ -3,6 +3,7 @@ import { ComponentsModule } from '../../components/module';
 import { NgModule } from '@angular/core';
 import { RootCtrlComponent } from './ctrl';
 import { RootPageComponent } from './page';
+import { StatusbarComponent } from './statusbar';
 import { ToolbarComponent } from './toolbar';
 
 /**
@@ -12,6 +13,7 @@ import { ToolbarComponent } from './toolbar';
 const COMPONENTS = [
   RootCtrlComponent,
   RootPageComponent,
+  StatusbarComponent,
   ToolbarComponent
 ];
 
@@ -27,7 +29,6 @@ const MODULES = [
   ],
 
   exports: [
-    RootCtrlComponent,
     RootPageComponent
   ],
 

@@ -1,4 +1,8 @@
 :host {
+  display: block;
+}
+
+nav {
   align-items: center;
   display: grid;
   grid-template-columns: 1fr auto 1fr auto auto;

@@ -1,5 +1,6 @@
 import { Action, Actions, NgxsOnInit, State, StateContext, ofAction } from '@ngxs/store';
 import { DirUnloaded, LoadDirs } from './fs';
+import { InitView, RemoveView } from './views';
 
 import { UUID } from 'angular2-uuid';
 
@@ -93,10 +94,10 @@ export interface LayoutStateModel {
       size: 100,
       tabs: [{
         color: 'var(--mat-grey-100)',
-        icon: 'fab fa-linux',
+        icon: 'fas fa-home',
         id: UUID.UUID(),
-        label: '/',
-        paths: ['/'],
+        label: 'Home',
+        paths: ['~/'],
         selected: true
       } as Tab]
     } as LayoutStateModel, overrides);
@@ -206,7 +207,7 @@ export interface LayoutStateModel {
   }
 
   @Action(MakeSplit)
-  makeSplit({ getState, setState }: StateContext<LayoutStateModel>,
+  makeSplit({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
             { payload }: MakeSplit) {
     const updated = getState();
     const split = LayoutState.findSplitByID(updated, payload.id);
@@ -239,6 +240,10 @@ export interface LayoutStateModel {
         }
       }
     }
+    // initialize any new tab preferences
+    LayoutState.visitTabs(updated, tab => {
+      dispatch(new InitView(tab.id));
+    });
     setState({ ...updated });
   }
 
@@ -261,19 +266,21 @@ export interface LayoutStateModel {
   }
 
   @Action(NewTab)
-  newTab({ getState, setState }: StateContext<LayoutStateModel>,
+  newTab({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
          { payload }: NewTab) {
     const updated = getState();
     const split = LayoutState.findSplitByID(updated, payload.id);
     if (split && split.tabs) {
-      split.tabs.push({
+      const tab = {
         color: 'var(--mat-grey-100)',
         icon: 'fab fa-linux',
         id: UUID.UUID(),
         label: payload.path,
         paths: [payload.path],
         selected: false
-      });
+      };
+      split.tabs.push(tab);
+      dispatch(new InitView(tab.id));
       setState({ ...updated });
     }
   }
@@ -285,9 +292,10 @@ export interface LayoutStateModel {
     const { tabs, ix } = LayoutState.findTabIndexByID(updated, payload.id);
     if ((tabs.length > 1) && (ix !== -1)) {
       const tab = tabs[ix];
+      dispatch(new RemoveView(tab.id));
+      tabs.splice(ix, 1);
       if (tab.selected)
         dispatch(new SelectTab(tabs[0]));
-      tabs.splice(ix, 1);
       setState({ ...updated });
     }
   }
@@ -353,10 +361,11 @@ export interface LayoutStateModel {
         if (changed)
           ctx.setState({ ...layout });
       });
-    // load initial paths
+    // load initial paths and set initial prefs
     const layout = ctx.getState();
     LayoutState.visitTabs(layout, tab => {
       ctx.dispatch(new LoadDirs(tab.paths));
+      ctx.dispatch(new InitView(tab.id));
     });
   }
 
