@@ -1,12 +1,15 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FSState, FSStateModel } from '../../state/fs';
 import { LayoutState, LayoutStateModel } from '../../state/layout';
+import { PrefsState, PrefsStateModel, UpdatePrefs } from '../../state/prefs';
+import { Select, Store } from '@ngxs/store';
 import { ViewsState, ViewsStateModel } from '../../state/views';
 import { WindowState, WindowStateModel } from '../../state/window';
 
 import { ElectronService } from 'ngx-electron';
+import { LifecycleComponent } from 'ellib';
 import { Observable } from 'rxjs/Observable';
-import { Select } from '@ngxs/store';
+import { OnChange } from 'ellib';
 import { take } from 'rxjs/operators';
 
 /**
@@ -20,21 +23,34 @@ import { take } from 'rxjs/operators';
   template: ''
 })
 
-export class RootCtrlComponent {
+export class RootCtrlComponent extends LifecycleComponent {
+
+  @Input() prefsForm = { } as PrefsStateModel;
 
   @Select(FSState) fs$: Observable<FSStateModel>;
   @Select(LayoutState) layout$: Observable<LayoutStateModel>;
+  @Select(PrefsState) prefs$: Observable<PrefsStateModel>;
   @Select(ViewsState) views$: Observable<ViewsStateModel>;
   @Select(WindowState) window$: Observable<WindowStateModel>;
 
   /** ctor */
-  constructor(private electron: ElectronService) {
+  constructor(private electron: ElectronService,
+              private store: Store) {
+    super();
+    // set the initial bounds
     this.window$.pipe(take(1))
       .subscribe((window: WindowStateModel) => {
         const win = this.electron.remote.getCurrentWindow();
         if (window.bounds)
           win.setBounds(window.bounds);
       });
+  }
+
+  // bind OnChange handlers
+
+  @OnChange('prefsForm') savePrefs() {
+    if (this.prefsForm && this.prefsForm.submitted)
+      this.store.dispatch(new UpdatePrefs(this.prefsForm));
   }
 
 }

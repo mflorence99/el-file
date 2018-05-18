@@ -1,0 +1,126 @@
+<h1>
+  <fa-icon
+    [icon]="['fas', 'cog']">
+  </fa-icon>
+  Preferences
+</h1>
+
+<form
+  (submit)="close()"
+  [formGroup]="prefsForm"
+  [libRxfSubmit]="prefsForm"
+  novalidate>
+
+  <mat-checkbox
+    formControlName="showHiddenFiles">
+    Show hidden files
+  </mat-checkbox>
+
+  <mat-checkbox
+    formControlName="showGridLines">
+    Show grid lines
+  </mat-checkbox>
+
+  <mat-radio-group
+    class="group"
+    formControlName="sortDirectories">
+
+    <b>How to Sort Directories</b>
+
+    <mat-radio-button value="alpha">
+      Alphabetically with files
+    </mat-radio-button>
+    <mat-radio-button value="first">
+      Before all files
+    </mat-radio-button>
+    <mat-radio-button value="last">
+      After all files
+    </mat-radio-button>
+
+  </mat-radio-group>
+
+  <mat-radio-group
+    class="group"
+    formControlName="quantityFormat">
+
+    <b>How to Show Size</b>
+
+    <mat-radio-button value="number">
+      {{ size | libNumeral:'0,0' }}
+    </mat-radio-button>
+    <mat-radio-button value="abbrev">
+      {{ size | libNumeral:'0a' }}
+    </mat-radio-button>
+    <mat-radio-button value="bytes">
+      {{ size | libNumeral:'0b' }}
+    </mat-radio-button>
+
+  </mat-radio-group>
+
+  <mat-radio-group
+    class="group"
+    formControlName="dateFormat">
+
+    <b>Select Date Format</b>
+
+    <mat-radio-button value="ago">
+      an hour ago
+    </mat-radio-button>
+    <mat-radio-button value="shortDate">
+      {{ today | date:'shortDate' }}
+    </mat-radio-button>
+    <mat-radio-button value="mediumDate">
+      {{ today | date:'mediumDate' }}
+    </mat-radio-button>
+    <mat-radio-button value="longDate">
+      {{ today | date:'longDate' }}
+    </mat-radio-button>
+    <mat-radio-button value="fullDate">
+      {{ today | date:'fullDate' }}
+    </mat-radio-button>
+
+  </mat-radio-group>
+
+  <mat-radio-group
+    class="group"
+    formControlName="timeFormat">
+
+    <b>Select Time Format</b>
+
+    <mat-radio-button value="none">
+      Don't show time
+    </mat-radio-button>
+    <mat-radio-button value="shortTime">
+      {{ today | date:'shortTime' }}
+    </mat-radio-button>
+    <mat-radio-button value="mediumTime">
+      {{ today | date:'mediumTime' }}
+    </mat-radio-button>
+    <mat-radio-button value="longTime">
+      {{ today | date:'longTime' }}
+    </mat-radio-button>
+    <mat-radio-button value="fullTime">
+      {{ today | date:'fullTime' }}
+    </mat-radio-button>
+
+  </mat-radio-group>
+
+  <div class="okAndCancel">
+
+    <a
+      (click)="close()"
+      mat-button>
+      Cancel
+    </a>
+
+    <button
+      [disabled]="prefsForm.invalid"
+      color="primary"
+      mat-raised-button
+      type="submit">
+      OK
+    </button>
+
+  </div>
+
+</form>

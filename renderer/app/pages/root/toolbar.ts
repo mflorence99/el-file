@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CloseSplit, MakeSplit, Reorient } from '../../state/layout';
 
 import { ElectronService } from 'ngx-electron';
@@ -20,6 +20,8 @@ import { Store } from '@ngxs/store';
 export class ToolbarComponent {
 
   @Input() layout: LayoutStateModel;
+
+  @Output() openPrefs = new EventEmitter<any>();
 
   /** ctor */
   constructor(private electron: ElectronService,

@@ -1,11 +1,12 @@
 <table>
   <tr *ngFor="let desc of descriptors">
 
-    <td>
+    <td align="center">
       <fa-icon
+        [fixedWidth]="true"
         [icon]="desc.icon.split(' ')"
         [ngStyle]="{color: desc.color}"
-        class="fa-fw">
+        size="xs">
       </fa-icon>
     </td>
 

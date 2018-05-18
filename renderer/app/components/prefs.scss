@@ -1,0 +1,28 @@
+:host {
+  background-color: var(--background-color);
+  display: block;
+  height: 100%;
+  overflow: auto;
+  padding: 16px;
+  width: 300px;
+}
+
+form {
+  display: grid;
+  grid-gap: 16px;
+  grid-template-columns: 1fr;
+
+  .group {
+    display: grid;
+    grid-gap: 8px;
+    grid-template-columns: auto;
+  }
+
+  .okAndCancel {
+    display: grid;
+    grid-gap: 16px;
+    grid-template-columns: auto auto;
+    justify-content: right;
+  }
+
+}

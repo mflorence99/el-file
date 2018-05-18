@@ -38,7 +38,6 @@
     "@ngxs/logger-plugin": "3",
     "@ngxs/storage-plugin": "3",
     "@ngxs/store": "3",
-    "@swimlane/ngx-datatable": "12",
     "angular-split": "1.0.0-rc.3",
     "angular2-uuid": "1",
     "angular4-drag-drop": "1",

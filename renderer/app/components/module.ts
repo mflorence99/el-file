@@ -5,6 +5,7 @@ import { ColumnComponent } from './column';
 import { HeaderComponent } from './header';
 import { NgModule } from '@angular/core';
 import { PaneComponent } from './pane';
+import { PrefsComponent } from './prefs';
 import { SplittableComponent } from './splittable';
 import { TabComponent } from './tab';
 import { TabsComponent } from './tabs';
@@ -20,6 +21,7 @@ const COMPONENTS = [
   ColumnComponent,
   HeaderComponent,
   PaneComponent,
+  PrefsComponent,
   SplittableComponent,
   TabComponent,
   TabsComponent,

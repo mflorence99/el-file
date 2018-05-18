@@ -2,6 +2,7 @@ import * as Mode from 'stat-mode';
 
 import { FSNode } from '../state/fs';
 import { Injectable } from '@angular/core';
+import { View } from '../state/views';
 
 /**
  * File system model
@@ -22,6 +23,18 @@ export interface Descriptor {
 }
 
 /**
+ * File system model
+ */
+
+export interface Dictionary {
+  isDate: boolean;
+  isQuantity: boolean;
+  isString: boolean;
+  name: string;
+  tag: string;
+}
+
+/**
  * Dictionary of data
  */
 
@@ -34,6 +47,23 @@ export class DictionaryService {
   constructor() {
     const colorByExt = window.localStorage.getItem('colorByExt');
     this.colorByExt = colorByExt? JSON.parse(colorByExt) : { };
+  }
+
+  /** Return the dictionary of all available fields */
+  dictionary(): Dictionary[] {
+    return [
+      { name: 'name', tag: 'Name', isString: true },
+      { name: 'size', tag: 'Size', isQuantity: true },
+      { name: 'mtime', tag: 'Modified', isDate: true },
+      { name: 'btime', tag: 'Created', isDate: true },
+      { name: 'atime', tag: 'Accessed', isDate: true },
+      { name: 'mode', tag: 'Mode', isString: true }
+    ] as Dictionary[];
+  }
+
+  /** Return the dictionary for a particular view */
+  dictionaryForView(view: View): Dictionary[] {
+    return this.dictionary().filter(entry => !!view[entry.name]);
   }
 
   /** Build descriptors from nodes */
@@ -59,11 +89,11 @@ export class DictionaryService {
 
   private makeColor(node: FSNode): string {
     if (node.stat.isDirectory())
-      return 'var(--mat-yellow-a400)';
+      return 'var(--mat-deep-orange-a100)';
     else if (node.stat.isFile()) {
       const ix = node.name.lastIndexOf('.');
       if (ix <= 0)
-        return 'var(--mat-blue-grey-500)';
+        return 'var(--mat-blue-grey-400)';
       else {
         const ext = node.name.substring(ix + 1).toLowerCase();
         let color = this.colorByExt[ext];
@@ -81,7 +111,7 @@ export class DictionaryService {
 
   private makeIcon(node: FSNode): string {
     if (node.stat.isDirectory())
-      return 'far folder';
+      return 'fas folder';
     else if (node.stat.isFile()) {
       let icon = null;
       const ix = node.name.lastIndexOf('.');
@@ -104,22 +134,22 @@ export class DictionaryService {
  */
 
 const COLORS = [
-  'var(--mat-red-a400)',
-  'var(--mat-pink-a400)',
-  'var(--mat-purple-a400)',
-  'var(--mat-deep-purple-a400)',
-  'var(--mat-indigo-a400)',
-  'var(--mat-blue-a400)',
-  'var(--mat-light-blue-a400)',
-  'var(--mat-cyan-a400)',
-  'var(--mat-teal-a400)',
-  'var(--mat-green-a400)',
-  'var(--mat-light-green-a400)',
-  'var(--mat-lime-a400)',
-  'var(--mat-yellow-a400)',
-  'var(--mat-amber-a400)',
-  'var(--mat-orange-a400)',
-  'var(--mat-deep-orange-a400)'
+  'var(--mat-red-a100)',
+  'var(--mat-pink-a100)',
+  'var(--mat-purple-a100)',
+  'var(--mat-deep-purple-a100)',
+  'var(--mat-indigo-a100)',
+  'var(--mat-blue-a100)',
+  'var(--mat-light-blue-a100)',
+  'var(--mat-cyan-a100)',
+  'var(--mat-teal-a100)',
+  'var(--mat-green-a100)',
+  'var(--mat-light-green-a100)',
+  'var(--mat-lime-a100)',
+  'var(--mat-yellow-a100)',
+  'var(--mat-amber-a100)',
+  'var(--mat-orange-a100)',
+  'var(--mat-deep-orange-a100)'
 ];
 
 /**
@@ -160,6 +190,7 @@ const ICON_BY_EXT = {
   'db': 'fas database',
   'dbf': 'fas database',
   'deb': 'far file-archive',
+  'desktop': 'fas cog',
   'dmg': 'fas cube',
   'doc': 'far file-word',
   'docx': 'far file-word',
@@ -207,6 +238,7 @@ const ICON_BY_EXT = {
   'mpa': 'far file-audio',
   'mpeg': 'far file-video',
   'mpg': 'far file-video',
+  'old': 'fas database',
   'ogg': 'far file-audio',
   'otf': 'fas font',
   'pdf': 'far file-pdf',
@@ -265,6 +297,8 @@ const ICON_BY_NAME = {
   '.dockerignore': 'fab docker',
   '.gitattributes': 'fab github',
   '.gitignore': 'fab github',
+  '.gitconfig': 'fab github',
   '.npmignore': 'fab node-js',
+  '.npmrc': 'fab node-js',
   'dockerfile': 'fab docker',
 };

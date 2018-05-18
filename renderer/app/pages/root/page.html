@@ -1,6 +1,7 @@
 <lib-drawer-container>
 
   <elfile-toolbar
+    (openPrefs)=prefsDrawer.open()
     [layout]="ctrl.layout$ | async">
   </elfile-toolbar>
 
@@ -24,8 +25,20 @@
 
   </lib-drawer-panel>
 
+  <lib-drawer-panel
+    #prefsDrawer
+    position="right">
+
+    <elfile-prefs
+      [prefs]="ctrl.prefs$ | async"
+      #prefs>
+    </elfile-prefs>
+
+  </lib-drawer-panel>
+
 </lib-drawer-container>
 
 <elfile-root-ctrl
+  [prefsForm]="prefs.prefsForm.valueChanges | async"
   #ctrl>
 </elfile-root-ctrl>

@@ -24,7 +24,8 @@
               "./renderer/theme.scss"
             ],
             "scripts": [
-              "node_modules/hammerjs/hammer.min.js"
+              "node_modules/hammerjs/hammer.min.js",
+              "node_modules/numeral/min/numeral.min.js"
             ]
           }
         },
