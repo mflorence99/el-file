@@ -61,7 +61,7 @@ export class ViewComponent extends LifecycleComponent {
   // bind OnChange handlers
 
   @OnChange('view') patchView() {
-    if (this.view)
+    if (this.view && this.view.visibility)
       this.viewForm.patchValue({ visibility: this.view.visibility }, { emitEvent: true });
   }
 

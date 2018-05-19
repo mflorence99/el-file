@@ -181,11 +181,16 @@ export interface LayoutStateModel {
   constructor(private actions$: Actions) { }
 
   @Action(CloseSplit)
-  closeSplit({ getState, setState }: StateContext<LayoutStateModel>,
+  closeSplit({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
              { payload }: CloseSplit) {
     const updated = getState();
     const split = LayoutState.findSplitByID(updated, payload.id);
     if (split) {
+      // remove any views first
+      const splat = split.splits[payload.ix];
+      LayoutState.visitTabs(splat, tab => {
+        dispatch(new RemoveView(tab.id));
+      });
       split.splits.splice(payload.ix, 1);
       // if we have more than one split left (or at the root level)
       // we set everyone to the same size, distributed evenly
