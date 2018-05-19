@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
  */
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'elfile-statusbar',
   templateUrl: 'statusbar.html',
   styleUrls: ['statusbar.scss']

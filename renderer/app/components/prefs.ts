@@ -11,7 +11,7 @@ import { PrefsStateModel } from '../state/prefs';
  */
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'elfile-prefs',
   templateUrl: 'prefs.html',
   styleUrls: ['prefs.scss']

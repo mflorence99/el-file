@@ -12,7 +12,7 @@ import { View } from '../state/views';
  */
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'elfile-tree',
   templateUrl: 'tree.html',
   styleUrls: ['tree.scss']

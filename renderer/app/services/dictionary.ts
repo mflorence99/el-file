@@ -63,7 +63,7 @@ export class DictionaryService {
 
   /** Return the dictionary for a particular view */
   dictionaryForView(view: View): Dictionary[] {
-    return this.dictionary().filter(entry => !!view[entry.name]);
+    return this.dictionary().filter(entry => !!view.visibility[entry.name]);
   }
 
   /** Build descriptors from nodes */

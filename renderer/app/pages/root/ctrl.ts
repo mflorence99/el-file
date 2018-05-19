@@ -3,7 +3,7 @@ import { FSState, FSStateModel } from '../../state/fs';
 import { LayoutState, LayoutStateModel } from '../../state/layout';
 import { PrefsState, PrefsStateModel, UpdatePrefs } from '../../state/prefs';
 import { Select, Store } from '@ngxs/store';
-import { ViewsState, ViewsStateModel } from '../../state/views';
+import { UpdateViewVisibility, ViewVisibility, ViewsState, ViewsStateModel } from '../../state/views';
 import { WindowState, WindowStateModel } from '../../state/window';
 
 import { ElectronService } from 'ngx-electron';
@@ -26,6 +26,7 @@ import { take } from 'rxjs/operators';
 export class RootCtrlComponent extends LifecycleComponent {
 
   @Input() prefsForm = { } as PrefsStateModel;
+  @Input() viewForm: any = { };
 
   @Select(FSState) fs$: Observable<FSStateModel>;
   @Select(LayoutState) layout$: Observable<LayoutStateModel>;
@@ -51,6 +52,15 @@ export class RootCtrlComponent extends LifecycleComponent {
   @OnChange('prefsForm') savePrefs() {
     if (this.prefsForm && this.prefsForm.submitted)
       this.store.dispatch(new UpdatePrefs(this.prefsForm));
+  }
+
+  @OnChange('viewForm') saveView() {
+    if (this.viewForm && this.viewForm.submitted) {
+      const allTheSame = !!this.viewForm.allTheSame;
+      const viewID = this.viewForm.viewID;
+      const visibility: ViewVisibility = { ...this.viewForm.visibility };
+      this.store.dispatch(new UpdateViewVisibility({ viewID, visibility, allTheSame }));
+    }
   }
 
 }

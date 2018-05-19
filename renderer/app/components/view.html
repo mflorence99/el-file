@@ -1,0 +1,58 @@
+<h2>
+  <fa-icon
+    [icon]="['fas', 'ellipsis-v']">
+  </fa-icon>
+  Select Columns
+</h2>
+
+<form
+  (submit)="close()"
+  [formGroup]="viewForm"
+  [libRxfSubmit]="viewForm"
+  novalidate>
+
+  <input
+    formControlName="viewID"
+    type="hidden">
+
+  <input
+    formControlName="atLeastOne"
+    type="hidden">
+
+  <div
+    *ngFor="let entry of dict.dictionary()"
+    formGroupName="visibility">
+
+    <mat-checkbox
+      [formControlName]="entry.name">
+      Show {{ entry.tag }}
+    </mat-checkbox>
+
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <mat-checkbox
+    formControlName="allTheSame">
+    Make all views look like this
+  </mat-checkbox>
+
+  <div class="okAndCancel">
+
+    <a
+      (click)="close()"
+      mat-button>
+      Cancel
+    </a>
+
+    <button
+      [disabled]="viewForm.invalid"
+      color="primary"
+      mat-raised-button
+      type="submit">
+      OK
+    </button>
+
+  </div>
+
+</form>

@@ -10,6 +10,7 @@ import { SplittableComponent } from './splittable';
 import { TabComponent } from './tab';
 import { TabsComponent } from './tabs';
 import { TreeComponent } from './tree';
+import { ViewComponent } from './view';
 
 /**
  * All our components
@@ -25,7 +26,8 @@ const COMPONENTS = [
   SplittableComponent,
   TabComponent,
   TabsComponent,
-  TreeComponent
+  TreeComponent,
+  ViewComponent
 ];
 
 @NgModule({

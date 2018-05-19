@@ -36,9 +36,22 @@
 
   </lib-drawer-panel>
 
+  <lib-drawer-panel
+    #viewDrawer
+    position="right">
+
+    <elfile-view
+      [view]="editView"
+      [viewID]="editViewID"
+      #view>
+    </elfile-view>
+
+  </lib-drawer-panel>
+
 </lib-drawer-container>
 
 <elfile-root-ctrl
   [prefsForm]="prefs.prefsForm.valueChanges | async"
+  [viewForm]="view.viewForm.valueChanges | async"
   #ctrl>
 </elfile-root-ctrl>

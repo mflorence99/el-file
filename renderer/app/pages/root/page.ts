@@ -6,6 +6,7 @@ import { SetBounds } from '../../state/window';
 import { SplittableComponent } from '../../components/splittable';
 import { Store } from '@ngxs/store';
 import { Tab } from '../../state/layout';
+import { View } from '../../state/views';
 import { debounce } from 'ellib';
 
 /**
@@ -23,9 +24,13 @@ export class RootPageComponent {
   @ViewChild(SplittableComponent) splittable: SplittableComponent;
 
   @ViewChild('tabDrawer') tabDrawer: DrawerPanelComponent;
+  @ViewChild('viewDrawer') viewDrawer: DrawerPanelComponent;
 
   editTab = { } as Tab;
   noRemoveTab: boolean;
+
+  editView = { } as View;
+  editViewID: string;
 
   /** ctor */
   constructor(private electron: ElectronService,
@@ -42,6 +47,13 @@ export class RootPageComponent {
     this.editTab = tab;
     this.noRemoveTab = noRemove;
     this.tabDrawer.open();
+  }
+
+  onEditView(view: View,
+             viewID: string) {
+    this.editView = view;
+    this.editViewID = viewID;
+    this.viewDrawer.open();
   }
 
 }

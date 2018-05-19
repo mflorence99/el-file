@@ -9,7 +9,7 @@ import { View } from '../state/views';
  */
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'elfile-branch',
   templateUrl: 'branch.html',
   styleUrls: ['branch.scss']

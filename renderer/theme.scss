@@ -14,6 +14,10 @@ $custom-theme: mat-dark-theme($custom-primary, $custom-accent, $custom-warn);
 
 @import '~ellib/css/colors.scss';
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 :root {
 
   --primary-color: var(--mat-blue-400);

@@ -9,7 +9,7 @@ import { Store } from '@ngxs/store';
  */
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'elfile-tabs',
   templateUrl: 'tabs.html',
   styleUrls: ['tabs.scss']

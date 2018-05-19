@@ -1,4 +1,4 @@
-import { MatButtonModule, MatButtonToggleModule, MatCheckboxModule, MatFormFieldModule, MatInputModule, MatRadioModule, MatTabsModule, MatTooltipModule } from '@angular/material';
+import { MatButtonModule, MatButtonToggleModule, MatCheckboxModule, MatDividerModule, MatFormFieldModule, MatInputModule, MatRadioModule, MatTabsModule, MatTooltipModule } from '@angular/material';
 
 import { AngularSplitModule } from 'angular-split';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -32,6 +32,7 @@ const MODULES = [
   MatButtonModule,
   MatButtonToggleModule,
   MatCheckboxModule,
+  MatDividerModule,
   MatFormFieldModule,
   MatInputModule,
   MatRadioModule,

@@ -12,7 +12,7 @@ import { debounce } from 'ellib';
  */
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'elfile-splittable',
   templateUrl: 'splittable.html',
   styleUrls: ['splittable.scss']

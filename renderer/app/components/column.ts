@@ -7,7 +7,7 @@ import { View } from '../state/views';
  */
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'elfile-column',
   templateUrl: 'column.html',
   styleUrls: ['column.scss']

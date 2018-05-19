@@ -2,39 +2,3 @@
   display: block;
   height: 100%;
 }
-
-main {
-  height: 100%;
-  left: 0;
-  position: absolute;
-  width: 100%;
-
-  --header-height: 24px;
-  --tabs-height: 48px;
-
-  elfile-header {
-    display: block;
-    height: var(--header-height);
-    position: absolute;
-    top: var(--tabs-height);
-    width: 100%;
-  }
-
-  elfile-tabs {
-    display: block;
-    height: var(--tabs-height);
-    position: absolute;
-    top: 0;
-    width: 100%;
-  }
-
-  elfile-tree {
-    display: block;
-    height: calc(100% - var(--header-height) - var(--tabs-height));
-    overflow-y: auto;
-    position: absolute;
-    top: var(--tabs-height);
-    width: 100%;
-  }
-
-}

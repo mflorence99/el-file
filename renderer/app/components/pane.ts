@@ -11,7 +11,7 @@ import { Tab } from '../state/layout';
  */
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'elfile-pane',
   templateUrl: 'pane.html',
   styleUrls: ['pane.scss']
@@ -31,10 +31,13 @@ export class PaneComponent extends LifecycleComponent {
 
   // bind OnChange handlers
 
-  @OnChange('tabs') onTabs() {
-    this.tab = this.tabs.find(tab => tab.selected);
-    this.tabIndex = this.tabs.findIndex(tab => tab.selected);
-    this.view = this.views[this.tab.id];
+  @OnChange('tabs', 'views') onTabs() {
+    if (this.tabs) {
+      this.tab = this.tabs.find(tab => tab.selected);
+      this.tabIndex = this.tabs.findIndex(tab => tab.selected);
+    }
+    if (this.tab && this.views)
+      this.view = this.views[this.tab.id];
   }
 
 }

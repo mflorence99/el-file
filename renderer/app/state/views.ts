@@ -12,21 +12,22 @@ export class RemoveView {
   constructor(public readonly payload: string) { }
 }
 
-export class UpdateView {
-  static readonly type = '[Views] update view';
+export class UpdateViewVisibility {
+  static readonly type = '[Views] update view visibility';
   constructor(public readonly payload:
-    { id: string, view: View, allTheSame?: boolean }) { }
+    { viewID: string, visibility: ViewVisibility, allTheSame?: boolean }) { }
 }
 
 export interface View {
-  [column: string]: {
-    sort?: number;
-    width?: number;
-  };
+  visibility: ViewVisibility;
+}
+
+export interface ViewVisibility {
+  [column: string]: boolean;
 }
 
 export interface ViewsStateModel {
-  [id: string]: View;
+  [viewID: string]: View;
 }
 
 @State<ViewsStateModel>({
@@ -40,7 +41,11 @@ export interface ViewsStateModel {
   /** Create the default layout */
   static defaultView(): View {
     return {
-      name: { width: 100, sort: 1 }
+      visibility: {
+        mtime: true,
+        name: true,
+        size: true
+      }
     };
   }
 
@@ -60,15 +65,17 @@ export interface ViewsStateModel {
     setState({ ...updated });
   }
 
-  @Action(UpdateView)
-  updateView({ patchState, getState, setState }: StateContext<ViewsStateModel>,
-             { payload }: UpdateView) {
+  @Action(UpdateViewVisibility)
+  updateViewVisibility({ getState, setState }: StateContext<ViewsStateModel>,
+                       { payload }: UpdateViewVisibility) {
+    const updated = { ...getState() };
     if (payload.allTheSame) {
-      const updated = { ...getState() };
-      Object.keys(updated).forEach(id => updated[id] = payload.view);
-      setState({ ...updated });
+      Object.keys(updated).forEach(viewID => {
+        updated[viewID].visibility = { ...payload.visibility };
+      });
     }
-    else patchState({ [payload.id]: payload.view } );
+    else updated[payload.viewID].visibility = payload.visibility;
+    setState({ ...updated });
   }
 
 }
