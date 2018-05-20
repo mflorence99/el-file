@@ -12,6 +12,12 @@ export class RemoveView {
   constructor(public readonly payload: string) { }
 }
 
+export class UpdateViewSort {
+  static readonly type = '[Views] update view sort';
+  constructor(public readonly payload:
+    { viewID: string, sortColumn: string, sortDir: number }) { }
+}
+
 export class UpdateViewVisibility {
   static readonly type = '[Views] update view visibility';
   constructor(public readonly payload:
@@ -24,6 +30,8 @@ export class UpdateViewWidths {
 }
 
 export interface View {
+  sortColumn?: string;
+  sortDir?: number;
   visibility?: ViewVisibility;
   widths?: ViewWidths;
 }
@@ -51,6 +59,8 @@ export interface ViewsStateModel {
   /** Create the default layout */
   static defaultView(): View {
     return {
+      sortColumn: 'name',
+      sortDir: 1,
       visibility: {
         mtime: true,
         name: true,
@@ -72,6 +82,15 @@ export interface ViewsStateModel {
              { payload }: RemoveView) {
     const updated = { ...getState() };
     delete updated[payload];
+    setState({ ...updated });
+  }
+
+  @Action(UpdateViewSort)
+  updateViewSort({ getState, setState }: StateContext<ViewsStateModel>,
+                 { payload }: UpdateViewSort) {
+    const updated = { ...getState() };
+    updated[payload.viewID].sortColumn = payload.sortColumn;
+    updated[payload.viewID].sortDir = payload.sortDir;
     setState({ ...updated });
   }
 

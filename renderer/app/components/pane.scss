@@ -1,5 +1,25 @@
 :host {
   display: block;
   height: 100%;
+}
+
+main {
+  height: 100%;
   overflow: hidden;
+
+  --elfile-header-height: 24px;
+  --elfile-tabs-height: 48px;
+
+  elfile-header {
+    height: var(--elfile-header-height);
+  }
+
+  elfile-tabs {
+    height: var(--elfile-tabs-height);
+  }
+
+  elfile-tree {
+    height: calc(100% - var(--elfile-header-height) - var(--elfile-tabs-height));
+  }
+
 }

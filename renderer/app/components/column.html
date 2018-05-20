@@ -1,4 +1,18 @@
 <div
-  [ngClass]="{column: true, quantity: entry.isQuantity}">
+  (click)="onSortChange(entry.name)"
+  [ngClass]="{quantity: entry.isQuantity}"
+  class="column">
+
+  <fa-icon
+    [icon]="['fas', (view.sortDir > 0)? 'angle-up' : 'angle-down']"
+    *ngIf="entry.isQuantity && view.sortColumn === entry.name">
+  </fa-icon>
+
   {{ entry.tag }}
+
+  <fa-icon
+    [icon]="['fas', (view.sortDir > 0)? 'angle-up' : 'angle-down']"
+    *ngIf="!entry.isQuantity && view.sortColumn === entry.name">
+  </fa-icon>
+
 </div>

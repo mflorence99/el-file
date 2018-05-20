@@ -1,18 +1,21 @@
-<elfile-tabs
-  [splitID]="splitID"
-  [tabs]="tabs"
-  [tabIndex]="tabIndex"
-  [view]="view">
-</elfile-tabs>
+<main>
 
-<elfile-header
-  [view]="view"
-  [viewID]="tab.id">
-</elfile-header>
+  <elfile-tabs
+    [splitID]="splitID"
+    [tabs]="tabs"
+    [tabIndex]="tabIndex"
+    [view]="view">
+  </elfile-tabs>
 
-<elfile-tree
-  [fs]="fs"
-  [prefs]="prefs"
-  [tab]="tab"
-  [view]="view">
-</elfile-tree>
+  <elfile-header
+    [view]="view"
+    [viewID]="tab.id">
+  </elfile-header>
+
+  <elfile-tree
+    [fs]="fs"
+    [prefs]="prefs"
+    [view]="view">
+  </elfile-tree>
+
+</main>

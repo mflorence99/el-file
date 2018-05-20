@@ -7,7 +7,7 @@
 .cell {
 
   &.gridlines {
-    border-right: 1px solid var(--mat-grey-700);
+    border-right: 1px dotted var(--mat-grey-700);
   }
 
 }
@@ -17,7 +17,7 @@
   flex-direction: row;
 
   &.gridlines {
-    border-bottom: 1px solid var(--mat-grey-700);
+    border-bottom: 1px dotted var(--mat-grey-700);
   }
 
 }

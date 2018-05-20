@@ -7,6 +7,7 @@
 }
 
 .column {
+  cursor: pointer;
   font-weight: bold;
   font-size: 0.8rem;
   overflow: hidden;
@@ -15,7 +16,7 @@
   white-space: nowrap;
 
   &.quantity {
-    justify-self: end;
+    margin-left: auto;
   }
 
 }

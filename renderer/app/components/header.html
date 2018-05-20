@@ -1,7 +1,7 @@
 <split
   (dragEnd)="onSplitSizeChange($event)"
   direction="horizontal"
-  gutterColor="var(--mat-grey-700)"
+  gutterColor="var(--mat-grey-800)"
   gutterSize="1">
 
   <split-area
@@ -9,7 +9,9 @@
     [size]="entry.width">
 
     <elfile-column
-      [entry]="entry">
+      [entry]="entry"
+      [view]="view"
+      [viewID]="viewID">
     </elfile-column>
 
   </split-area>
