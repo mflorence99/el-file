@@ -1,5 +1,5 @@
 <split
-  (dragProgress)=onSplitSizeChange($event)
+  (dragProgress)="onSplitSizeChange($event)"
   [direction]="layout.direction"
   [useTransition]="true"
   gutterColor="#424242"
@@ -21,6 +21,7 @@
         <elfile-pane
           [fs]="fs"
           [index]="ix"
+          [prefs]="prefs"
           [splitID]="split.id"
           [tabs]="split.tabs"
           [views]="views">
@@ -33,6 +34,7 @@
         <elfile-splittable
           [fs]="fs"
           [layout]="split"
+          [prefs]="prefs"
           [views]="views">
         </elfile-splittable>
 

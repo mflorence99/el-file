@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 import { FSStateModel } from '../state/fs';
 import { LayoutStateModel } from '../state/layout';
+import { PrefsStateModel } from '../state/prefs';
 import { Store } from '@ngxs/store';
 import { UpdateSplitSizes } from '../state/layout';
 import { ViewsStateModel } from '../state/views';
@@ -22,6 +23,7 @@ export class SplittableComponent {
 
   @Input() fs: FSStateModel;
   @Input() layout: LayoutStateModel;
+  @Input() prefs: PrefsStateModel;
   @Input() views: ViewsStateModel;
 
   private updateSplitSizes: Function;
@@ -33,7 +35,8 @@ export class SplittableComponent {
     }, 500);
   }
 
-  /** Whenever the split size changes */
+  // event handlers
+
   onSplitSizeChange(event: {gutterNum: number,
                             sizes: number[]}): void {
     this.updateSplitSizes(this.layout.id, event.sizes);

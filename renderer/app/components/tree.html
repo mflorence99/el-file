@@ -1,18 +1,20 @@
-<table>
-  <tr *ngFor="let desc of descriptors">
+<div
+  [ngClass]="{gridlines: prefs.showGridLines}"
+  *ngFor="let desc of descriptors"
+  class="row">
 
-    <td align="center">
-      <fa-icon
-        [fixedWidth]="true"
-        [icon]="desc.icon.split(' ')"
-        [ngStyle]="{color: desc.color}"
-        size="xs">
-      </fa-icon>
-    </td>
+  <div
+    [ngClass]="{gridlines: prefs.showGridLines}"
+    [ngStyle]="{'width.%': entry.width? entry.width : (100 / dictionary.length)}"
+    *ngFor="let entry of dictionary"
+    class="cell">
 
-    <td>
-      {{ desc.name }}
-    </td>
+    <elfile-cell
+      [desc]="desc"
+      [entry]="entry"
+      [prefs]="prefs">
+    </elfile-cell>
 
-  </tr>
-</table>
+  </div>
+
+</div>

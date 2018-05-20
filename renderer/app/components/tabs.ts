@@ -3,9 +3,10 @@ import { MoveTab, SelectTab, Tab } from '../state/layout';
 
 import { RootPageComponent } from '../pages/root/page';
 import { Store } from '@ngxs/store';
+import { View } from '../state/views';
 
 /**
- * Pane component
+ * Tabs component
  */
 
 @Component({
@@ -20,6 +21,7 @@ export class TabsComponent {
   @Input() splitID: string;
   @Input() tabs: Tab[];
   @Input() tabIndex: number;
+  @Input() view: View;
 
   /** ctor */
   constructor(private root: RootPageComponent,
@@ -31,6 +33,10 @@ export class TabsComponent {
             tab: Tab) {
     this.root.onEditTab(tab, (this.tabs.length === 1));
     event.stopPropagation();
+  }
+
+  onEditView() {
+    this.root.onEditView(this.view, this.tabs[this.tabIndex].id);
   }
 
   onMoveTab(tab: Tab,

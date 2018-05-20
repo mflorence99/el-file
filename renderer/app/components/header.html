@@ -1,14 +1,17 @@
-<nav>
+<split
+  (dragEnd)="onSplitSizeChange($event)"
+  direction="horizontal"
+  gutterColor="var(--mat-grey-700)"
+  gutterSize="1">
 
-  <div>&nbsp;</div>
+  <split-area
+    *ngFor="let entry of dictionary"
+    [size]="entry.width">
 
-  <button
-    (click)="onEditView()"
-    matTooltip="Edit view"
-    mat-icon-button>
-    <fa-icon
-      [icon]="['fas', 'ellipsis-v']">
-    </fa-icon>
-  </button>
+    <elfile-column
+      [entry]="entry">
+    </elfile-column>
 
-</nav>
+  </split-area>
+
+</split>

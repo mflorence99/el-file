@@ -1,4 +1,23 @@
 :host {
   display: block;
   height: 100%;
+  overflow: auto
+}
+
+.cell {
+
+  &.gridlines {
+    border-right: 1px solid var(--mat-grey-700);
+  }
+
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+
+  &.gridlines {
+    border-bottom: 1px solid var(--mat-grey-700);
+  }
+
 }

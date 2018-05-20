@@ -31,7 +31,10 @@ export interface Dictionary {
   isQuantity: boolean;
   isString: boolean;
   name: string;
+  showIcon: boolean;
+  showMono: boolean;
   tag: string;
+  width: number;
 }
 
 /**
@@ -52,18 +55,24 @@ export class DictionaryService {
   /** Return the dictionary of all available fields */
   dictionary(): Dictionary[] {
     return [
-      { name: 'name', tag: 'Name', isString: true },
+      { name: 'name', tag: 'Name', isString: true, showIcon: true },
       { name: 'size', tag: 'Size', isQuantity: true },
       { name: 'mtime', tag: 'Modified', isDate: true },
       { name: 'btime', tag: 'Created', isDate: true },
       { name: 'atime', tag: 'Accessed', isDate: true },
-      { name: 'mode', tag: 'Mode', isString: true }
+      { name: 'mode', tag: 'Mode', isString: true, showMono: true }
     ] as Dictionary[];
   }
 
   /** Return the dictionary for a particular view */
   dictionaryForView(view: View): Dictionary[] {
-    return this.dictionary().filter(entry => !!view.visibility[entry.name]);
+    return this.dictionary()
+      .filter(entry => view.visibility && view.visibility[entry.name])
+      .map(entry => {
+        if (view.widths && view.widths[entry.name])
+          entry.width = view.widths[entry.name];
+        return entry;
+      });
   }
 
   /** Build descriptors from nodes */

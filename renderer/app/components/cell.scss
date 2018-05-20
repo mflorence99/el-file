@@ -1,3 +1,26 @@
 :host {
   display: block;
+  padding: 2px 8px;
+}
+
+.cell {
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &.mono {
+    font-family: monospace;
+  }
+
+  &.quantity {
+    text-align: right;
+  }
+
+  .datetime {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
 }

@@ -1,6 +1,9 @@
 :host {
-  background-color: var(--mat-grey-800);
-  display: block;
+  background-color: var(--mat-grey-850);
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
 }
 
 div.drop-target {

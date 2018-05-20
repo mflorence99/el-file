@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
-import { View } from '../state/views';
+import { Dictionary } from '../services/dictionary';
 
 /**
  * Column component
@@ -15,6 +15,6 @@ import { View } from '../state/views';
 
 export class ColumnComponent {
 
-  @Input() view: View;
+  @Input() entry: Dictionary;
 
 }

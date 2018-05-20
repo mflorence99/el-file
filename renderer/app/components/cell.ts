@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Descriptor, Dictionary } from '../services/dictionary';
 
-import { View } from '../state/views';
+import { PrefsStateModel } from '../state/prefs';
 
 /**
  * Cell component
@@ -15,6 +16,8 @@ import { View } from '../state/views';
 
 export class CellComponent {
 
-  @Input() view: View;
+  @Input() desc: Descriptor;
+  @Input() entry: Dictionary;
+  @Input() prefs: PrefsStateModel;
 
 }

@@ -1,0 +1,62 @@
+<div
+  [ngClass]="{cell: true, mono: entry.showMono}"
+  *ngIf="entry.isDate"
+  class="cell">
+
+  <div *ngIf="prefs.dateFormat === 'ago'; else asDate">
+    {{ desc[entry.name] | libTimeAgo }}
+  </div>
+
+  <ng-template #asDate>
+
+    <div class="datetime">
+
+      <div>
+        {{ desc[entry.name] | date:prefs.dateFormat }}
+      </div>
+
+      <div *ngIf="prefs.timeFormat !== 'none'">
+        {{ desc[entry.name] | date:prefs.timeFormat }}
+      </div>
+
+    </div>
+
+  </ng-template>
+
+</div>
+
+<div
+  [ngClass]="{cell: true, mono: entry.showMono}"
+  *ngIf="entry.isQuantity"
+  class="cell quantity">
+
+  <div *ngIf="prefs.quantityFormat === 'abbrev'">
+    {{ desc[entry.name] | libNumeral:'0a' }}
+  </div>
+
+  <div *ngIf="prefs.quantityFormat === 'bytes'">
+    {{ desc[entry.name] | libNumeral:'0b' }}
+  </div>
+
+  <div *ngIf="prefs.quantityFormat === 'number'">
+    {{ desc[entry.name] | libNumeral:'0,0' }}
+  </div>
+
+</div>
+
+<div
+  [ngClass]="{cell: true, mono: entry.showMono}"
+  *ngIf="entry.isString"
+  class="cell">
+
+  <fa-icon
+    [fixedWidth]="true"
+    [icon]="desc.icon.split(' ')"
+    [ngStyle]="{color: desc.color}"
+    *ngIf="entry.showIcon"
+    size="xs">
+  </fa-icon>
+
+  {{ desc[entry.name] }}
+
+</div>

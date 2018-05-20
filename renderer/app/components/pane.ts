@@ -4,6 +4,7 @@ import { View, ViewsStateModel } from '../state/views';
 import { FSStateModel } from '../state/fs';
 import { LifecycleComponent } from 'ellib';
 import { OnChange } from 'ellib';
+import { PrefsStateModel } from '../state/prefs';
 import { Tab } from '../state/layout';
 
 /**
@@ -21,6 +22,7 @@ export class PaneComponent extends LifecycleComponent {
 
   @Input() fs: FSStateModel;
   @Input() index: number;
+  @Input() prefs: PrefsStateModel;
   @Input() splitID: string;
   @Input() tabs: Tab[];
   @Input() views: ViewsStateModel;
@@ -37,7 +39,7 @@ export class PaneComponent extends LifecycleComponent {
       this.tabIndex = this.tabs.findIndex(tab => tab.selected);
     }
     if (this.tab && this.views)
-      this.view = this.views[this.tab.id];
+      this.view = { ...this.views[this.tab.id] };
   }
 
 }

@@ -1,9 +1,5 @@
 :host {
+  border-bottom: 1px solid var(--mat-grey-700);
   display: block;
-}
-
-nav {
-  align-items: center;
-  display: grid;
-  grid-template-columns: 1fr auto;
+  height: 24px;
 }
