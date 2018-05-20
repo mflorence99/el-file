@@ -13,11 +13,16 @@
 }
 
 .row {
+  cursor: default;
   display: flex;
   flex-direction: row;
 
   &.gridlines {
     border-bottom: 1px dotted var(--mat-grey-700);
+  }
+
+  &:hover {
+    background-color: var(--mat-grey-800);
   }
 
 }

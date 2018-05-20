@@ -1,4 +1,6 @@
 <div
+  [contextMenu]="contextMenu"
+  [contextMenuSubject]="desc"
   [ngClass]="{gridlines: prefs.showGridLines}"
   *ngFor="let desc of descriptors"
   class="row">
@@ -18,3 +20,13 @@
   </div>
 
 </div>
+
+<context-menu>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'properties')">
+    <div>Properties...</div>
+  </ng-template>
+
+</context-menu>

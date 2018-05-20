@@ -1,6 +1,8 @@
 import * as Mode from 'stat-mode';
 
-import { FSNode } from '../state/fs';
+import { FSNode, FSStateModel } from '../state/fs';
+
+import { ElectronService } from 'ngx-electron';
 import { Injectable } from '@angular/core';
 import { View } from '../state/views';
 
@@ -45,11 +47,13 @@ export interface Dictionary {
 export class DictionaryService {
 
   colorByExt = { };
+  path: any;
 
   /** ctor */
-  constructor() {
+  constructor(private electron: ElectronService) {
     const colorByExt = window.localStorage.getItem('colorByExt');
     this.colorByExt = colorByExt? JSON.parse(colorByExt) : { };
+    this.path = this.electron.remote.require('path');
   }
 
   /** Return the dictionary of all available fields */
@@ -76,7 +80,9 @@ export class DictionaryService {
   }
 
   /** Build descriptors from nodes */
-  makeDescriptors(nodes: FSNode[]): Descriptor[] {
+  makeDescriptors(path: string,
+                  fs: FSStateModel): Descriptor[] {
+    const nodes: FSNode[] = fs[path];
     return nodes.map(node => {
       return {
         atime: node.stat.atime,
@@ -89,6 +95,7 @@ export class DictionaryService {
         mode: new Mode(node.stat).toString(),
         mtime: node.stat.mtime,
         name: node.name,
+        path: this.path.join(path, name),
         size: node.stat.size
       } as Descriptor;
     });

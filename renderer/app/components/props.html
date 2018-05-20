@@ -1,0 +1,40 @@
+<header>
+
+  <fa-icon
+    [icon]="desc.icon.split(' ')"
+    [ngStyle]="{color: desc.color}"
+    *ngIf="desc.icon"
+    size="2x">
+  </fa-icon>
+
+  <div>
+    {{ desc.name }}
+  </div>
+
+</header>
+
+<form
+  (submit)="close()"
+  [formGroup]="propsForm"
+  [libRxfSubmit]="propsForm"
+  novalidate>
+
+  <div class="okAndCancel">
+
+    <a
+      (click)="close()"
+      mat-button>
+      Cancel
+    </a>
+
+    <button
+      [disabled]="propsForm.invalid"
+      color="primary"
+      mat-raised-button
+      type="submit">
+      OK
+    </button>
+
+  </div>
+
+</form>

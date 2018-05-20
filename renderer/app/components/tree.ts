@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
 import { Descriptor, Dictionary, DictionaryService } from '../services/dictionary';
 
+import { ContextMenuComponent } from 'ngx-contextmenu';
 import { FSStateModel } from '../state/fs';
 import { LifecycleComponent } from 'ellib';
 import { OnChange } from 'ellib';
 import { PrefsStateModel } from '../state/prefs';
+import { RootPageComponent } from '../pages/root/page';
 import { View } from '../state/views';
 
 /**
@@ -24,12 +26,28 @@ export class TreeComponent extends LifecycleComponent  {
   @Input() prefs: PrefsStateModel;
   @Input() view: View;
 
+  @ViewChild(ContextMenuComponent) contextMenu: ContextMenuComponent;
+
   descriptors: Descriptor[] = [];
   dictionary: Dictionary[] = [];
 
   /** ctor */
-  constructor(private dict: DictionaryService) {
+  constructor(private dict: DictionaryService,
+              private root: RootPageComponent) {
     super();
+  }
+
+  // event handlers
+
+  onContextMenu(event: {event?: MouseEvent,
+                        item: Descriptor},
+                command: string) {
+    console.log('COMMAND==>', command, event.item);
+    switch (command) {
+      case 'properties':
+        this.root.onEditProps(event.item);
+        break;
+    }
   }
 
   // bind OnChange handlers
@@ -37,7 +55,7 @@ export class TreeComponent extends LifecycleComponent  {
   @OnChange('fs') onFS() {
     if (this.fs) {
       Object.keys(this.fs).forEach(path => {
-        this.descriptors = this.dict.makeDescriptors(this.fs[path]);
+        this.descriptors = this.dict.makeDescriptors(path, this.fs);
       });
       this.sort();
     }

@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 
+import { Descriptor } from '../../services/dictionary';
 import { DrawerPanelComponent } from 'ellib';
 import { ElectronService } from 'ngx-electron';
 import { SetBounds } from '../../state/window';
@@ -23,8 +24,11 @@ export class RootPageComponent {
 
   @ViewChild(SplittableComponent) splittable: SplittableComponent;
 
+  @ViewChild('propsDrawer') propsDrawer: DrawerPanelComponent;
   @ViewChild('tabDrawer') tabDrawer: DrawerPanelComponent;
   @ViewChild('viewDrawer') viewDrawer: DrawerPanelComponent;
+
+  editDesc = { } as Descriptor;
 
   editTab = { } as Tab;
   noRemoveTab: boolean;
@@ -41,6 +45,11 @@ export class RootPageComponent {
   }
 
   // event handlers
+
+  onEditProps(desc: Descriptor) {
+    this.editDesc = desc;
+    this.propsDrawer.open();
+  }
 
   onEditTab(tab: Tab,
             noRemove: boolean) {
