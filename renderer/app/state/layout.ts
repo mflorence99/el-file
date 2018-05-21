@@ -94,10 +94,10 @@ export interface LayoutStateModel {
       size: 100,
       tabs: [{
         color: 'var(--mat-grey-100)',
-        icon: 'fas home',
+        icon: 'fab linux',
         id: UUID.UUID(),
-        label: 'Home',
-        paths: ['~/Downloads'],
+        label: 'Root',
+        paths: ['/'],
         selected: true
       } as Tab]
     } as LayoutStateModel, overrides);
@@ -278,7 +278,7 @@ export interface LayoutStateModel {
     if (split && split.tabs) {
       const tab = {
         color: 'var(--mat-grey-100)',
-        icon: 'fab fa-linux',
+        icon: 'fab linux',
         id: UUID.UUID(),
         label: payload.path,
         paths: [payload.path],
@@ -319,10 +319,13 @@ export interface LayoutStateModel {
   selectTab({ getState, setState }: StateContext<LayoutStateModel>,
             { payload }: SelectTab) {
     const updated = getState();
-    const { tabs, ix } = LayoutState.findTabIndexByID(updated, payload.id);
+    const { splitID, tabs, ix } = LayoutState.findTabIndexByID(updated, payload.id);
     if (ix !== -1) {
-      tabs.forEach((tab, iy) => tab.selected = (ix === iy));
-      setState({ ...updated });
+      const split = LayoutState.findSplitByID(updated, splitID);
+      if (split) {
+        split.tabs = tabs.map((tab, iy) => Object.assign({}, tab, { selected: (ix === iy) }));
+        setState({ ...updated });
+      }
     }
   }
 

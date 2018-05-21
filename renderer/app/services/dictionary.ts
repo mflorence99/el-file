@@ -22,6 +22,7 @@ export interface Descriptor {
   mode: string;
   mtime: Date;
   name: string;
+  path: string;
   size: number;
 }
 
@@ -99,7 +100,7 @@ export class DictionaryService {
           mode: new Mode(node.stat).toString(),
           mtime: node.stat.mtime,
           name: node.name,
-          path: this.path.join(path, name),
+          path: this.path.join(path, node.name),
           size: node.stat.size
         } as Descriptor;
       });

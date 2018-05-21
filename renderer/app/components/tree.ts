@@ -1,12 +1,15 @@
-import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
+import { Actions, Store, ofAction } from '@ngxs/store';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Descriptor, Dictionary, DictionaryService } from '../services/dictionary';
+import { DirLoaded, FSStateModel } from '../state/fs';
 
 import { ContextMenuComponent } from 'ngx-contextmenu';
-import { FSStateModel } from '../state/fs';
 import { LifecycleComponent } from 'ellib';
+import { NewTab } from '../state/layout';
 import { OnChange } from 'ellib';
 import { PrefsStateModel } from '../state/prefs';
 import { RootPageComponent } from '../pages/root/page';
+import { Tab } from '../state/layout';
 import { View } from '../state/views';
 
 /**
@@ -20,10 +23,13 @@ import { View } from '../state/views';
   styleUrls: ['tree.scss']
 })
 
-export class TreeComponent extends LifecycleComponent  {
+export class TreeComponent extends LifecycleComponent
+                           implements OnInit {
 
   @Input() fs: FSStateModel;
   @Input() prefs: PrefsStateModel;
+  @Input() splitID: string;
+  @Input() tab: Tab;
   @Input() view: View;
 
   @ViewChild(ContextMenuComponent) contextMenu: ContextMenuComponent;
@@ -32,9 +38,26 @@ export class TreeComponent extends LifecycleComponent  {
   dictionary: Dictionary[] = [];
 
   /** ctor */
-  constructor(private dictSvc: DictionaryService,
-              private root: RootPageComponent) {
+  constructor(private actions$: Actions,
+              private dictSvc: DictionaryService,
+              private root: RootPageComponent,
+              private store: Store) {
     super();
+  }
+
+  /** Is context menu bound to a directory? */
+  isDirectory(desc: Descriptor): boolean {
+    return desc.isDirectory;
+  }
+
+  // lifecycle methods
+
+  ngOnInit() {
+    this.actions$
+      .pipe(ofAction(DirLoaded))
+      .subscribe(() => {
+        this.onChange(/*fsChanged=*/true, false, false, false);
+      });
   }
 
   // event handlers
@@ -42,24 +65,30 @@ export class TreeComponent extends LifecycleComponent  {
   onContextMenu(event: {event?: MouseEvent,
                         item: Descriptor},
                 command: string) {
-    console.log('COMMAND==>', command, event.item);
+    const desc = event.item;
     switch (command) {
+      case 'open':
+        this.store.dispatch(new NewTab({ id: this.splitID, path: desc.path }));
+        break;
       case 'properties':
-        this.root.onEditProps(event.item);
+        this.root.onEditProps(desc);
         break;
     }
   }
 
   // bind OnChange handlers
 
-  @OnChange('fs', 'prefs', 'view')
+  @OnChange('fs', 'prefs', 'tab', 'view')
   onChange(fsChanged: boolean,
            prefsChanged: boolean,
+           tabChanged: boolean,
            viewChanged: boolean) {
-    if ((this.fs && this.prefs) && (fsChanged || prefsChanged)) {
-      Object.keys(this.fs).forEach(path => {
+    if ((this.fs && this.prefs && this.tab)
+     && (fsChanged || prefsChanged || tabChanged)) {
+      // TODO: temporary
+      const path = this.tab.paths[0];
+      if (this.fs[path])
         this.descriptors = this.dictSvc.makeDescriptors(path, this.fs, this.prefs);
-      });
     }
     if (this.view && viewChanged)
       this.dictionary = this.dictSvc.dictionaryForView(this.view);

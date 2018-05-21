@@ -25,6 +25,13 @@
 
   <ng-template
     contextMenuItem
+    (execute)="onContextMenu($event, 'open')"
+    [enabled]="isDirectory.bind(this)">
+    <div>Open in new tab</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
     (execute)="onContextMenu($event, 'properties')">
     <div>Properties...</div>
   </ng-template>

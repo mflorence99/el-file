@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build": "rimraf dist && ng build --aot && tsc -p tsconfig.main.json",
+    "clean": "rm -rf node_modules && rm package-lock.json && npm install",
     "deb64": "electron-installer-debian --src build/elfile-linux-x64/ --arch amd64 --config installer.json",
     "live": "npm run build && electron . --ignore-gpu-blacklist",
     "package": "npm run build && rimraf build && electron-packager ./ --out=build",
