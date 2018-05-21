@@ -20,7 +20,7 @@
     type="hidden">
 
   <div
-    *ngFor="let entry of dict.dictionary()"
+    *ngFor="let entry of dictSvc.dictionary()"
     formGroupName="visibility">
 
     <mat-checkbox

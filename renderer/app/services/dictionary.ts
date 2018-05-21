@@ -4,6 +4,7 @@ import { FSNode, FSStateModel } from '../state/fs';
 
 import { ElectronService } from 'ngx-electron';
 import { Injectable } from '@angular/core';
+import { PrefsStateModel } from '../state/prefs';
 import { View } from '../state/views';
 
 /**
@@ -81,24 +82,27 @@ export class DictionaryService {
 
   /** Build descriptors from nodes */
   makeDescriptors(path: string,
-                  fs: FSStateModel): Descriptor[] {
+                  fs: FSStateModel,
+                  prefs: PrefsStateModel): Descriptor[] {
     const nodes: FSNode[] = fs[path];
-    return nodes.map(node => {
-      return {
-        atime: node.stat.atime,
-        btime: node.stat.birthtime,
-        color: this.makeColor(node),
-        icon: this.makeIcon(node),
-        isDirectory: node.stat.isDirectory(),
-        isFile: node.stat.isFile(),
-        isSymlink: node.stat.isSymbolicLink(),
-        mode: new Mode(node.stat).toString(),
-        mtime: node.stat.mtime,
-        name: node.name,
-        path: this.path.join(path, name),
-        size: node.stat.size
-      } as Descriptor;
-    });
+    return nodes
+      .filter(node => prefs.showHiddenFiles || !node.name.startsWith('.'))
+      .map(node => {
+        return {
+          atime: node.stat.atime,
+          btime: node.stat.birthtime,
+          color: this.makeColor(node),
+          icon: this.makeIcon(node),
+          isDirectory: node.stat.isDirectory(),
+          isFile: node.stat.isFile(),
+          isSymlink: node.stat.isSymbolicLink(),
+          mode: new Mode(node.stat).toString(),
+          mtime: node.stat.mtime,
+          name: node.name,
+          path: this.path.join(path, name),
+          size: node.stat.size
+        } as Descriptor;
+      });
   }
 
   // private methods

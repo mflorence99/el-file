@@ -27,12 +27,12 @@ export class ViewComponent extends LifecycleComponent {
   viewForm: FormGroup;
 
   /** ctor */
-  constructor(private dict: DictionaryService,
+  constructor(public dictSvc: DictionaryService,
               private drawerPanel: DrawerPanelComponent,
               private formBuilder: FormBuilder) {
     super();
     // derive visibility controls from dictionary
-    const visibility = this.dict.dictionary().reduce((acc, entry) => {
+    const visibility = this.dictSvc.dictionary().reduce((acc, entry) => {
       acc[entry.name] = '';
       return acc;
     }, { });

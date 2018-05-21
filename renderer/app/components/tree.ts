@@ -32,7 +32,7 @@ export class TreeComponent extends LifecycleComponent  {
   dictionary: Dictionary[] = [];
 
   /** ctor */
-  constructor(private dict: DictionaryService,
+  constructor(private dictSvc: DictionaryService,
               private root: RootPageComponent) {
     super();
   }
@@ -52,25 +52,18 @@ export class TreeComponent extends LifecycleComponent  {
 
   // bind OnChange handlers
 
-  @OnChange('fs') onFS() {
-    if (this.fs) {
+  @OnChange('fs', 'prefs', 'view')
+  onChange(fsChanged: boolean,
+           prefsChanged: boolean,
+           viewChanged: boolean) {
+    if ((this.fs && this.prefs) && (fsChanged || prefsChanged)) {
       Object.keys(this.fs).forEach(path => {
-        this.descriptors = this.dict.makeDescriptors(path, this.fs);
+        this.descriptors = this.dictSvc.makeDescriptors(path, this.fs, this.prefs);
       });
-      this.sort();
     }
-  }
-
-  @OnChange('prefs') onPrefs() {
-    if (this.prefs)
-      this.sort();
-  }
-
-  @OnChange('view') onView() {
-    if (this.view) {
-      this.dictionary = this.dict.dictionaryForView(this.view);
-      this.sort();
-    }
+    if (this.view && viewChanged)
+      this.dictionary = this.dictSvc.dictionaryForView(this.view);
+    this.sort();
   }
 
   // private methods

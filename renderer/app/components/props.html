@@ -1,23 +1,71 @@
-<header>
+<h3>
 
-  <fa-icon
-    [icon]="desc.icon.split(' ')"
-    [ngStyle]="{color: desc.color}"
-    *ngIf="desc.icon"
-    size="2x">
-  </fa-icon>
+  <div class="icon">
 
-  <div>
+    <fa-icon
+      [icon]="desc.icon.split(' ')"
+      [ngStyle]="{color: desc.color}"
+      *ngIf="desc.icon"
+      size="lg">
+    </fa-icon>
+
+  </div>
+
+  <div class="title">
     {{ desc.name }}
   </div>
 
-</header>
+</h3>
 
 <form
   (submit)="close()"
   [formGroup]="propsForm"
   [libRxfSubmit]="propsForm"
   novalidate>
+
+  <mat-form-field>
+    <input
+      formControlName="name"
+      matInput
+      placeholder="File or directory name"
+      type="text">
+  </mat-form-field>
+
+  <table>
+
+    <tr>
+      <td>Size</td>
+      <td>
+
+        <div *ngIf="prefs.quantityFormat === 'abbrev'">
+          {{ desc.size| libNumeral:'0a' }}
+        </div>
+
+        <div *ngIf="prefs.quantityFormat === 'bytes'">
+          {{ desc.size| libNumeral:'0b' }}
+        </div>
+
+        <div *ngIf="prefs.quantityFormat === 'number'">
+          {{ desc.size| libNumeral:'0,0' }}
+        </div>
+
+      </td>
+    </tr>
+
+    <ng-container
+      *ngFor="let entry of dictSvc.dictionary()">
+
+      <tr
+        *ngIf="entry.isDate">
+        <td>{{ entry.tag }}</td>
+        <td>
+          {{ desc[entry.name] | date:'short' }}
+        </td>
+      </tr>
+
+    </ng-container>
+
+  </table>
 
   <div class="okAndCancel">
 

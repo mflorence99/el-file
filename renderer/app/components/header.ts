@@ -25,7 +25,7 @@ export class HeaderComponent extends LifecycleComponent {
   dictionary: Dictionary[] = [];
 
   /** ctor */
-  constructor(private dict: DictionaryService,
+  constructor(private dictSvc: DictionaryService,
               private store: Store) {
     super();
   }
@@ -45,7 +45,7 @@ export class HeaderComponent extends LifecycleComponent {
 
   @OnChange('view') onView() {
     if (this.view)
-      this.dictionary = this.dict.dictionaryForView(this.view);
+      this.dictionary = this.dictSvc.dictionaryForView(this.view);
   }
 
 }

@@ -20,7 +20,8 @@
     position="left">
 
     <elfile-props
-      [desc]="editDesc">
+      [desc]="editDesc"
+      [prefs]="ctrl.prefs$ | async">
     </elfile-props>
 
   </lib-drawer-panel>
