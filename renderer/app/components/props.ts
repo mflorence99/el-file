@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Descriptor } from '../services/dictionary';
+import { Descriptor } from '../state/fs';
 import { DictionaryService } from '../services/dictionary';
 import { DrawerPanelComponent } from 'ellib';
 import { LifecycleComponent } from 'ellib';

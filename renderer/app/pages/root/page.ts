@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 
-import { Descriptor } from '../../services/dictionary';
+import { Descriptor } from '../../state/fs';
 import { DrawerPanelComponent } from 'ellib';
 import { ElectronService } from 'ngx-electron';
 import { SetBounds } from '../../state/window';

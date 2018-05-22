@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { Descriptor, Dictionary } from '../services/dictionary';
 
+import { Descriptor } from '../state/fs';
+import { Dictionary } from '../services/dictionary';
 import { PrefsStateModel } from '../state/prefs';
 
 /**

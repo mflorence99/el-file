@@ -8,7 +8,7 @@ import { WindowState, WindowStateModel } from '../../state/window';
 
 import { ElectronService } from 'ngx-electron';
 import { LifecycleComponent } from 'ellib';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { OnChange } from 'ellib';
 import { take } from 'rxjs/operators';
 
