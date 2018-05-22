@@ -19,7 +19,7 @@ import { Store } from '@ngxs/store';
 
 export class ToolbarComponent {
 
-  @Input() layout: LayoutStateModel;
+  @Input() layout = { } as LayoutStateModel;
 
   @Output() openPrefs = new EventEmitter<any>();
 

@@ -21,7 +21,7 @@ import { map } from 'rxjs/operators';
 
 export class ViewComponent extends LifecycleComponent {
 
-  @Input() view: View;
+  @Input() view = { } as View;
   @Input() viewID: string;
 
   viewForm: FormGroup;

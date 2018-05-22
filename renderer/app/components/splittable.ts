@@ -21,10 +21,10 @@ import { debounce } from 'ellib';
 
 export class SplittableComponent {
 
-  @Input() fs: FSStateModel;
-  @Input() layout: LayoutStateModel;
-  @Input() prefs: PrefsStateModel;
-  @Input() views: ViewsStateModel;
+  @Input() fs = { } as FSStateModel;
+  @Input() layout = { } as LayoutStateModel;
+  @Input() prefs = { } as PrefsStateModel;
+  @Input() views = { } as ViewsStateModel;
 
   private updateSplitSizes: Function;
 

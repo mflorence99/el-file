@@ -17,8 +17,8 @@ import { View } from '../state/views';
 
 export class BranchComponent {
 
-  @Input() fs: FSStateModel;
-  @Input() tab: Tab;
-  @Input() view: View;
+  @Input() fs = { } as FSStateModel;
+  @Input() tab = { } as Tab;
+  @Input() view = { } as View;
 
 }

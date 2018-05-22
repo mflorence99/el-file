@@ -16,8 +16,8 @@ import { PrefsStateModel } from '../state/prefs';
 
 export class CellComponent {
 
-  @Input() desc: Descriptor;
-  @Input() entry: Dictionary;
-  @Input() prefs: PrefsStateModel;
+  @Input() desc = { } as Descriptor;
+  @Input() entry = { } as Dictionary;
+  @Input() prefs = { } as PrefsStateModel;
 
 }

@@ -22,7 +22,7 @@ import { PrefsStateModel } from '../state/prefs';
 export class PropsComponent extends LifecycleComponent {
 
   @Input() desc = { } as Descriptor;
-  @Input() prefs: PrefsStateModel;
+  @Input() prefs = { } as PrefsStateModel;
 
   propsForm: FormGroup;
 

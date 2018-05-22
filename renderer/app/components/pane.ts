@@ -20,16 +20,16 @@ import { Tab } from '../state/layout';
 
 export class PaneComponent extends LifecycleComponent {
 
-  @Input() fs: FSStateModel;
+  @Input() fs = { } as FSStateModel;
   @Input() index: number;
-  @Input() prefs: PrefsStateModel;
+  @Input() prefs = { } as PrefsStateModel;
   @Input() splitID: string;
-  @Input() tabs: Tab[];
-  @Input() views: ViewsStateModel;
+  @Input() tabs = [] as Tab[];
+  @Input() views = { } as ViewsStateModel;
 
-  tab: Tab;
+  tab = { } as Tab;
   tabIndex: number;
-  view: View;
+  view = { } as View;
 
   // bind OnChange handlers
 

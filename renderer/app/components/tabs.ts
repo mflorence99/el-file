@@ -19,9 +19,9 @@ import { View } from '../state/views';
 export class TabsComponent {
 
   @Input() splitID: string;
-  @Input() tabs: Tab[];
+  @Input() tabs = [] as Tab[];
   @Input() tabIndex: number;
-  @Input() view: View;
+  @Input() view = { } as View;
 
   /** ctor */
   constructor(private root: RootPageComponent,

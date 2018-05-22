@@ -19,7 +19,7 @@ import { Store } from '@ngxs/store';
 
 export class HeaderComponent extends LifecycleComponent {
 
-  @Input() view: View;
+  @Input() view = { } as View;
   @Input() viewID: string;
 
   dictionary: Dictionary[] = [];

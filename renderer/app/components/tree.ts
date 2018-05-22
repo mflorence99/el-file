@@ -26,11 +26,11 @@ import { View } from '../state/views';
 export class TreeComponent extends LifecycleComponent
                            implements OnInit {
 
-  @Input() fs: FSStateModel;
-  @Input() prefs: PrefsStateModel;
+  @Input() fs = { } as FSStateModel;
+  @Input() prefs = { } as PrefsStateModel;
   @Input() splitID: string;
-  @Input() tab: Tab;
-  @Input() view: View;
+  @Input() tab = { } as Tab;
+  @Input() view = { } as View;
 
   @ViewChild(ContextMenuComponent) contextMenu: ContextMenuComponent;
 

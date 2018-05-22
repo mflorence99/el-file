@@ -17,8 +17,8 @@ import { Store } from '@ngxs/store';
 
 export class ColumnComponent {
 
-  @Input() entry: Dictionary;
-  @Input() view: View;
+  @Input() entry = { } as Dictionary;
+  @Input() view = { } as View;
   @Input() viewID: string;
 
   /** ctor */
