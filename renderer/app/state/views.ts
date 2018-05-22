@@ -14,16 +14,19 @@ export class RemoveView {
   constructor(public readonly payload: { viewID: string }) { }
 }
 
+export class UpdateView {
+  static readonly type = '[Views] update view';
+  constructor(public readonly payload: { viewID: string, view: View }) { }
+}
+
 export class UpdateViewSort {
   static readonly type = '[Views] update view sort';
-  constructor(public readonly payload:
-    { viewID: string, sortColumn: string, sortDir: number }) { }
+  constructor(public readonly payload: { viewID: string, sortColumn: string, sortDir: number }) { }
 }
 
 export class UpdateViewVisibility {
   static readonly type = '[Views] update view visibility';
-  constructor(public readonly payload:
-    { viewID: string, visibility: ViewVisibility }) { }
+  constructor(public readonly payload: { viewID: string, visibility: ViewVisibility, allTheSame?: boolean }) { }
 }
 
 export class UpdateViewWidths {
@@ -94,6 +97,15 @@ export interface ViewsStateModel {
     setState(updated);
   }
 
+  @Action(UpdateView)
+  updateView({ dispatch, patchState }: StateContext<ViewsStateModel>,
+             { payload }: UpdateView) {
+    const { viewID, view } = payload;
+    patchState({ [viewID]: { ... view } });
+    // sync model
+    nextTick(() => dispatch(new ViewUpdated({ viewID, view })));
+  }
+
   @Action(UpdateViewSort)
   updateViewSort({ dispatch, getState, patchState }: StateContext<ViewsStateModel>,
                  { payload }: UpdateViewSort) {
@@ -108,10 +120,21 @@ export interface ViewsStateModel {
   @Action(UpdateViewVisibility)
   updateViewVisibility({ dispatch, getState, patchState }: StateContext<ViewsStateModel>,
                        { payload }: UpdateViewVisibility) {
-    const { viewID, visibility } = payload;
+    const { viewID, visibility, allTheSame } = payload;
     const current = getState()[viewID];
-    const view = { ...current, visibility, widths: { } };
+    // NOTE: if the visibility flags haven't changed, then we don't need
+    // to zero out the widths
+    const view = this.isSame(visibility, current.visibility)?
+      { ...current, visibility } : { ...current, visibility, widths: { } };
     patchState({ [viewID]: view });
+    // make all the same?
+    if (allTheSame) {
+      Object.keys(getState())
+        .filter(key => key !== viewID)
+        .forEach(viewID => {
+          dispatch(new UpdateView({ viewID, view }));
+        });
+    }
     // sync model
     nextTick(() => dispatch(new ViewUpdated({ viewID, view })));
   }
@@ -125,6 +148,22 @@ export interface ViewsStateModel {
     patchState({ [viewID]: view });
     // sync model
     nextTick(() => dispatch(new ViewUpdated({ viewID, view })));
+  }
+
+  // private methods
+
+  private isSame(a, b): boolean {
+    const a_keys = Object.keys(a).sort();
+    const b_keys = Object.keys(b).sort();
+    if ((a_keys.length !== b_keys.length))
+      return false;
+    for (let ix = 0; ix < a_keys.length; ix++) {
+      const a_key = a_keys[ix];
+      const b_key = b_keys[ix];
+      if ((a_key !== b_key) || (a[a_key] !== b[b_key]))
+        return false;
+    }
+    return true;
   }
 
 }

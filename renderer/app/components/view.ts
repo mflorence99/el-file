@@ -38,6 +38,7 @@ export class ViewComponent extends LifecycleComponent {
     }, { });
     // create view form controls
     this.viewForm = this.formBuilder.group({
+      allTheSame: '',
       atLeastOne: ['', Validators.required],
       submitted: '',
       viewID: '',
