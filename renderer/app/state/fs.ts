@@ -1,9 +1,12 @@
 import * as Mode from 'stat-mode';
 import * as fs from 'fs';
 
-import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
+import { Action, NgxsOnInit, Select, State, StateContext } from '@ngxs/store';
+import { FSColorState, FSColorStateModel, SetColor } from './fscolor';
 
 import { ElectronService } from 'ngx-electron';
+import { Observable } from 'rxjs';
+import { Store } from '@ngxs/store';
 import async from 'async-es';
 import { nextTick } from 'ellib';
 
@@ -63,15 +66,17 @@ export interface FSStateModel {
   defaults: { }
 }) export class FSState implements NgxsOnInit {
 
-  colorByExt = { };
+  fscolor = { } as FSColorStateModel;
+
   fs: any;
   path: any;
   watcher: any;
 
+  @Select(FSColorState) fscolor$: Observable<FSColorStateModel>;
+
   /** ctor */
-  constructor(private electron: ElectronService) {
-    const colorByExt = window.localStorage.getItem('colorByExt');
-    this.colorByExt = colorByExt? JSON.parse(colorByExt) : { };
+  constructor(private electron: ElectronService,
+              private store: Store) {
     this.fs = this.electron.remote.require('fs');
     this.path = this.electron.remote.require('path');
     this.watcher = this.electron.remote.require('filewatcher')();
@@ -130,6 +135,7 @@ export interface FSStateModel {
   // lifecycle methods
 
   ngxsOnInit(ctx: StateContext<FSStateModel>) {
+    this.fscolor$.subscribe((fscolor: FSColorStateModel) => this.fscolor = fscolor);
     // watch for changes
     this.watcher.on('change', (path, stat) => {
       ctx.dispatch(stat? new ForceLoadDirs({ paths: [path] }) : new DirUnloaded({ path }));
@@ -156,11 +162,10 @@ export interface FSStateModel {
         return 'var(--mat-blue-grey-400)';
       else {
         const ext = name.substring(ix + 1).toLowerCase();
-        let color = this.colorByExt[ext];
+        let color = this.fscolor[ext];
         if (!color) {
           color = COLORS[Math.trunc(Math.random() * COLORS.length)];
-          this.colorByExt[ext] = color;
-          window.localStorage.setItem('colorByExt', JSON.stringify(this.colorByExt));
+          this.store.dispatch(new SetColor({ ext, color }));
         }
         return color;
       }

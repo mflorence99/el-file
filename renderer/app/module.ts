@@ -45,7 +45,7 @@ const SERVICES = [
       logger: console
     }),
     NgxsStoragePluginModule.forRoot({
-      key: ['layout', 'prefs', 'views', 'window'],
+      key: ['fscolor', 'layout', 'prefs', 'views', 'window'],
       storage: StorageOption.LocalStorage
     }),
     NgxsReduxDevtoolsPluginModule.forRoot({disabled: !window['DEV_MODE']})
