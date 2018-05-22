@@ -58,17 +58,17 @@ export class ToolbarComponent {
   split(event: MatButtonToggleChange): void {
     switch (event.value) {
       case 'standard':
-        this.store.dispatch(new CloseSplit({ id: this.layout.id, ix: 1 }));
+        this.store.dispatch(new CloseSplit({ splitID: this.layout.id, ix: 1 }));
         break;
       case 'horizontal':
-        this.store.dispatch(new Reorient({ id: this.layout.id, direction: 'horizontal' }));
+        this.store.dispatch(new Reorient({ splitID: this.layout.id, direction: 'horizontal' }));
         if (this.isStandardOrientation())
-          this.store.dispatch(new MakeSplit({ id: this.layout.id, ix: 0, direction: 'horizontal', before: false }));
+          this.store.dispatch(new MakeSplit({ splitID: this.layout.id, ix: 0, direction: 'horizontal', before: false }));
         break;
       case 'vertical':
-        this.store.dispatch(new Reorient({ id: this.layout.id, direction: 'vertical' }));
+        this.store.dispatch(new Reorient({ splitID: this.layout.id, direction: 'vertical' }));
         if (this.isStandardOrientation())
-          this.store.dispatch(new MakeSplit({ id: this.layout.id, ix: 0, direction: 'vertical', before: false }));
+          this.store.dispatch(new MakeSplit({ splitID: this.layout.id, ix: 0, direction: 'vertical', before: false }));
         break;
     }
   }

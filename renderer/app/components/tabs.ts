@@ -41,11 +41,11 @@ export class TabsComponent {
 
   onMoveTab(tab: Tab,
             ix: number) {
-    this.store.dispatch(new MoveTab({ id: this.splitID, tab, ix }));
+    this.store.dispatch(new MoveTab({ splitID: this.splitID, tab, ix }));
   }
 
   onTabSelect(ix: number) {
-    this.store.dispatch(new SelectTab(this.tabs[ix]));
+    this.store.dispatch(new SelectTab({ tab: this.tabs[ix] }));
   }
 
 }

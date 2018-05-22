@@ -68,7 +68,7 @@ export class TreeComponent extends LifecycleComponent
     const desc = event.item;
     switch (command) {
       case 'open':
-        this.store.dispatch(new NewTab({ id: this.splitID, path: desc.path }));
+        this.store.dispatch(new NewTab({ splitID: this.splitID, path: desc.path }));
         break;
       case 'properties':
         this.root.onEditProps(desc);

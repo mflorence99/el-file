@@ -56,10 +56,9 @@ export class RootCtrlComponent extends LifecycleComponent {
 
   @OnChange('viewForm') saveView() {
     if (this.viewForm && this.viewForm.submitted) {
-      const allTheSame = !!this.viewForm.allTheSame;
       const viewID = this.viewForm.viewID;
       const visibility: ViewVisibility = { ...this.viewForm.visibility };
-      this.store.dispatch(new UpdateViewVisibility({ viewID, visibility, allTheSame }));
+      this.store.dispatch(new UpdateViewVisibility({ viewID, visibility }));
     }
   }
 

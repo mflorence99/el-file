@@ -4,17 +4,11 @@ import { Action, State, StateContext } from '@ngxs/store';
 
 export class SetBounds {
   static readonly type = '[Window] set bounds';
-  constructor(public readonly payload: { x, y, width, height }) { }
-}
-
-export class SetTitle {
-  static readonly type = '[Window] set title';
-  constructor(public readonly payload: string) { }
+  constructor(public readonly bounds: { x, y, width, height }) { }
 }
 
 export interface WindowStateModel {
   bounds?: {x, y, width, height};
-  title?: string;
 }
 
 @State<WindowStateModel>({
@@ -24,14 +18,8 @@ export interface WindowStateModel {
 
   @Action(SetBounds)
   setBounds({ patchState }: StateContext<WindowStateModel>,
-            { payload }: SetBounds) {
-    patchState({ bounds: payload });
-  }
-
-  @Action(SetTitle)
-  showTitle({ patchState }: StateContext<WindowStateModel>,
-            { payload }: SetTitle) {
-    patchState({ title: payload });
+            { bounds }: SetBounds) {
+    patchState({ bounds });
   }
 
 }

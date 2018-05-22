@@ -30,8 +30,8 @@ export class SplittableComponent {
 
   /** ctor */
   constructor(private store: Store) {
-    this.updateSplitSizes = debounce((id: string, sizes: number[]) => {
-      this.store.dispatch(new UpdateSplitSizes({id, sizes}));
+    this.updateSplitSizes = debounce((splitID: string, sizes: number[]) => {
+      this.store.dispatch(new UpdateSplitSizes({ splitID, sizes }));
     }, 500);
   }
 

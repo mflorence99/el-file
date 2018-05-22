@@ -1,15 +1,17 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
+import { nextTick } from 'ellib';
+
 /** NOTE: actions must come first because of AST */
 
 export class InitView {
   static readonly type = '[Views] init view';
-  constructor(public readonly payload: string) { }
+  constructor(public readonly payload: { viewID: string }) { }
 }
 
 export class RemoveView {
   static readonly type = '[Views] remove view';
-  constructor(public readonly payload: string) { }
+  constructor(public readonly payload: { viewID: string }) { }
 }
 
 export class UpdateViewSort {
@@ -21,12 +23,17 @@ export class UpdateViewSort {
 export class UpdateViewVisibility {
   static readonly type = '[Views] update view visibility';
   constructor(public readonly payload:
-    { viewID: string, visibility: ViewVisibility, allTheSame?: boolean }) { }
+    { viewID: string, visibility: ViewVisibility }) { }
 }
 
 export class UpdateViewWidths {
   static readonly type = '[Views] update view widths';
   constructor(public readonly payload: { viewID: string, widths: ViewWidths }) { }
+}
+
+export class ViewUpdated {
+  static readonly type = '[Views] view updated';
+  constructor(public readonly payload: { viewID: string, view: View }) { }
 }
 
 export interface View {
@@ -72,52 +79,52 @@ export interface ViewsStateModel {
   @Action(InitView)
   initView({ getState, patchState }: StateContext<ViewsStateModel>,
            { payload }: InitView) {
+    const { viewID } = payload;
     const current = getState();
-    if (!current[payload])
-      patchState({ [payload]: { ...current['0'] } } );
+    if (!current[viewID])
+      patchState({ [viewID]: { ...current['0'] } } );
   }
 
   @Action(RemoveView)
   removeView({ getState, setState }: StateContext<ViewsStateModel>,
              { payload }: RemoveView) {
+    const { viewID } = payload;
     const updated = { ...getState() };
-    delete updated[payload];
-    setState({ ...updated });
+    delete updated[viewID];
+    setState(updated);
   }
 
   @Action(UpdateViewSort)
-  updateViewSort({ getState, setState }: StateContext<ViewsStateModel>,
+  updateViewSort({ dispatch, getState, patchState }: StateContext<ViewsStateModel>,
                  { payload }: UpdateViewSort) {
-    const updated = { ...getState() };
-    updated[payload.viewID].sortColumn = payload.sortColumn;
-    updated[payload.viewID].sortDir = payload.sortDir;
-    setState({ ...updated });
+    const { viewID, sortColumn, sortDir } = payload;
+    const current = getState()[viewID];
+    const view = { ...current, sortColumn, sortDir };
+    patchState({ [viewID]: view });
+    // sync model
+    nextTick(() => dispatch(new ViewUpdated({ viewID, view })));
   }
 
   @Action(UpdateViewVisibility)
-  updateViewVisibility({ getState, setState }: StateContext<ViewsStateModel>,
+  updateViewVisibility({ dispatch, getState, patchState }: StateContext<ViewsStateModel>,
                        { payload }: UpdateViewVisibility) {
-    const updated = { ...getState() };
-    if (payload.allTheSame) {
-      Object.keys(updated).forEach(viewID => {
-        updated[viewID].visibility = { ...payload.visibility };
-        if (viewID !== payload.viewID)
-          updated[viewID].widths = { ...updated[payload.viewID].widths };
-      });
-    }
-    else {
-      updated[payload.viewID].visibility = { ...payload.visibility };
-      delete updated[payload.viewID].widths;
-    }
-    setState({ ...updated });
+    const { viewID, visibility } = payload;
+    const current = getState()[viewID];
+    const view = { ...current, visibility, widths: { } };
+    patchState({ [viewID]: view });
+    // sync model
+    nextTick(() => dispatch(new ViewUpdated({ viewID, view })));
   }
 
   @Action(UpdateViewWidths)
-  updateViewWidths({ getState, setState }: StateContext<ViewsStateModel>,
+  updateViewWidths({ dispatch, getState, patchState }: StateContext<ViewsStateModel>,
                    { payload }: UpdateViewWidths) {
-    const updated = { ...getState() };
-    updated[payload.viewID].widths = { ...payload.widths };
-    setState({ ...updated });
+    const { viewID, widths } = payload;
+    const current = getState()[viewID];
+    const view = { ...current, widths };
+    patchState({ [viewID]: view });
+    // sync model
+    nextTick(() => dispatch(new ViewUpdated({ viewID, view })));
   }
 
 }

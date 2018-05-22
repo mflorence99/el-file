@@ -4,32 +4,38 @@ import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
 
 import { ElectronService } from 'ngx-electron';
 import async from 'async-es';
+import { nextTick } from 'ellib';
 
 /** NOTE: actions must come first because of AST */
 
 export class DirLoaded {
   static readonly type = '[FS] dir loaded';
-  constructor(public readonly payload: {path: string, nodes: FSNode[]}) { }
+  constructor(public readonly payload: { path: string, nodes: FSNode[] }) { }
 }
 
 export class DirUnloaded {
   static readonly type = '[FS] dir unloaded';
-  constructor(public readonly payload: string) { }
+  constructor(public readonly payload: { path: string }) { }
 }
 
 export class ForceLoadDirs {
   static readonly type = '[FS] force load dirs';
-  constructor(public readonly payload: string[]) { }
+  constructor(public readonly payload: { paths: string[] }) { }
 }
 
 export class LoadDirs {
   static readonly type = '[FS] load dirs';
-  constructor(public readonly payload: string[]) { }
+  constructor(public readonly payload: { paths: string[] }) { }
 }
 
 export class UlimitExceeded {
   static readonly type = '[FS] ulimit exceeded';
-  constructor(public readonly payload: number) { }
+  constructor(public readonly payload: { limit: number }) { }
+}
+
+export class UnloadDirs {
+  static readonly type = '[FS] unload dirs';
+  constructor(public readonly payload: { paths: string[] }) { }
 }
 
 export interface FSNode {
@@ -57,24 +63,6 @@ export interface FSStateModel {
     this.watcher = this.electron.remote.require('filewatcher')();
   }
 
-  @Action(DirLoaded)
-  dirloaded({ patchState }: StateContext<FSStateModel>,
-            { payload }: DirLoaded) {
-    patchState({ [payload.path]: payload.nodes });
-    // start watching this directory
-    this.watcher.add(payload.path);
-  }
-
-  @Action(DirUnloaded)
-  dirunloaded({ getState, setState }: StateContext<FSStateModel>,
-              { payload }: DirUnloaded) {
-    const updated = { ...getState() };
-    delete updated[payload];
-    setState({ ...updated });
-    // stop watching this directory
-    this.watcher.remove(payload);
-  }
-
   @Action(ForceLoadDirs)
   forceloaddirs(ctx: StateContext<FSStateModel>,
                 action: ForceLoadDirs) {
@@ -82,26 +70,44 @@ export interface FSStateModel {
   }
 
   @Action(LoadDirs)
-  loaddirs({ dispatch, getState }: StateContext<FSStateModel>,
+  loaddirs({ dispatch, getState, patchState }: StateContext<FSStateModel>,
            { payload }: LoadDirs,
            force = false) {
-    payload.forEach(path => {
+    const { paths } = payload;
+    paths.forEach(path => {
       this.fs.readdir(path, (err, names) => {
-        if (err) {
-          console.log(err);
-          dispatch(new DirUnloaded(path));
-        }
+        if (err)
+          dispatch(new UnloadDirs({ paths: [path] }));
         else if (force || !getState()[path]) {
-          const paths = names.map(name => this.path.join(path, name));
-          async.map(paths, this.fs.lstat, (err, stats) => {
+          const dirs = names.map(name => this.path.join(path, name));
+          async.map(dirs, this.fs.lstat, (err, stats) => {
             const nodes = names.reduce((acc, name, ix) => {
               acc.push({ name, stat: stats[ix] } as FSNode);
               return acc;
             }, []);
-            dispatch(new DirLoaded({ path, nodes }));
+            patchState({ [path]: nodes });
+            // start watching this directory
+            this.watcher.add(path);
+            // sync model
+            nextTick(() => dispatch(new DirLoaded({ path, nodes })));
           });
         }
       });
+    });
+  }
+
+  @Action(UnloadDirs)
+  unloaddirs({ dispatch, getState, setState }: StateContext<FSStateModel>,
+             { payload }: UnloadDirs) {
+    const { paths } = payload;
+    const updated = { ...getState() };
+    paths.forEach(path => {
+      delete updated[path];
+      setState(updated);
+      // stop watching this directory
+      this.watcher.remove(path);
+      // sync model
+      nextTick(() => dispatch(new DirUnloaded({ path })));
     });
   }
 
@@ -110,14 +116,14 @@ export interface FSStateModel {
   ngxsOnInit(ctx: StateContext<FSStateModel>) {
     // watch for changes
     this.watcher.on('change', (path, stat) => {
-      ctx.dispatch(stat? new ForceLoadDirs([path]) : new DirUnloaded(path));
+      ctx.dispatch(stat? new ForceLoadDirs({ paths: [path] }) : new DirUnloaded({ path }));
     });
     // watch out for fallback
     this.watcher.on('fallback', function(limit) {
       console.log(`Ran out of file handles after watching ${limit} files`);
       console.log('Falling back to polling which uses more CPU');
       console.log('Run ulimit -n 10000 to increase the limit for open files');
-      ctx.dispatch(new UlimitExceeded(limit));
+      ctx.dispatch(new UlimitExceeded({ limit }));
     });
 
   }

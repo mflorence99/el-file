@@ -55,14 +55,15 @@ export class TabComponent extends LifecycleComponent {
       // NOTE: we need to make sure a tab is selected after we delete
       // one that itself may have been selected -- we also delay removal
       // so this component can clean up first
-      nextTick(() => this.store.dispatch(new RemoveTab(this.tab)));
+      nextTick(() => this.store.dispatch(new RemoveTab({ tab: this.tab })));
       this.onCancel();
     }
     else this.areYouSure = true;
   }
 
   onSubmit() {
-    this.store.dispatch(new UpdateTab({ id: this.tab.id, ...this.tabForm.value }));
+    const tab: Tab = { ...this.tab, ...this.tabForm.value };
+    this.store.dispatch(new UpdateTab({ tab }));
     this.onCancel();
   }
 

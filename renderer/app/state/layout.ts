@@ -3,54 +3,63 @@ import { DirUnloaded, LoadDirs } from './fs';
 import { InitView, RemoveView } from './views';
 
 import { UUID } from 'angular2-uuid';
+import { nextTick } from 'ellib';
 
 /** NOTE: actions must come first because of AST */
 
 export class CloseSplit {
   static readonly type = '[Layout] close split';
-  constructor(public readonly payload: {id: string, ix: number}) { }
+  constructor(public readonly payload: { splitID: string, ix: number }) { }
 }
 
 export class MakeSplit {
   static readonly type = '[Layout] make split';
-  constructor(public readonly payload:
-    {id: string, ix: number, direction: 'horizontal' | 'vertical', before: boolean}) { }
+  constructor(public readonly payload: { splitID: string, ix: number, direction: 'horizontal' | 'vertical', before: boolean }) { }
 }
 
 export class MoveTab {
   static readonly type = '[Layout] move tab';
-  constructor(public readonly payload: { id: string, ix: number, tab: Tab }) { }
+  constructor(public readonly payload: { splitID: string, ix: number, tab: Tab }) { }
 }
 
 export class NewTab {
   static readonly type = '[Layout] new tab';
-  constructor(public readonly payload: {id: string, path: string}) { }
+  constructor(public readonly payload: { splitID: string, path: string }) { }
 }
 
 export class RemoveTab {
   static readonly type = '[Layout] remove tab';
-  constructor(public readonly payload: Tab) { }
+  constructor(public readonly payload: { tab: Tab }) { }
 }
 
 export class Reorient {
   static readonly type = '[Layout] reorient';
-  constructor(public readonly payload:
-    {id: string, direction: 'horizontal' | 'vertical'}) { }
+  constructor(public readonly payload: { splitID: string, direction: 'horizontal' | 'vertical'} ) { }
 }
 
 export class SelectTab {
   static readonly type = '[Layout] select tab';
-  constructor(public readonly payload: Tab) { }
+  constructor(public readonly payload: { tab: Tab }) { }
+}
+
+export class TabsUpdated {
+  static readonly type = '[Layout] tabs updated';
+  constructor(public readonly payload: { splitID: string, tabs: Tab[] }) { }
+}
+
+export class TabUpdated {
+  static readonly type = '[Layout] tab updated';
+  constructor(public readonly payload: { tab: Tab }) { }
 }
 
 export class UpdateSplitSizes {
   static readonly type = '[Layout] update split sizes';
-  constructor(public readonly payload: {id: string, sizes: number[]}) { }
+  constructor(public readonly payload: { splitID: string, sizes: number[] }) { }
 }
 
 export class UpdateTab {
   static readonly type = '[Layout] update tab';
-  constructor(public readonly payload: any) { }
+  constructor(public readonly payload: { tab: Tab }) { }
 }
 
 export interface Tab {
@@ -105,12 +114,12 @@ export interface LayoutStateModel {
 
   /** Deep find a layout by its ID */
   static findSplitByID(layout: LayoutStateModel,
-                       id: string): LayoutStateModel {
-    if (layout.id === id)
+                       splitID: string): LayoutStateModel {
+    if (layout.id === splitID)
       return layout;
     if (layout.splits && layout.splits.length) {
       for (const inner of layout.splits) {
-        const split = LayoutState.findSplitByID(inner, id);
+        const split = LayoutState.findSplitByID(inner, splitID);
         if (split)
           return split;
       }
@@ -120,34 +129,34 @@ export interface LayoutStateModel {
 
   /** Deep find a layout's index within its parent by its ID */
   static findSplitIndexByID(layout: LayoutStateModel,
-                            id: string): { id: string, ix: number } {
+                            splitID: string): { splitID: string, ix: number } {
     if (layout.splits && layout.splits.length) {
       for (let ix = 0; ix < layout.splits.length; ix++) {
-        if (layout.splits[ix].id === id)
-          return { id: layout.id, ix };
+        if (layout.splits[ix].id === splitID)
+          return { splitID: layout.id, ix };
       }
       for (const inner of layout.splits) {
-        const { id: splitID, ix } = LayoutState.findSplitIndexByID(inner, id);
-        if (ix !== -1)
-          return { id: splitID, ix };
+        const sx = LayoutState.findSplitIndexByID(inner, splitID);
+        if (sx.ix !== -1)
+          return { splitID: sx.splitID, ix: sx.ix };
       }
     }
-    return { id: layout.id, ix: -1 };
+    return { splitID: layout.id, ix: -1 };
   }
 
   /** Deep find a tab by its ID */
   static findTabIndexByID(layout: LayoutStateModel,
-                          id: string): { splitID: string, tabs: Tab[], ix: number } {
+                          tabID: string): { splitID: string, tabs: Tab[], ix: number } {
     if (layout.tabs && layout.tabs.length) {
-      const ix = layout.tabs.findIndex(tab => tab.id === id);
+      const ix = layout.tabs.findIndex(tab => tab.id === tabID);
       if (ix !== -1)
         return { splitID: layout.id, tabs: layout.tabs, ix };
     }
     if (layout.splits && layout.splits.length) {
       for (const inner of layout.splits) {
-        const { splitID, tabs, ix } = LayoutState.findTabIndexByID(inner, id);
-        if (ix !== -1)
-          return { splitID, tabs, ix };
+        const tx = LayoutState.findTabIndexByID(inner, tabID);
+        if (tx.ix !== -1)
+          return { splitID: tx.splitID, tabs: tx.tabs, ix: tx.ix };
       }
     }
     return { splitID: layout.id, tabs: layout.tabs, ix: -1 };
@@ -183,15 +192,16 @@ export interface LayoutStateModel {
   @Action(CloseSplit)
   closeSplit({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
              { payload }: CloseSplit) {
-    const updated = getState();
-    const split = LayoutState.findSplitByID(updated, payload.id);
+    const { splitID, ix } = payload;
+    const updated = { ...getState() };
+    const split = LayoutState.findSplitByID(updated, splitID);
     if (split) {
       // remove any views first
-      const splat = split.splits[payload.ix];
-      LayoutState.visitTabs(splat, tab => {
-        dispatch(new RemoveView(tab.id));
+      const splat = split.splits[ix];
+      LayoutState.visitTabs(splat, (tab: Tab) => {
+        dispatch(new RemoveView({ viewID: tab.id }));
       });
-      split.splits.splice(payload.ix, 1);
+      split.splits.splice(ix, 1);
       // if we have more than one split left (or at the root level)
       // we set everyone to the same size, distributed evenly
       if (split.root || (split.splits.length > 1)) {
@@ -207,20 +217,21 @@ export interface LayoutStateModel {
         delete split.splits;
         delete split.tabs;
       }
+      setState(updated);
     }
-    setState({ ...updated });
   }
 
   @Action(MakeSplit)
   makeSplit({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
             { payload }: MakeSplit) {
-    const updated = getState();
-    const split = LayoutState.findSplitByID(updated, payload.id);
+    const { splitID, ix, direction, before } = payload;
+    const updated = { ...getState() };
+    const split = LayoutState.findSplitByID(updated, splitID);
     if (split) {
       // making a split on the same axis is easy
       // we set everyone to the same size, distributed evenly
-      if (split.direction === payload.direction) {
-        const iy = payload.ix + (payload.before? 0 : 1);
+      if (split.direction === direction) {
+        const iy = ix + (before? 0 : 1);
         split.splits.splice(iy, 0, LayoutState.defaultSplit({ size: 0 }));
         const size = 100 / split.splits.length;
         split.splits.forEach(split => split.size = size);
@@ -229,13 +240,13 @@ export interface LayoutStateModel {
       // we create a new sub-split, preserving IDs
       // we also set everyone to the same size, distributed evenly
       else {
-        const splat = split.splits[payload.ix];
-        splat.direction = payload.direction;
+        const splat = split.splits[ix];
+        splat.direction = direction;
         const splatID = splat.id;
         const splatTabs = splat.tabs;
         splat.id = UUID.UUID();
         delete splat.tabs;
-        if (payload.before) {
+        if (before) {
           splat.splits = [LayoutState.defaultSplit({ size: 50 }),
                           { id: splatID, size: 50, tabs: splatTabs }];
         }
@@ -244,87 +255,115 @@ export interface LayoutStateModel {
                           LayoutState.defaultSplit({ size: 50 })];
         }
       }
+      setState(updated);
+      // initialize any new tab preferences
+      LayoutState.visitTabs(updated, (tab: Tab) => {
+        dispatch(new InitView({ viewID: tab.id }));
+      });
     }
-    // initialize any new tab preferences
-    LayoutState.visitTabs(updated, tab => {
-      dispatch(new InitView(tab.id));
-    });
-    setState({ ...updated });
   }
 
   @Action(MoveTab)
   moveTab({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
           { payload }: MoveTab) {
-    const updated = getState();
-    const split = LayoutState.findSplitByID(updated, payload.id);
-    const { splitID, tabs, ix } = LayoutState.findTabIndexByID(updated, payload.tab.id);
-    if (split && (ix !== -1)) {
-      tabs.splice(ix, 1);
-      if (tabs.length === 0) {
-        const { id, ix: iy } = LayoutState.findSplitIndexByID(updated, splitID);
-        if (iy !== -1)
-          dispatch(new CloseSplit({ id, ix: iy }));
+    const { splitID, ix, tab } = payload;
+    const updated = { ...getState() };
+    const split = LayoutState.findSplitByID(updated, splitID);
+    if (split) {
+      const tx = LayoutState.findTabIndexByID(updated, tab.id);
+      if (tx.ix !== -1) {
+        tx.tabs.splice(tx.ix, 1);
+        // NOTE: we can only be left with zero tabs if we moved a tab from
+        // another split
+        if (tx.tabs.length === 0) {
+          const sx = LayoutState.findSplitIndexByID(updated, tx.splitID);
+          if (sx.ix !== -1)
+            dispatch(new CloseSplit({ splitID: tx.splitID, ix: sx.ix }));
+        }
+        split.tabs.splice(ix, 0, tab);
+        setState(updated);
+        // sync model
+        nextTick(() => {
+          dispatch(new TabsUpdated({ splitID, tabs: split.tabs }));
+          if (tx.splitID !== splitID)
+            dispatch(new TabsUpdated({ splitID: tx.splitID, tabs: tx.tabs }));
+        });
       }
-      split.tabs.splice(payload.ix, 0, payload.tab);
-      setState({ ...updated });
     }
   }
 
   @Action(NewTab)
   newTab({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
          { payload }: NewTab) {
-    const updated = getState();
-    const split = LayoutState.findSplitByID(updated, payload.id);
+    const { splitID, path } = payload;
+    const updated = { ...getState() };
+    const split = LayoutState.findSplitByID(updated, splitID);
     if (split && split.tabs) {
       const tab = {
         color: 'var(--mat-grey-100)',
         icon: 'fab linux',
         id: UUID.UUID(),
-        label: payload.path,
-        paths: [payload.path],
+        label: this.makeLabelFromPath(path),
+        paths: [path],
         selected: false
       };
       split.tabs.push(tab);
-      dispatch(new InitView(tab.id));
-      setState({ ...updated });
+      setState(updated);
+      // sync model
+      dispatch(new InitView({ viewID: tab.id }));
+      dispatch(new LoadDirs({ paths: [path] }));
+      dispatch(new SelectTab({ tab }));
+      // sync model
+      nextTick(() => {
+        dispatch(new TabUpdated({ tab }));
+        // NOTE: SelectTab will issue its own TabsUpdated
+      });
     }
   }
 
   @Action(RemoveTab)
   removeTab({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
             { payload }: RemoveTab) {
+    const { tab } = payload;
     const updated = getState();
-    const { tabs, ix } = LayoutState.findTabIndexByID(updated, payload.id);
-    if ((tabs.length > 1) && (ix !== -1)) {
-      const tab = tabs[ix];
-      dispatch(new RemoveView(tab.id));
-      tabs.splice(ix, 1);
+    const tx = LayoutState.findTabIndexByID(updated, tab.id);
+    if ((tx.tabs.length > 1) && (tx.ix !== -1)) {
+      const tab = tx.tabs[tx.ix];
+      tx.tabs.splice(tx.ix, 1);
+      setState(updated);
+      // sync model
+      dispatch(new RemoveView({ viewID: tab.id }));
       if (tab.selected)
-        dispatch(new SelectTab(tabs[0]));
-      setState({ ...updated });
+        dispatch(new SelectTab({ tab: tx.tabs[0] }));
+      nextTick(() => dispatch(new TabsUpdated({ splitID: tx.splitID, tabs: tx.tabs })));
     }
   }
 
   @Action(Reorient)
   reorient({ getState, setState }: StateContext<LayoutStateModel>,
            { payload }: Reorient) {
-    const updated = getState();
-    const split = LayoutState.findSplitByID(updated, payload.id);
-    if (split)
-      split.direction = payload.direction;
-    setState({ ...updated });
+    const { splitID, direction } = payload;
+    const updated = { ...getState() };
+    const split = LayoutState.findSplitByID(updated, splitID);
+    if (split) {
+      split.direction = direction;
+      setState(updated);
+    }
   }
 
   @Action(SelectTab)
-  selectTab({ getState, setState }: StateContext<LayoutStateModel>,
+  selectTab({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
             { payload }: SelectTab) {
-    const updated = getState();
-    const { splitID, tabs, ix } = LayoutState.findTabIndexByID(updated, payload.id);
-    if (ix !== -1) {
-      const split = LayoutState.findSplitByID(updated, splitID);
+    const { tab } = payload;
+    const updated = { ...getState() };
+    const tx = LayoutState.findTabIndexByID(updated, tab.id);
+    if (tx.ix !== -1) {
+      const split = LayoutState.findSplitByID(updated, tx.splitID);
       if (split) {
-        split.tabs = tabs.map((tab, iy) => Object.assign({}, tab, { selected: (ix === iy) }));
-        setState({ ...updated });
+        split.tabs = tx.tabs.map((tab, iy) => ({ ...tab, selected: (tx.ix === iy) }));
+        setState(updated);
+        // sync model
+        nextTick(() => dispatch(new TabsUpdated({ splitID: tx.splitID, tabs: tx.tabs })));
       }
     }
   }
@@ -332,21 +371,26 @@ export interface LayoutStateModel {
   @Action(UpdateSplitSizes)
   updateSplitSizes({ getState, setState }: StateContext<LayoutStateModel>,
                    { payload }: UpdateSplitSizes) {
-    const updated = getState();
-    const split = LayoutState.findSplitByID(updated, payload.id);
-    if (split)
-      payload.sizes.forEach((size, ix) => split.splits[ix].size = size);
-    setState({ ...updated });
+    const { splitID, sizes } = payload;
+    const updated = { ...getState() };
+    const split = LayoutState.findSplitByID(updated, splitID);
+    if (split) {
+      sizes.forEach((size, ix) => split.splits[ix].size = size);
+      setState(updated);
+    }
   }
 
   @Action(UpdateTab)
-  updateTab({ getState, setState }: StateContext<LayoutStateModel>,
+  updateTab({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
             { payload }: UpdateTab) {
-    const updated = getState();
-    const { tabs, ix } = LayoutState.findTabIndexByID(updated, payload.id);
-    if (ix !== -1) {
-      Object.assign(tabs[ix], payload);
-      setState({ ...updated });
+    const { tab } = payload;
+    const updated = { ...getState() };
+    const tx = LayoutState.findTabIndexByID(updated, tab.id);
+    if (tx.ix !== -1) {
+      tx.tabs[tx.ix] = { ...tab };
+      setState(updated);
+      // sync model
+      nextTick(() => dispatch(new TabUpdated({ tab })));
     }
   }
 
@@ -359,7 +403,7 @@ export interface LayoutStateModel {
       .subscribe(({ payload }) => {
         let changed = false;
         const layout = { ...ctx.getState() };
-        LayoutState.visitTabs(layout, tab => {
+        LayoutState.visitTabs(layout, (tab: Tab) => {
           const ix = tab.paths.indexOf(payload);
           if (ix !== -1) {
             tab.paths.splice(ix, 1);
@@ -367,14 +411,31 @@ export interface LayoutStateModel {
           }
         });
         if (changed)
-          ctx.setState({ ...layout });
+          ctx.setState(layout);
       });
     // load initial paths and set initial prefs
     const layout = ctx.getState();
-    LayoutState.visitTabs(layout, tab => {
-      ctx.dispatch(new LoadDirs(tab.paths));
-      ctx.dispatch(new InitView(tab.id));
+    LayoutState.visitTabs(layout, (tab: Tab) => {
+      ctx.dispatch(new LoadDirs({ paths: tab.paths }));
+      ctx.dispatch(new InitView({ viewID: tab.id }));
     });
+  }
+
+  // private methods
+
+  private makeLabelFromPath(path: string): string {
+    let label;
+    if (path.endsWith('/'))
+      label = path.substring(0, path.length - 1);
+    else label = path;
+    if (label.length === 0)
+      label = 'Root';
+    else {
+      const ix = label.lastIndexOf('/');
+      if (ix !== -1)
+        label = label.substring(ix + 1);
+    }
+    return label;
   }
 
 }

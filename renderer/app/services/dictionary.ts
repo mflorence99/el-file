@@ -146,6 +146,7 @@ export class DictionaryService {
     }
     else if (node.stat.isSymbolicLink())
       return 'fas external-link-alt';
+    else return 'far file';
   }
 
 }
