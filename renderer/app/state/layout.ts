@@ -1,6 +1,6 @@
 import { Action, Actions, NgxsOnInit, State, StateContext, ofAction } from '@ngxs/store';
 import { DirUnloaded, LoadDirs } from './fs';
-import { InitView, RemoveView } from './views';
+import { InitView, RemoveView, ViewUpdated } from './views';
 
 import { UUID } from 'angular2-uuid';
 import { nextTick } from 'ellib';
@@ -396,13 +396,13 @@ export interface LayoutStateModel {
 
   // lifecycle methods
 
-  ngxsOnInit(ctx: StateContext<LayoutStateModel>) {
+  ngxsOnInit({ dispatch, getState, setState }: StateContext<LayoutStateModel>) {
     // listen for directory removal
     this.actions$
       .pipe(ofAction(DirUnloaded))
       .subscribe(({ payload }) => {
         let changed = false;
-        const layout = { ...ctx.getState() };
+        const layout = { ...getState() };
         LayoutState.visitTabs(layout, (tab: Tab) => {
           const ix = tab.paths.indexOf(payload);
           if (ix !== -1) {
@@ -411,13 +411,19 @@ export interface LayoutStateModel {
           }
         });
         if (changed)
-          ctx.setState(layout);
+          setState(layout);
       });
     // load initial paths and set initial prefs
-    const layout = ctx.getState();
+    const layout = getState();
+    LayoutState.visitSplits(layout, (split: LayoutStateModel) => {
+      if (split.tabs)
+        nextTick(() => dispatch(new TabsUpdated({ splitID: split.id, tabs: split.tabs })));
+    });
     LayoutState.visitTabs(layout, (tab: Tab) => {
-      ctx.dispatch(new LoadDirs({ paths: tab.paths }));
-      ctx.dispatch(new InitView({ viewID: tab.id }));
+      dispatch(new LoadDirs({ paths: tab.paths }));
+      dispatch(new InitView({ viewID: tab.id }));
+      // sync model
+      nextTick(() => dispatch(new ViewUpdated({ viewID: tab.id, view: null })));
     });
   }
 

@@ -1,4 +1,5 @@
 import { Actions, Store, ofAction } from '@ngxs/store';
+import { AutoUnsubscribe, LifecycleComponent } from 'ellib';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Dictionary, DictionaryService } from '../services/dictionary';
 import { DirLoaded, FSStateModel } from '../state/fs';
@@ -7,10 +8,8 @@ import { PrefsStateModel, PrefsUpdated } from '../state/prefs';
 import { View, ViewUpdated } from '../state/views';
 import { debounceTime, filter } from 'rxjs/operators';
 
-import { AutoUnsubscribe } from 'ellib';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Descriptor } from '../state/fs';
-import { LifecycleComponent } from 'ellib';
 import { RootPageComponent } from '../pages/root/page';
 import { Subscription } from 'rxjs';
 

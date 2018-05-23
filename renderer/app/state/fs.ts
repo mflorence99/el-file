@@ -134,18 +134,18 @@ export interface FSStateModel {
 
   // lifecycle methods
 
-  ngxsOnInit(ctx: StateContext<FSStateModel>) {
+  ngxsOnInit({ dispatch }: StateContext<FSStateModel>) {
     this.fscolor$.subscribe((fscolor: FSColorStateModel) => this.fscolor = fscolor);
     // watch for changes
     this.watcher.on('change', (path, stat) => {
-      ctx.dispatch(stat? new ForceLoadDirs({ paths: [path] }) : new DirUnloaded({ path }));
+      dispatch(stat? new ForceLoadDirs({ paths: [path] }) : new DirUnloaded({ path }));
     });
     // watch out for fallback
     this.watcher.on('fallback', function(limit) {
       console.log(`Ran out of file handles after watching ${limit} files`);
       console.log('Falling back to polling which uses more CPU');
       console.log('Run ulimit -n 10000 to increase the limit for open files');
-      ctx.dispatch(new UlimitExceeded({ limit }));
+      dispatch(new UlimitExceeded({ limit }));
     });
 
   }
