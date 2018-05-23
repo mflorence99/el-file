@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+
+import { StatusStateModel } from '../../state/status';
 
 /**
  * Status bar component
@@ -12,5 +14,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 })
 
 export class StatusbarComponent {
+
+  @Input() status = { } as StatusStateModel;
 
 }

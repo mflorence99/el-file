@@ -1,5 +1,27 @@
 <nav>
 
+  <button
+    (click)="fsSvc.redo()"
+    [disabled]="!fsSvc.canRedo()"
+    [matTooltip]="fsSvc.peekRedo()?.toString()"
+    mat-icon-button>
+    <fa-icon
+      [icon]="['fas', 'redo']"
+      size="lg">
+    </fa-icon>
+  </button>
+
+  <button
+    (click)="fsSvc.undo()"
+    [disabled]="!fsSvc.canUndo()"
+    [matTooltip]="fsSvc.peekUndo()?.toString()"
+    mat-icon-button>
+    <fa-icon
+      [icon]="['fas', 'undo']"
+      size="lg">
+    </fa-icon>
+  </button>
+
   <div>&nbsp;</div>
 
   <mat-button-toggle-group

@@ -12,7 +12,8 @@
     [views]="ctrl.views$ | async">
   </elfile-splittable>
 
-  <elfile-statusbar>
+  <elfile-statusbar
+    [status]="ctrl.status$ | async">
   </elfile-statusbar>
 
   <lib-drawer-panel
@@ -21,7 +22,8 @@
 
     <elfile-props
       [desc]="editDesc"
-      [prefs]="ctrl.prefs$ | async">
+      [prefs]="ctrl.prefs$ | async"
+      #props>
     </elfile-props>
 
   </lib-drawer-panel>
@@ -64,6 +66,7 @@
 
 <elfile-root-ctrl
   [prefsForm]="prefs.prefsForm.valueChanges | async"
+  [propsForm]="props.propsForm.valueChanges | async"
   [viewForm]="view.viewForm.valueChanges | async"
   #ctrl>
 </elfile-root-ctrl>

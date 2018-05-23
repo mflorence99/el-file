@@ -3,6 +3,7 @@ import { NgxsStoragePluginModule, StorageOption } from '@ngxs/storage-plugin';
 import { BarrelModule } from './barrel';
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { DictionaryService } from './services/dictionary';
+import { FSService } from './services/fs';
 import { NgModule } from '@angular/core';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { NgxsModule } from '@ngxs/store';
@@ -23,7 +24,8 @@ const MODULES = [
 ];
 
 const SERVICES = [
-  DictionaryService
+  DictionaryService,
+  FSService
 ];
 
 @NgModule({

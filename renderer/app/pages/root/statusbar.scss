@@ -1,4 +1,23 @@
 :host {
   background-color: var(--mat-grey-800);
   display: block;
+  padding: 0 8px;
+}
+
+section {
+  align-content: center;
+  display: grid;
+  font-size: 0.66rem;
+  grid-gap: 16px;
+  grid-template-columns: auto;
+  height: 100%;
+
+  .info {
+    color: var(--mat-grey-200);
+  }
+
+  .warn {
+    color: var(--warn-color);
+  }
+
 }

@@ -1,0 +1,16 @@
+<section>
+
+  <div
+    [ngClass]="status.msgLevel"
+    [ngStyle]="{visibility: status.msgText? 'visible' : 'hidden'}">
+
+    <fa-icon
+      [fixedWidth]="true"
+      [icon]="['fas', (status.msgLevel === 'warn')? 'exclamation-triangle' : 'info-circle']">
+    </fa-icon>
+
+    {{ status.msgText }}
+
+  </div>
+
+</section>

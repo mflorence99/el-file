@@ -33,7 +33,8 @@ export class PropsComponent extends LifecycleComponent {
     super();
     // create prefs form controls
     this.propsForm = this.formBuilder.group({
-      name: ['', Validators.required]
+      name: ['', Validators.required],
+      path: ''
     });
   }
 
@@ -45,8 +46,10 @@ export class PropsComponent extends LifecycleComponent {
   // bind OnChange handlers
 
   @OnChange('desc') patchProps() {
-    if (this.desc)
+    if (this.desc) {
+      this.propsForm.reset();
       this.propsForm.patchValue(this.desc, { emitEvent: false });
+    }
   }
 
 }

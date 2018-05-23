@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { CloseSplit, MakeSplit, Reorient } from '../../state/layout';
 
 import { ElectronService } from 'ngx-electron';
+import { FSService } from '../../services/fs';
 import { LayoutStateModel } from '../../state/layout';
 import { MatButtonToggleChange } from '@angular/material';
 import { Store } from '@ngxs/store';
@@ -11,7 +12,9 @@ import { Store } from '@ngxs/store';
  */
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // NOTE: we hate to make an exception and use Default, but we need it -- we think --
+  // to check properly the canUndo and canRedo calls in the template
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'elfile-toolbar',
   templateUrl: 'toolbar.html',
   styleUrls: ['toolbar.scss']
@@ -25,6 +28,7 @@ export class ToolbarComponent {
 
   /** ctor */
   constructor(private electron: ElectronService,
+              public fsSvc: FSService,
               private store: Store) { }
 
   /** Open dev tools */
