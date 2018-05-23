@@ -9,3 +9,7 @@
 div.drop-target {
   outline: 1px solid var(--text-color);
 }
+
+.mat-tab-group {
+  width: calc(100% - 48px);
+}

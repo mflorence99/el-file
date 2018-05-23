@@ -1,11 +1,10 @@
-import { Actions, Store, ofAction } from '@ngxs/store';
-import { AutoUnsubscribe, LifecycleComponent } from 'ellib';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Dictionary, DictionaryService } from '../services/dictionary';
-import { UpdateViewWidths, View, ViewUpdated, ViewWidths } from '../state/views';
-import { debounceTime, filter } from 'rxjs/operators';
+import { UpdateViewWidths, View, ViewWidths } from '../state/views';
 
-import { Subscription } from 'rxjs';
+import { LifecycleComponent } from 'ellib';
+import { OnChange } from 'ellib';
+import { Store } from '@ngxs/store';
 
 /**
  * Header component
@@ -18,37 +17,17 @@ import { Subscription } from 'rxjs';
   styleUrls: ['header.scss']
 })
 
-@AutoUnsubscribe()
-export class HeaderComponent extends LifecycleComponent
-                             implements OnInit {
+export class HeaderComponent extends LifecycleComponent {
 
   @Input() view = { } as View;
   @Input() viewID: string;
 
   dictionary: Dictionary[] = [];
 
-  subToActions: Subscription;
-
   /** ctor */
-  constructor(private actions$: Actions,
-              private cdf: ChangeDetectorRef,
-              private dictSvc: DictionaryService,
+  constructor(private dictSvc: DictionaryService,
               private store: Store) {
     super();
-  }
-
-  // lifecycle methods
-
-  ngOnInit() {
-    this.subToActions = this.actions$
-      .pipe(
-        ofAction(ViewUpdated),
-        filter((action: ViewUpdated) => action.payload.viewID === this.viewID),
-        debounceTime(10),
-      ).subscribe(() => {
-        this.dictionary = this.dictSvc.dictionaryForView(this.view);
-        this.cdf.detectChanges();
-      });
   }
 
   // event handlers
@@ -60,6 +39,13 @@ export class HeaderComponent extends LifecycleComponent
       return acc;
     }, { } as ViewWidths);
     this.store.dispatch(new UpdateViewWidths({ viewID: this.viewID, widths }));
+  }
+
+  // bind OnChange handlers
+
+  @OnChange('view') onView() {
+    if (this.view)
+      this.dictionary = this.dictSvc.dictionaryForView(this.view);
   }
 
 }

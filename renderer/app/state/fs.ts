@@ -46,15 +46,18 @@ export interface Descriptor {
   atime: Date;
   btime: Date;
   color: string;
+  group: string;
   icon: string;
   isDirectory: boolean;
   isFile: boolean;
   isSymlink: boolean;
+  isWritable: boolean;
   mode: string;
   mtime: Date;
   name: string;
   path: string;
   size: number;
+  user: string;
 }
 
 export interface FSStateModel {
@@ -72,6 +75,9 @@ export interface FSStateModel {
   path: any;
   watcher: any;
 
+  userInfo: { gid: number, uid: number, username: string };
+
+
   @Select(FSColorState) fscolor$: Observable<FSColorStateModel>;
 
   /** ctor */
@@ -80,6 +86,7 @@ export interface FSStateModel {
     this.fs = this.electron.remote.require('fs');
     this.path = this.electron.remote.require('path');
     this.watcher = this.electron.remote.require('filewatcher')();
+    this.userInfo = this.electron.remote.require('os').userInfo();
   }
 
   @Action(ForceLoadDirs)
@@ -152,6 +159,14 @@ export interface FSStateModel {
 
   // private methods
 
+  private isWritable(mode: Mode,
+                     uid: number,
+                     gid: number): boolean {
+    return (mode.others.write
+        || ((this.userInfo.uid === uid) && mode.owner.write)
+        || ((this.userInfo.gid === gid) && mode.group.write));
+  }
+
   private makeColor(name: string,
                     stat: fs.Stats): string {
     if (stat.isDirectory())
@@ -177,19 +192,23 @@ export interface FSStateModel {
   private makeDescriptor(name: string,
                          path: string,
                          stat: fs.Stats): Descriptor {
+    const mode = new Mode(stat);
     return {
       atime: stat.atime,
       btime: stat.birthtime,
       color: this.makeColor(name, stat),
+      group: String(stat.gid),
       icon: this.makeIcon(name, stat),
       isDirectory: stat.isDirectory(),
       isFile: stat.isFile(),
       isSymlink: stat.isSymbolicLink(),
-      mode: new Mode(stat).toString(),
+      isWritable: this.isWritable(mode, stat.uid, stat.gid),
+      mode: mode.toString(),
       mtime: stat.mtime,
       name: name,
       path: this.path.join(path, name),
-      size: stat.size
+      size: stat.size,
+      user: String(stat.uid)
     } as Descriptor;
   }
 

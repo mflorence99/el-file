@@ -1,4 +1,4 @@
-<h3>
+<h3 class="drawer-header">
 
   <div class="icon">
 
@@ -65,6 +65,27 @@
 
     </ng-container>
 
+    <tr>
+      <td>Mode</td>
+      <td class="mono">
+        {{ desc.mode }}
+      </td>
+    </tr>
+
+    <tr>
+      <td>User</td>
+      <td>
+        {{ desc.user }}
+      </td>
+    </tr>
+
+    <tr>
+      <td>Group</td>
+      <td>
+        {{ desc.group }}
+      </td>
+    </tr>
+
   </table>
 
   <div class="okAndCancel">
@@ -76,7 +97,7 @@
     </a>
 
     <button
-      [disabled]="propsForm.invalid"
+      [disabled]="propsForm.invalid || !desc.isWritable"
       color="primary"
       mat-raised-button
       type="submit">

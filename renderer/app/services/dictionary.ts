@@ -34,7 +34,9 @@ export class DictionaryService {
       { name: 'mtime', tag: 'Modified', isDate: true },
       { name: 'btime', tag: 'Created', isDate: true },
       { name: 'atime', tag: 'Accessed', isDate: true },
-      { name: 'mode', tag: 'Mode', isString: true, showMono: true }
+      { name: 'mode', tag: 'Mode', isString: true, showMono: true },
+      { name: 'user', tag: 'User', isString: true },
+      { name: 'group', tag: 'Group', isString: true }
     ] as Dictionary[];
   }
 
