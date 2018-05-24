@@ -28,7 +28,7 @@ export interface StatusStateModel {
 }) export class StatusState {
 
   @Action(Alarm)
-  alarm({ getState, patchState }: StateContext<StatusStateModel>,
+  alarm({ patchState }: StateContext<StatusStateModel>,
         { payload }: Alarm) {
     const { alarm } = payload;
     patchState({ alarm });

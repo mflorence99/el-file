@@ -29,6 +29,7 @@
 
     <mat-button-toggle
       [checked]="isStandardOrientation()"
+      mat-tooltip="Single view"
       value="standard">
       <fa-icon
         [icon]="['fas', 'square']"
@@ -38,6 +39,7 @@
 
     <mat-button-toggle
       [checked]="isVerticalOrientation()"
+      mat-tooltip="Split vertically"
       value="vertical">
       <fa-icon
         [icon]="['fas', 'arrows-alt-v']"
@@ -47,6 +49,7 @@
 
     <mat-button-toggle
       [checked]="isHorizontalOrientation()"
+      mat-tooltip="Split horizontally"
       value="horizontal">
       <fa-icon
         [icon]="['fas', 'arrows-alt-h']"
@@ -55,6 +58,15 @@
     </mat-button-toggle>
 
   </mat-button-toggle-group>
+
+  <mat-button-toggle
+    (change)="toggleFSLog.emit($event.source.checked)"
+    mat-tooltip="Show log">
+    <fa-icon
+      [icon]="['fas', 'th-list']"
+      size="lg">
+    </fa-icon>
+  </mat-button-toggle>
 
   <div>&nbsp;</div>
 

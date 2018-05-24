@@ -2,17 +2,46 @@
   (window:keydown)="onKeystroke($event)">
 
   <elfile-toolbar
-    (openPrefs)=prefsDrawer.open()
+    (openPrefs)="prefsDrawer.open()"
+    (toggleFSLog)="showFSLog = $event"
     [layout]="ctrl.layout$ | async">
   </elfile-toolbar>
 
-  <elfile-splittable
-    [fs]="ctrl.fs$ | async"
-    [layout]="ctrl.layout$ | async"
-    [prefs]="ctrl.prefs$ | async"
-    [selection]="ctrl.selection$ | async"
-    [views]="ctrl.views$ | async">
-  </elfile-splittable>
+  <main>
+
+    <split
+      [useTransition]="true"
+      direction="vertical"
+      gutterColor="#424242"
+      gutterSize="5">
+
+      <split-area
+        [size]="75">
+
+        <elfile-splittable
+          [fs]="ctrl.fs$ | async"
+          [layout]="ctrl.layout$ | async"
+          [prefs]="ctrl.prefs$ | async"
+          [selection]="ctrl.selection$ | async"
+          [views]="ctrl.views$ | async">
+        </elfile-splittable>
+
+      </split-area>
+
+      <split-area
+        [size]="25"
+        *ngIf="showFSLog">
+
+        <elfile-fslog
+          [fslog]="ctrl.fslog$ | async"
+          [prefs]="ctrl.prefs$ | async">
+        </elfile-fslog>
+
+      </split-area>
+
+    </split>
+
+  </main>
 
   <elfile-statusbar
     [status]="ctrl.status$ | async">

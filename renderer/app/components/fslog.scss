@@ -1,0 +1,50 @@
+:host {
+  background-color: var(--mat-grey-850);
+  color: var(--mat-grey-400);
+  display: block;
+  font-size: 0.66rem;
+  height: 100%;
+  overflow: auto;
+}
+
+.empty {
+  align-items: center;
+  display: flex;
+  font-size: 2rem;
+  flex-direction: row;
+  justify-content: center;
+  height: 100%;
+}
+
+table {
+  width: 100%;
+
+  thead {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 2px 8px;
+    vertical-align: top;
+
+    &.op {
+      font-family: monospace;
+    }
+
+    &.ts{
+      white-space: nowrap;
+    }
+
+  }
+
+  &.gridlines {
+
+    td {
+      border-right: 1px dotted var(--mat-grey-700);
+      border-bottom: 1px dotted var(--mat-grey-700);
+    }
+
+  }
+
+}

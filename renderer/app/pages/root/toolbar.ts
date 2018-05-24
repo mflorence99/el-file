@@ -25,6 +25,7 @@ export class ToolbarComponent {
   @Input() layout = { } as LayoutStateModel;
 
   @Output() openPrefs = new EventEmitter<any>();
+  @Output() toggleFSLog = new EventEmitter<boolean>();
 
   /** ctor */
   constructor(private electron: ElectronService,

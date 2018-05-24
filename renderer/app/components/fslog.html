@@ -1,0 +1,75 @@
+<table
+  [ngClass]="{gridlines: prefs.showGridLines}"
+  *ngIf="fslog.entries.length > 0; else empty">
+
+  <thead>
+    <tr>
+      <td>
+        When
+      </td>
+      <td>
+        Operation
+      </td>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr
+      *ngFor="let dummy of fslog.entries; let ix = index">
+
+      <ng-container
+        *ngIf="fslog.entries[fslog.entries.length - ix - 1] as entry">
+
+        <td
+          class="ts">
+
+          <div
+            *ngIf="prefs.dateFormat === 'ago'">
+            {{ entry.ts | libTimeAgo }}
+          </div>
+
+          <div
+            *ngIf="(prefs.dateFormat !== 'ago') && (prefs.timeFormat !== 'none')">
+            {{ entry.ts | date:prefs.timeFormat }}
+          </div>
+
+          <div
+            *ngIf="(prefs.dateFormat !== 'ago') && (prefs.timeFormat === 'none')">
+            {{ entry.ts | date:'mediumTime' }}
+          </div>
+
+        </td>
+
+        <td
+          class="op">
+          {{ entry.op.toString() }}
+        </td>
+
+      </ng-container>
+
+    </tr>
+
+  </tbody>
+
+</table>
+
+<ng-template
+  #empty>
+
+  <div
+    class="empty">
+
+    <div>
+
+      <fa-icon
+        [icon]="['fas', 'info-circle']">
+      </fa-icon>
+
+      No log data
+
+    </div>
+
+  </div>
+
+</ng-template>

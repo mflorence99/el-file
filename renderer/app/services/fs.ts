@@ -2,6 +2,7 @@ import * as fs from 'fs';
 
 import { ElectronService } from 'ngx-electron';
 import { Injectable } from '@angular/core';
+import { LogOperation } from '../state/fslog';
 import { StatusMessage } from '../state/status';
 import { Store } from '@ngxs/store';
 
@@ -20,7 +21,7 @@ export abstract class Operation {
 
   constructor(public async: boolean) { }
 
-  run(fsSvc: FSService): void {
+  run(fsSvc: FSService): string {
     // capture what we are about to run & run it
     this.str = this.toStringImpl(fsSvc);
     const err = this.runImpl(fsSvc);
@@ -40,6 +41,7 @@ export abstract class Operation {
         fsSvc.pushRedo(this.redo);
       }
     }
+    return err;
   }
 
   abstract runImpl(fsSvc: FSService): string;
@@ -111,14 +113,14 @@ export class FSService {
 
   /** Push an operation onto the redo stack */
   pushRedo(op: Operation): void {
-    if (this.redoStack.length === MAX_STACK)
+    if (this.redoStack.length > MAX_STACK)
       this.redoStack.splice(0, 1);
     this.redoStack.push(op);
   }
 
   /** Push an operation onto the undo stack */
   pushUndo(op: Operation): void {
-    if (this.undoStack.length === MAX_STACK)
+    if (this.undoStack.length > MAX_STACK)
       this.undoStack.splice(0, 1);
     this.undoStack.push(op);
   }
@@ -146,8 +148,11 @@ export class FSService {
 
   /** Execute operation */
   run(op: Operation): void {
-    if (op)
-      op.run(this);
+    if (op) {
+      const err = op.run(this);
+      if (!err)
+        this.store.dispatch(new LogOperation({ op }));
+    }
   }
 
   /** Touch a file */

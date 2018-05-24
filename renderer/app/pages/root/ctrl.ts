@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { FSLogState, FSLogStateModel } from '../../state/fslog';
 import { FSState, FSStateModel } from '../../state/fs';
 import { LayoutState, LayoutStateModel } from '../../state/layout';
 import { LifecycleComponent, OnChange } from 'ellib';
@@ -33,6 +34,7 @@ export class RootCtrlComponent extends LifecycleComponent {
   @Input() viewForm: any = { };
 
   @Select(FSState) fs$: Observable<FSStateModel>;
+  @Select(FSLogState) fslog$: Observable<FSLogStateModel>;
   @Select(LayoutState) layout$: Observable<LayoutStateModel>;
   @Select(PrefsState) prefs$: Observable<PrefsStateModel>;
   @Select(SelectionState) selection$: Observable<SelectionStateModel>;

@@ -2,6 +2,7 @@ import { BarrelModule } from '../barrel';
 import { BranchComponent } from './branch';
 import { CellComponent } from './cell';
 import { ColumnComponent } from './column';
+import { FSLogComponent } from './fslog';
 import { HeaderComponent } from './header';
 import { NgModule } from '@angular/core';
 import { PaneComponent } from './pane';
@@ -21,6 +22,7 @@ const COMPONENTS = [
   BranchComponent,
   CellComponent,
   ColumnComponent,
+  FSLogComponent,
   HeaderComponent,
   PaneComponent,
   PrefsComponent,
