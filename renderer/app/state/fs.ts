@@ -102,30 +102,32 @@ export interface FSStateModel {
            force = false) {
     const { paths } = payload;
     paths.forEach(path => {
-      dispatch(new StatusMessage({ msgLevel: 'info', msgText: `Loading ${path} ...` }));
-      this.fs.readdir(path, (err, names) => {
-        if (err)
-          dispatch(new UnloadDirs({ paths: [path] }));
-        else if (force || !getState()[path]) {
-          const children = names.map(name => this.path.join(path, name));
-          async.map(children, this.fs.lstat, (err, stats) => {
-            const descs: Descriptor[] = names.reduce((acc, name, ix) => {
-              const stat = stats[ix];
-              if (stat.isDirectory() || stat.isFile() || stat.isSymbolicLink())
-                acc.push(this.makeDescriptor(name, path, stat));
-              return acc;
-            }, []);
-            patchState({ [path]: descs });
-            // start watching this directory
-            this.watcher.add(path);
-            // sync model
-            nextTick(() => {
-              dispatch(new DirLoaded({ path, descs }));
-              dispatch(new StatusMessage({ msgLevel: 'info', msgText: `${path} loaded` }));
+      if (force || !getState()[path]) {
+        dispatch(new StatusMessage({ msgLevel: 'info', msgText: `Loading ${path} ...` }));
+        this.fs.readdir(path, (err, names) => {
+          if (err)
+            dispatch(new UnloadDirs({ paths: [path] }));
+          else {
+            const children = names.map(name => this.path.join(path, name));
+            async.map(children, this.fs.lstat, (err, stats) => {
+              const descs: Descriptor[] = names.reduce((acc, name, ix) => {
+                const stat = stats[ix];
+                if (stat.isDirectory() || stat.isFile() || stat.isSymbolicLink())
+                  acc.push(this.makeDescriptor(name, path, stat));
+                return acc;
+              }, []);
+              patchState({ [path]: descs });
+              // start watching this directory
+              this.watcher.add(path);
+              // sync model
+              nextTick(() => {
+                dispatch(new DirLoaded({ path, descs }));
+                dispatch(new StatusMessage({ msgLevel: 'info', msgText: `${path} loaded` }));
+              });
             });
-          });
-        }
-      });
+          }
+        });
+      }
     });
   }
 

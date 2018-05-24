@@ -7,6 +7,11 @@ import { nextTick } from 'ellib';
 
 /** NOTE: actions must come first because of AST */
 
+export class AddPathToTab {
+  static readonly type = '[Layout] add path to tab';
+  constructor(public readonly payload: { path: string, tab: Tab }) { }
+}
+
 export class CloseSplit {
   static readonly type = '[Layout] close split';
   constructor(public readonly payload: { splitID: string, ix: number }) { }
@@ -25,6 +30,11 @@ export class MoveTab {
 export class NewTab {
   static readonly type = '[Layout] new tab';
   constructor(public readonly payload: { splitID: string, path: string }) { }
+}
+
+export class RemovePathFromTab {
+  static readonly type = '[Layout] remove path from tab';
+  constructor(public readonly payload: { path: string, tab: Tab }) { }
 }
 
 export class RemoveTab {
@@ -189,6 +199,24 @@ export interface LayoutStateModel {
   /** ctor */
   constructor(private actions$: Actions) { }
 
+  @Action(AddPathToTab)
+  addPathToTab({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
+               { payload }: AddPathToTab) {
+    const { path, tab } = payload;
+    if (!tab.paths.includes(path)) {
+      tab.paths.push(path);
+      const updated = { ...getState() };
+      const tx = LayoutState.findTabIndexByID(updated, tab.id);
+      if (tx.ix !== -1) {
+        tx.tabs[tx.ix] = { ...tab };
+        setState(updated);
+        // sync model
+        dispatch(new LoadDirs({ paths: [path] }));
+        nextTick(() => dispatch(new TabUpdated({ tab })));
+      }
+    }
+  }
+
   @Action(CloseSplit)
   closeSplit({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
              { payload }: CloseSplit) {
@@ -318,6 +346,24 @@ export interface LayoutStateModel {
         dispatch(new TabUpdated({ tab }));
         // NOTE: SelectTab will issue its own TabsUpdated
       });
+    }
+  }
+
+  @Action(RemovePathFromTab)
+  removePathFromTab({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
+                    { payload }: RemovePathFromTab) {
+    const { path, tab } = payload;
+    if (tab.paths.includes(path)) {
+      const ix = tab.paths.indexOf(path);
+      tab.paths.splice(ix, 1);
+      const updated = { ...getState() };
+      const tx = LayoutState.findTabIndexByID(updated, tab.id);
+      if (tx.ix !== -1) {
+        tx.tabs[tx.ix] = { ...tab };
+        setState(updated);
+        // sync model
+        nextTick(() => dispatch(new TabUpdated({ tab })));
+      }
     }
   }
 

@@ -71,7 +71,14 @@ export interface ViewsStateModel {
     return {
       sortColumn: 'name',
       sortDir: 1,
+      widths: {
+        name: 62.365591397849464,
+        size: 11.163820366856426,
+        mtime: 12.895319418089818,
+        mode: 13.5752688172043
+      },
       visibility: {
+        mode: true,
         mtime: true,
         name: true,
         size: true

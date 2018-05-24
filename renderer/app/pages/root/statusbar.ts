@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Alarm, StatusStateModel } from '../../state/status';
+import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
+import { LifecycleComponent, OnChange } from 'ellib';
 
-import { StatusStateModel } from '../../state/status';
+import { Store } from '@ngxs/store';
 
 /**
  * Status bar component
@@ -13,8 +15,27 @@ import { StatusStateModel } from '../../state/status';
   styleUrls: ['statusbar.scss']
 })
 
-export class StatusbarComponent {
+export class StatusbarComponent extends LifecycleComponent {
 
   @Input() status = { } as StatusStateModel;
+
+  @ViewChild('ding') ding;
+
+  /** ctor */
+  constructor(private store: Store) {
+    super();
+  }
+
+  // bind OnChange handlers
+
+  @OnChange('status') soundAlarm() {
+    if (this.status && this.ding.nativeElement) {
+      if (this.status.alarm) {
+        this.ding.nativeElement
+          .play()
+          .then(() => this.store.dispatch(new Alarm({ alarm: false })));
+      }
+    }
+  }
 
 }

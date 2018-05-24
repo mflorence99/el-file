@@ -1,11 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { DrawerPanelComponent, LifecycleComponent, OnChange } from 'ellib';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Descriptor } from '../state/fs';
 import { DictionaryService } from '../services/dictionary';
-import { DrawerPanelComponent } from 'ellib';
-import { LifecycleComponent } from 'ellib';
-import { OnChange } from 'ellib';
 import { PrefsStateModel } from '../state/prefs';
 
 /**
@@ -39,13 +37,13 @@ export class PropsComponent extends LifecycleComponent {
   }
 
   /** Close drawer */
-  close() {
+  close(): void {
     this.drawerPanel.close();
   }
 
   // bind OnChange handlers
 
-  @OnChange('desc') patchProps() {
+  @OnChange('desc') patchProps(): void {
     if (this.desc) {
       this.propsForm.reset();
       this.propsForm.patchValue(this.desc, { emitEvent: false });

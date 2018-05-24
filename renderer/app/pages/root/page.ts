@@ -1,14 +1,15 @@
 import { Component, ViewChild } from '@angular/core';
+import { DrawerPanelComponent, debounce } from 'ellib';
 
+import { Alarm } from '../../state/status';
 import { Descriptor } from '../../state/fs';
-import { DrawerPanelComponent } from 'ellib';
 import { ElectronService } from 'ngx-electron';
+import { FSService } from '../../services/fs';
 import { SetBounds } from '../../state/window';
 import { SplittableComponent } from '../../components/splittable';
 import { Store } from '@ngxs/store';
 import { Tab } from '../../state/layout';
 import { View } from '../../state/views';
-import { debounce } from 'ellib';
 
 /**
  * EL-Term Root
@@ -38,6 +39,7 @@ export class RootPageComponent {
 
   /** ctor */
   constructor(private electron: ElectronService,
+              private fsSvc: FSService,
               private store: Store) {
     this.electron.ipcRenderer.on('bounds', debounce((event, bounds) => {
       this.store.dispatch(new SetBounds(bounds));
@@ -46,23 +48,40 @@ export class RootPageComponent {
 
   // event handlers
 
-  onEditProps(desc: Descriptor) {
+  onEditProps(desc: Descriptor): void {
     this.editDesc = desc;
     this.propsDrawer.open();
   }
 
   onEditTab(tab: Tab,
-            noRemove: boolean) {
+            noRemove: boolean): void {
     this.editTab = tab;
     this.noRemoveTab = noRemove;
     this.tabDrawer.open();
   }
 
   onEditView(view: View,
-             viewID: string) {
+             viewID: string): void {
     this.editView = view;
     this.editViewID = viewID;
     this.viewDrawer.open();
+  }
+
+  onKeystroke(event: KeyboardEvent): void {
+    if (event.ctrlKey) {
+      switch (event.key) {
+        case 'z':
+          if (this.fsSvc.canUndo())
+            this.fsSvc.undo();
+          else this.store.dispatch(new Alarm({ alarm: true }));
+          break;
+        case 'y':
+          if (this.fsSvc.canRedo())
+            this.fsSvc.redo();
+          else this.store.dispatch(new Alarm({ alarm: true }));
+          break;
+      }
+    }
   }
 
 }

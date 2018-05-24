@@ -1,25 +1,13 @@
-<div
+<elfile-branch
   [contextMenu]="contextMenu"
-  [contextMenuSubject]="desc"
-  [ngClass]="{gridlines: prefs.showGridLines}"
-  *ngFor="let desc of descriptors"
-  class="row">
-
-  <div
-    [ngClass]="{gridlines: prefs.showGridLines}"
-    [ngStyle]="{'width.%': entry.width? entry.width : (100 / dictionary.length)}"
-    *ngFor="let entry of dictionary"
-    class="cell">
-
-    <elfile-cell
-      [desc]="desc"
-      [entry]="entry"
-      [prefs]="prefs">
-    </elfile-cell>
-
-  </div>
-
-</div>
+  [descriptorsByPath]="descriptorsByPath"
+  [dictionary]="dictionary"
+  [level]="0"
+  [path]="tab.paths[0]"
+  [prefs]="prefs"
+  [selection]="selection"
+  [tab]="tab">
+</elfile-branch>
 
 <context-menu>
 

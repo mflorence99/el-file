@@ -30,21 +30,21 @@ export class TabsComponent {
   // event handlers
 
   onEditTab(event: MouseEvent,
-            tab: Tab) {
+            tab: Tab): void {
     this.root.onEditTab(tab, (this.tabs.length === 1));
     event.stopPropagation();
   }
 
-  onEditView() {
+  onEditView(): void {
     this.root.onEditView(this.view, this.tabs[this.tabIndex].id);
   }
 
   onMoveTab(tab: Tab,
-            ix: number) {
+            ix: number): void {
     this.store.dispatch(new MoveTab({ splitID: this.splitID, tab, ix }));
   }
 
-  onTabSelect(ix: number) {
+  onTabSelect(ix: number): void {
     this.store.dispatch(new SelectTab({ tab: this.tabs[ix] }));
   }
 

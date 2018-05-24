@@ -12,6 +12,7 @@ import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Descriptor } from '../state/fs';
 import { FSService } from '../services/fs';
 import { RootPageComponent } from '../pages/root/page';
+import { SelectionStateModel } from '../state/selection';
 import { Subscription } from 'rxjs';
 import { TouchOperation } from '../services/touch';
 
@@ -32,13 +33,14 @@ export class TreeComponent extends LifecycleComponent
 
   @Input() fs = { } as FSStateModel;
   @Input() prefs = { } as PrefsStateModel;
+  @Input() selection = { } as SelectionStateModel;
   @Input() splitID: string;
   @Input() tab = { } as Tab;
   @Input() view = { } as View;
 
   @ViewChild(ContextMenuComponent) contextMenu: ContextMenuComponent;
 
-  descriptors: Descriptor[] = [];
+  descriptorsByPath: { [path: string]: Descriptor[] } = { };
   dictionary: Dictionary[] = [];
 
   subToActions: Subscription;
@@ -75,7 +77,7 @@ export class TreeComponent extends LifecycleComponent
 
   // lifecycle methods
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.subToActions = this.actions$
       .pipe(
         ofAction(DirLoaded, PrefsUpdated, TabsUpdated, ViewUpdated),
@@ -94,10 +96,10 @@ export class TreeComponent extends LifecycleComponent
         debounceTime(100),
       ).subscribe(() => {
         this.dictionary = this.dictSvc.dictionaryForView(this.view);
-        // TODO: temporary
-        const path = this.tab.paths[0];
-        if (this.fs[path])
-          this.descriptors = this.dictSvc.descriptorsForView(path, this.fs, this.dictionary, this.prefs, this.view);
+        this.tab.paths.forEach(path => {
+          this.descriptorsByPath[path] =
+            this.dictSvc.descriptorsForView(path, this.fs, this.dictionary, this.prefs, this.view);
+        });
         this.cdf.detectChanges();
       });
   }
@@ -106,7 +108,7 @@ export class TreeComponent extends LifecycleComponent
 
   onContextMenu(event: {event?: MouseEvent,
                         item: Descriptor},
-                command: string) {
+                command: string): void {
     const desc = event.item;
     switch (command) {
       case 'open':

@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FSState, FSStateModel } from '../../state/fs';
 import { LayoutState, LayoutStateModel } from '../../state/layout';
+import { LifecycleComponent, OnChange } from 'ellib';
 import { PrefsState, PrefsStateModel, UpdatePrefs } from '../../state/prefs';
 import { Select, Store } from '@ngxs/store';
+import { SelectionState, SelectionStateModel } from '../../state/selection';
 import { StatusState, StatusStateModel } from '../../state/status';
 import { UpdateViewVisibility, ViewVisibility, ViewsState, ViewsStateModel } from '../../state/views';
 import { WindowState, WindowStateModel } from '../../state/window';
 
 import { ElectronService } from 'ngx-electron';
 import { FSService } from '../../services/fs';
-import { LifecycleComponent } from 'ellib';
 import { Observable } from 'rxjs';
-import { OnChange } from 'ellib';
 import { RenameOperation } from '../../services/rename';
 import { take } from 'rxjs/operators';
 
@@ -35,6 +35,7 @@ export class RootCtrlComponent extends LifecycleComponent {
   @Select(FSState) fs$: Observable<FSStateModel>;
   @Select(LayoutState) layout$: Observable<LayoutStateModel>;
   @Select(PrefsState) prefs$: Observable<PrefsStateModel>;
+  @Select(SelectionState) selection$: Observable<SelectionStateModel>;
   @Select(StatusState) status$: Observable<StatusStateModel>;
   @Select(ViewsState) views$: Observable<ViewsStateModel>;
   @Select(WindowState) window$: Observable<WindowStateModel>;
@@ -55,19 +56,19 @@ export class RootCtrlComponent extends LifecycleComponent {
 
   // bind OnChange handlers
 
-  @OnChange('prefsForm') savePrefs() {
+  @OnChange('prefsForm') savePrefs(): void {
     if (this.prefsForm && this.prefsForm.submitted)
       this.store.dispatch(new UpdatePrefs(this.prefsForm));
   }
 
-  @OnChange('propsForm') updateProps() {
+  @OnChange('propsForm') updateProps(): void {
     if (this.propsForm && this.propsForm.submitted) {
       const renameOp = RenameOperation.makeInstance(this.propsForm.path, this.propsForm.name, this.fsSvc);
       this.fsSvc.run(renameOp);
     }
   }
 
-  @OnChange('viewForm') saveView() {
+  @OnChange('viewForm') saveView(): void {
     if (this.viewForm && this.viewForm.submitted) {
       const allTheSame = !!this.viewForm.allTheSame;
       const viewID = this.viewForm.viewID;

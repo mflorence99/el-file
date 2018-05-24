@@ -57,8 +57,8 @@ export class DictionaryService {
                      dictionary: Dictionary[],
                      prefs: PrefsStateModel,
                      view: View): Descriptor[] {
-    const descriptors = fs[path]
-      .filter(desc => prefs.showHiddenFiles || !desc.name.startsWith('.'));
+    const descriptors = fs[path]?
+      fs[path].filter(desc => prefs.showHiddenFiles || !desc.name.startsWith('.')) : [];
     return this.sort(descriptors, dictionary, prefs, view);
   }
 

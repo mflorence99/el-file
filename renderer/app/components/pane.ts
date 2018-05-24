@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { LifecycleComponent, OnChange } from 'ellib';
 import { View, ViewsStateModel } from '../state/views';
 
 import { FSStateModel } from '../state/fs';
-import { LifecycleComponent } from 'ellib';
-import { OnChange } from 'ellib';
 import { PrefsStateModel } from '../state/prefs';
+import { SelectionStateModel } from '../state/selection';
 import { Tab } from '../state/layout';
 
 /**
@@ -23,6 +23,7 @@ export class PaneComponent extends LifecycleComponent {
   @Input() fs = { } as FSStateModel;
   @Input() index: number;
   @Input() prefs = { } as PrefsStateModel;
+  @Input() selection = { } as SelectionStateModel;
   @Input() splitID: string;
   @Input() tabs = [] as Tab[];
   @Input() views = { } as ViewsStateModel;
@@ -33,7 +34,7 @@ export class PaneComponent extends LifecycleComponent {
 
   // bind OnChange handlers
 
-  @OnChange('tabs', 'views') onTabs() {
+  @OnChange('tabs', 'views') onTabs(): void {
     if (this.tabs) {
       this.tab = this.tabs.find(tab => tab.selected);
       this.tabIndex = this.tabs.findIndex(tab => tab.selected);

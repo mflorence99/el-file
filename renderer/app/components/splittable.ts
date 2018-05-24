@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FSStateModel } from '../state/fs';
 import { LayoutStateModel } from '../state/layout';
 import { PrefsStateModel } from '../state/prefs';
+import { SelectionStateModel } from '../state/selection';
 import { Store } from '@ngxs/store';
 import { UpdateSplitSizes } from '../state/layout';
 import { ViewsStateModel } from '../state/views';
@@ -24,6 +25,7 @@ export class SplittableComponent {
   @Input() fs = { } as FSStateModel;
   @Input() layout = { } as LayoutStateModel;
   @Input() prefs = { } as PrefsStateModel;
+  @Input() selection = { } as SelectionStateModel;
   @Input() views = { } as ViewsStateModel;
 
   private updateSplitSizes: Function;

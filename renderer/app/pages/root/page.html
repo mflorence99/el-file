@@ -1,4 +1,5 @@
-<lib-drawer-container>
+<lib-drawer-container
+  (window:keydown)="onKeystroke($event)">
 
   <elfile-toolbar
     (openPrefs)=prefsDrawer.open()
@@ -9,6 +10,7 @@
     [fs]="ctrl.fs$ | async"
     [layout]="ctrl.layout$ | async"
     [prefs]="ctrl.prefs$ | async"
+    [selection]="ctrl.selection$ | async"
     [views]="ctrl.views$ | async">
   </elfile-splittable>
 

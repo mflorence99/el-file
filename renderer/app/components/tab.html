@@ -231,8 +231,7 @@
       (click)="onRemove(false)"
       [disabled]="noRemove"
       [class.hidden]="areYouSure"
-      color="accent"
-      mat-raised-button>
+      mat-button>
       Remove
     </button>
 
@@ -240,8 +239,7 @@
       (click)="onRemove(true)"
       [disabled]="noRemove"
       [class.hidden]="!areYouSure"
-      color="accent"
-      mat-raised-button>
+      mat-button>
       Are you sure? Cannot be undone!
     </button>
 

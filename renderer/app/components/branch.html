@@ -1,0 +1,50 @@
+<ng-container
+  *ngFor="let desc of descriptorsByPath[path]">
+
+  <div
+    (click)="onSelect($event, desc.path)"
+    [contextMenu]="contextMenu"
+    [contextMenuSubject]="desc"
+    [ngClass]="{gridlines: prefs.showGridLines,
+                selected: selection.paths.includes(desc.path)}"
+    class="row">
+
+    <div
+      [ngClass]="{expander: (ix === 0), gridlines: prefs.showGridLines}"
+      [ngStyle]="{'padding-left.px': (ix === 0)? level * 16 : 8,
+                  'width.%': entry.width? entry.width : (100 / dictionary.length)}"
+      *ngFor="let entry of dictionary; let ix = index"
+      class="cell">
+
+      <fa-icon
+        (click)="onExpand($event, desc.path)"
+        [fixedWidth]="true"
+        [icon]="['fas', tab.paths.includes(desc.path)? 'angle-down': 'angle-right']"
+        [ngStyle]="{visibility: desc.isDirectory? 'visible' : 'hidden'}"
+        *ngIf="ix === 0"
+        size="xs">
+      </fa-icon>
+
+      <elfile-cell
+        [desc]="desc"
+        [entry]="entry"
+        [prefs]="prefs">
+      </elfile-cell>
+
+    </div>
+
+  </div>
+
+  <elfile-branch
+    [contextMenu]="contextMenu"
+    [descriptorsByPath]="descriptorsByPath"
+    [dictionary]="dictionary"
+    [level]="level + 1"
+    [path]="desc.path"
+    [prefs]="prefs"
+    [selection]="selection"
+    [tab]="tab"
+    *ngIf="tab.paths.includes(desc.path)">
+  </elfile-branch>
+
+</ng-container>

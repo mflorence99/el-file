@@ -3,25 +3,29 @@
   *ngIf="entry.isDate"
   class="cell">
 
-  <div *ngIf="prefs.dateFormat === 'ago'; else asDate">
+  <ng-container
+    *ngIf="prefs.dateFormat === 'ago'">
     {{ desc[entry.name] | libTimeAgo }}
-  </div>
+  </ng-container>
 
-  <ng-template #asDate>
+  <ng-container
+    *ngIf="(prefs.dateFormat !== 'ago') && (prefs.timeFormat === 'none')">
+    {{ desc[entry.name] | date:prefs.dateFormat }}
+  </ng-container>
 
-    <div class="datetime">
+  <div
+    *ngIf="(prefs.dateFormat !== 'ago') && (prefs.timeFormat !== 'none')"
+    class="datetime">
 
-      <div>
-        {{ desc[entry.name] | date:prefs.dateFormat }}
-      </div>
-
-      <div *ngIf="prefs.timeFormat !== 'none'">
-        {{ desc[entry.name] | date:prefs.timeFormat }}
-      </div>
-
+    <div>
+      {{ desc[entry.name] | date:prefs.dateFormat }}
     </div>
 
-  </ng-template>
+    <div>
+      {{ desc[entry.name] | date:prefs.timeFormat }}
+    </div>
+
+  </div>
 
 </div>
 
@@ -30,17 +34,20 @@
   *ngIf="entry.isQuantity"
   class="cell quantity">
 
-  <div *ngIf="prefs.quantityFormat === 'abbrev'">
+  <ng-container
+    *ngIf="prefs.quantityFormat === 'abbrev'">
     {{ desc[entry.name] | libNumeral:'0a' }}
-  </div>
+  </ng-container>
 
-  <div *ngIf="prefs.quantityFormat === 'bytes'">
+  <ng-container
+    *ngIf="prefs.quantityFormat === 'bytes'">
     {{ desc[entry.name] | libNumeral:'0b' }}
-  </div>
+  </ng-container>
 
-  <div *ngIf="prefs.quantityFormat === 'number'">
+  <ng-container
+    *ngIf="prefs.quantityFormat === 'number'">
     {{ desc[entry.name] | libNumeral:'0,0' }}
-  </div>
+  </ng-container>
 
 </div>
 

@@ -1,8 +1,12 @@
+import { AddPathToSelection, ClearSelection, SelectionStateModel, TogglePathInSelection } from '../state/selection';
+import { AddPathToTab, RemovePathFromTab, Tab } from '../state/layout';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
-import { FSStateModel } from '../state/fs';
-import { Tab } from '../state/layout';
-import { View } from '../state/views';
+import { ContextMenuComponent } from 'ngx-contextmenu';
+import { Descriptor } from '../state/fs';
+import { Dictionary } from '../services/dictionary';
+import { PrefsStateModel } from '../state/prefs';
+import { Store } from '@ngxs/store';
 
 /**
  * Branch component
@@ -17,8 +21,43 @@ import { View } from '../state/views';
 
 export class BranchComponent {
 
-  @Input() fs = { } as FSStateModel;
+  @Input() contextMenu: ContextMenuComponent;
+  @Input() descriptorsByPath: { [path: string]: Descriptor[] } = { };
+  @Input() dictionary: Dictionary[] = [];
+  @Input() level = 0;
+  @Input() path: string;
+  @Input() prefs = { } as PrefsStateModel;
+  @Input() selection = { } as SelectionStateModel;
   @Input() tab = { } as Tab;
-  @Input() view = { } as View;
+
+  /** ctor */
+  constructor(private store: Store) { }
+
+  // event handlers
+
+  onExpand(event: MouseEvent,
+           path: string): void {
+    const action = this.tab.paths.includes(path)?
+      new RemovePathFromTab({ path, tab: this.tab }) :
+      new AddPathToTab({ path, tab: this.tab });
+    this.store.dispatch(action);
+    event.stopPropagation();
+  }
+
+  onSelect(event: MouseEvent,
+           path: string): void {
+    const actions = [];
+    if (event.shiftKey) {
+
+    }
+    else if (event.ctrlKey)
+      actions.push(new TogglePathInSelection({ path }));
+    else {
+      actions.push(new ClearSelection());
+      actions.push(new AddPathToSelection({ path }));
+    }
+    if (actions.length > 0)
+      this.store.dispatch(actions);
+  }
 
 }

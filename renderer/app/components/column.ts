@@ -26,7 +26,7 @@ export class ColumnComponent {
 
   // event handlers
 
-  onSortChange(sortColumn: string) {
+  onSortChange(sortColumn: string): void {
     let sortDir = 1;
     if (this.view.sortColumn === sortColumn)
       sortDir = this.view.sortDir * -1;

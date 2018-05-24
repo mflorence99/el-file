@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Dictionary, DictionaryService } from '../services/dictionary';
+import { LifecycleComponent, OnChange } from 'ellib';
 import { UpdateViewWidths, View, ViewWidths } from '../state/views';
 
-import { LifecycleComponent } from 'ellib';
-import { OnChange } from 'ellib';
 import { Store } from '@ngxs/store';
 
 /**
@@ -43,7 +42,7 @@ export class HeaderComponent extends LifecycleComponent {
 
   // bind OnChange handlers
 
-  @OnChange('view') onView() {
+  @OnChange('view') onView(): void {
     if (this.view)
       this.dictionary = this.dictSvc.dictionaryForView(this.view);
   }

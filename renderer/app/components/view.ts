@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { DrawerPanelComponent, LifecycleComponent, OnChange } from 'ellib';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { DictionaryService } from '../services/dictionary';
-import { DrawerPanelComponent } from 'ellib';
-import { LifecycleComponent } from 'ellib';
-import { OnChange } from 'ellib';
 import { View } from '../state/views';
 import { map } from 'rxjs/operators';
 
@@ -54,18 +52,18 @@ export class ViewComponent extends LifecycleComponent {
   }
 
   /** Close drawer */
-  close() {
+  close(): void {
     this.drawerPanel.close();
   }
 
   // bind OnChange handlers
 
-  @OnChange('view') patchView() {
+  @OnChange('view') patchView(): void {
     if (this.view && this.view.visibility)
       this.viewForm.patchValue({ visibility: this.view.visibility }, { emitEvent: true });
   }
 
-  @OnChange('viewID') patchViewID() {
+  @OnChange('viewID') patchViewID(): void {
     if (this.viewID) {
       this.viewForm.reset();
       this.viewForm.patchValue({ viewID: this.viewID }, { emitEvent: false });

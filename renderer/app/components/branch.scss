@@ -1,3 +1,58 @@
 :host {
   display: block;
 }
+
+.cell {
+  padding: 2px 8px;
+
+  &.expander {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    padding: 0 8px 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    elfile-cell {
+      width: calc(100% - 20px);
+    }
+
+    fa-icon {
+      cursor: pointer;
+    }
+
+  }
+
+  &.gridlines {
+    border-right: 1px dotted var(--mat-grey-700);
+  }
+
+}
+
+.row {
+  cursor: default;
+  display: flex;
+  flex-direction: row;
+
+  &.gridlines {
+    border-bottom: 1px dotted var(--mat-grey-700);
+  }
+
+  &:hover {
+    background-color: var(--mat-grey-850) !important;
+  }
+
+  &.selected {
+    background-color: var(--mat-grey-800);
+  }
+
+}
+
+.wrapper {
+  align-items: center;
+  flex-direction: row;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -2,6 +2,7 @@ import { FSColorState, FSColorStateModel } from './fscolor';
 import { FSState, FSStateModel } from './fs';
 import { LayoutState, LayoutStateModel } from './layout';
 import { PrefsState, PrefsStateModel } from './prefs';
+import { SelectionState, SelectionStateModel } from './selection';
 import { StatusState, StatusStateModel } from './status';
 import { ViewsState, ViewsStateModel } from './views';
 import { WindowState, WindowStateModel } from './window';
@@ -10,6 +11,7 @@ export interface AppState {
   fs: FSStateModel;
   fscolor: FSColorStateModel;
   layout: LayoutStateModel;
+  selection: SelectionStateModel;
   status: StatusStateModel;
   prefs: PrefsStateModel;
   views: ViewsStateModel;
@@ -21,6 +23,7 @@ export const states = [
   FSColorState,
   LayoutState,
   PrefsState,
+  SelectionState,
   StatusState,
   ViewsState,
   WindowState
