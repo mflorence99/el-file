@@ -10,8 +10,10 @@ import { debounceTime, filter } from 'rxjs/operators';
 
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Descriptor } from '../state/fs';
+import { FSService } from '../services/fs';
 import { RootPageComponent } from '../pages/root/page';
 import { Subscription } from 'rxjs';
+import { TouchOperation } from '../services/touch';
 
 /**
  * Tree component
@@ -45,6 +47,7 @@ export class TreeComponent extends LifecycleComponent
   constructor(private actions$: Actions,
               private cdf: ChangeDetectorRef,
               private dictSvc: DictionaryService,
+              private fsSvc: FSService,
               private root: RootPageComponent,
               private store: Store) {
     super();
@@ -53,6 +56,21 @@ export class TreeComponent extends LifecycleComponent
   /** Is context menu bound to a directory? */
   isDirectory(desc: Descriptor): boolean {
     return desc.isDirectory;
+  }
+
+  /** Is context menu bound to a file? */
+  isFile(desc: Descriptor): boolean {
+    return desc.isFile;
+  }
+
+  /** Is context menu bound to a writable directory? */
+  isWritableDirectory(desc: Descriptor): boolean {
+    return desc.isDirectory && desc.isWritable;
+  }
+
+  /** Is context menu bound to a writable directory? */
+  isWritableFile(desc: Descriptor): boolean {
+    return desc.isFile && desc.isWritable;
   }
 
   // lifecycle methods
@@ -96,6 +114,10 @@ export class TreeComponent extends LifecycleComponent
         break;
       case 'properties':
         this.root.onEditProps(desc);
+        break;
+      case 'touch':
+        const touchOp = TouchOperation.makeInstance(desc.path, this.fsSvc);
+        this.fsSvc.run(touchOp);
         break;
     }
   }

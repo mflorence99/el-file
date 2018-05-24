@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+
 import { ElectronService } from 'ngx-electron';
 import { Injectable } from '@angular/core';
 import { StatusMessage } from '../state/status';
@@ -59,6 +61,7 @@ export class FSService {
 
   fs: any;
   path: any;
+  touch: any;
 
   redoStack: Operation[] = [];
   undoStack: Operation[] = [];
@@ -68,6 +71,7 @@ export class FSService {
               private store: Store) {
     this.fs = this.electron.remote.require('fs');
     this.path = this.electron.remote.require('path');
+    this.touch = this.electron.remote.require('touch');
   }
 
   /** Can we redo? */
@@ -88,6 +92,11 @@ export class FSService {
   /** Handle an operation success */
   handleSuccess(msg: string): void {
     this.store.dispatch(new StatusMessage({ msgLevel: 'info', msgText: msg }));
+  }
+
+  /** Perform lstat */
+  lstat(path: string): fs.Stats {
+    return this.fs.lstatSync(path);
   }
 
   /** Peek at the topmost redo action */
@@ -139,6 +148,18 @@ export class FSService {
   run(op: Operation): void {
     if (op)
       op.run(this);
+  }
+
+  /** Touch a file */
+  touchFile(path: string,
+            time: Date): string {
+    try {
+      this.touch.sync(path, { force: true, time });
+      return null;
+    }
+    catch (err) {
+      return err;
+    }
   }
 
   /** Perform undo operation */

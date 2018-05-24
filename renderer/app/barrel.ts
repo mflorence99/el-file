@@ -8,7 +8,6 @@ import { ContextMenuModule } from 'ngx-contextmenu';
 import { DragDropDirectiveModule } from 'angular4-drag-drop';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HttpClientModule } from '@angular/common/http';
-import { InlineSVGModule } from 'ng-inline-svg';
 import { LibModule } from 'ellib';
 import { NgModule } from '@angular/core';
 import { NgxElectronModule } from 'ngx-electron';
@@ -27,7 +26,6 @@ const MODULES = [
   DragDropDirectiveModule,
   FontAwesomeModule,
   HttpClientModule,
-  InlineSVGModule,
   LibModule,
   MatButtonModule,
   MatButtonToggleModule,
