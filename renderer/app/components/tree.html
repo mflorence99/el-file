@@ -2,12 +2,25 @@
   [contextMenu]="contextMenu"
   [descriptorsByPath]="descriptorsByPath"
   [dictionary]="dictionary"
+  [fs]="fs"
   [level]="0"
   [path]="tab.paths[0]"
   [prefs]="prefs"
   [selection]="selection"
   [tab]="tab">
 </elfile-branch>
+
+<div
+  *ngIf="!loaded"
+  class="loading">
+
+  <fa-icon
+    [icon]="['fas', 'spinner']"
+    [pulse]="true"
+    size="4x">
+  </fa-icon>
+
+</div>
 
 <context-menu>
 

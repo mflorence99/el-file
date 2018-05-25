@@ -19,8 +19,10 @@
       <fa-icon
         (click)="onExpand($event, desc.path)"
         [fixedWidth]="true"
-        [icon]="['fas', tab.paths.includes(desc.path)? 'angle-down': 'angle-right']"
-        [ngStyle]="{visibility: desc.isDirectory? 'visible' : 'hidden'}"
+        [icon]="isExpanded(desc)? ['fas', 'angle-down'] :
+               (isExpanding(desc)? ['far', 'clock'] : ['fas', 'angle-right'])"
+        [ngStyle]="{visibility: desc.isDirectory && !isEmpty(desc)? 'visible' : 'hidden'}"
+        [pulse]="isExpanding(desc)"
         *ngIf="ix === 0"
         size="xs">
       </fa-icon>
@@ -39,12 +41,13 @@
     [contextMenu]="contextMenu"
     [descriptorsByPath]="descriptorsByPath"
     [dictionary]="dictionary"
+    [fs]="fs"
     [level]="level + 1"
     [path]="desc.path"
     [prefs]="prefs"
     [selection]="selection"
     [tab]="tab"
-    *ngIf="tab.paths.includes(desc.path)">
+    *ngIf="isExpanded(desc)">
   </elfile-branch>
 
 </ng-container>

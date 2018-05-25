@@ -1,5 +1,7 @@
 import { FSService, Operation } from './fs';
 
+import { formatDate } from '@angular/common';
+
 /**
  * Touch
  */
@@ -32,7 +34,9 @@ export class TouchOperation extends Operation {
   /** @override */
   toStringImpl(fsSvc: FSService): string {
     const basename = fsSvc.path.basename;
-    return `touch -f -t '${this.time}' ${basename(this.path)}`;
+    // @see http://www.linfo.org/touch.html
+    const ts = formatDate(this.time, 'yyyyMMddHHmm.ss', 'en_US');
+    return `touch -f -t '${ts}' ${basename(this.path)}`;
   }
 
 }

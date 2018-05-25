@@ -4,12 +4,24 @@
 
   <thead>
     <tr>
-      <td>
+
+      <td *ngIf="allInOneDay()">
         When
       </td>
+
+      <ng-container *ngIf="!allInOneDay()">
+        <td>
+          Date
+        </td>
+        <td>
+          Time
+        </td>
+      </ng-container>
+
       <td>
         Operation
       </td>
+
     </tr>
   </thead>
 
@@ -22,28 +34,29 @@
         *ngIf="fslog.entries[fslog.entries.length - ix - 1] as entry">
 
         <td
+          *ngIf="allInOneDay()"
           class="ts">
-
-          <div
-            *ngIf="prefs.dateFormat === 'ago'">
+          <div *ngIf="prefs.dateFormat === 'ago'">
             {{ entry.ts | libTimeAgo }}
           </div>
-
           <div
-            *ngIf="(prefs.dateFormat !== 'ago') && (prefs.timeFormat !== 'none')">
-            {{ entry.ts | date:prefs.timeFormat }}
+            *ngIf="prefs.dateFormat !== 'ago'">
+            {{ entry.ts | date:(prefs.timeFormat === 'none')? 'mediumTime' : prefs.timeFormat }}
           </div>
-
-          <div
-            *ngIf="(prefs.dateFormat !== 'ago') && (prefs.timeFormat === 'none')">
-            {{ entry.ts | date:'mediumTime' }}
-          </div>
-
         </td>
+
+        <ng-container *ngIf="!allInOneDay()">
+          <td class="ts">
+            {{ entry.ts | date:prefs.dateFormat }}
+          </td>
+          <td class="ts">
+            {{ entry.ts | date:(prefs.timeFormat === 'none')? 'mediumTime' : prefs.timeFormat }}
+          </td>
+        </ng-container>
 
         <td
           class="op">
-          {{ entry.op.toString() }}
+          {{ entry.op }}
         </td>
 
       </ng-container>

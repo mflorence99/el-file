@@ -5,6 +5,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
+import { FSStateModel } from '../state/fs';
 import { PrefsStateModel } from '../state/prefs';
 import { Store } from '@ngxs/store';
 
@@ -24,6 +25,7 @@ export class BranchComponent {
   @Input() contextMenu: ContextMenuComponent;
   @Input() descriptorsByPath: { [path: string]: Descriptor[] } = { };
   @Input() dictionary: Dictionary[] = [];
+  @Input() fs = { } as FSStateModel;
   @Input() level = 0;
   @Input() path: string;
   @Input() prefs = { } as PrefsStateModel;
@@ -32,6 +34,31 @@ export class BranchComponent {
 
   /** ctor */
   constructor(private store: Store) { }
+
+  /** Is this path empty? */
+  isEmpty(desc: Descriptor): boolean {
+    return desc
+        && desc.isDirectory
+        && this.tab.paths.includes(desc.path)
+        && !!this.fs[desc.path]
+        && (this.fs[desc.path].length === 0);
+  }
+
+  /** Is this path expanded? */
+  isExpanded(desc: Descriptor): boolean {
+    return desc
+        && desc.isDirectory
+        && this.tab.paths.includes(desc.path)
+        && !!this.fs[desc.path];
+  }
+
+  /** Is this path expanding? */
+  isExpanding(desc: Descriptor): boolean {
+    return desc
+        && desc.isDirectory
+        && this.tab.paths.includes(desc.path)
+        && !this.fs[desc.path];
+  }
 
   // event handlers
 
@@ -48,7 +75,7 @@ export class BranchComponent {
            path: string): void {
     const actions = [];
     if (event.shiftKey) {
-
+      // TODO
     }
     else if (event.ctrlKey)
       actions.push(new TogglePathInSelection({ path }));

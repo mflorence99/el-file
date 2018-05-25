@@ -211,8 +211,10 @@ export interface LayoutStateModel {
         tx.tabs[tx.ix] = { ...tab };
         setState(updated);
         // sync model
-        dispatch(new LoadDirs({ paths: [path] }));
-        nextTick(() => dispatch(new TabUpdated({ tab })));
+        nextTick(() => {
+          dispatch(new LoadDirs({ paths: [path] }));
+          dispatch(new TabUpdated({ tab }));
+        });
       }
     }
   }

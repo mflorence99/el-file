@@ -1,4 +1,4 @@
-import { Action, State, StateContext } from '@ngxs/store';
+import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
 
 import { Operation } from '../services/fs';
 
@@ -12,7 +12,7 @@ export class LogOperation {
 }
 
 export interface FSLogEntry {
-  op: Operation;
+  op: string;
   ts: Date;
 }
 
@@ -25,7 +25,7 @@ export interface FSLogStateModel {
   defaults: {
     entries: []
   }
-}) export class FSLogState {
+}) export class FSLogState implements NgxsOnInit {
 
   @Action(LogOperation)
   logOperation({ getState, setState }: StateContext<FSLogStateModel>,
@@ -34,8 +34,19 @@ export interface FSLogStateModel {
     const updated = { ...getState() };
     if (updated.entries.length > MAX_STACK)
       updated.entries.splice(0, 1);
-    updated.entries.push({ op, ts: new Date() });
+    updated.entries.push({ op: op.toString(), ts: new Date() });
     setState(updated);
+  }
+
+  // lifecycle methods
+
+  ngxsOnInit({ getState, setState }: StateContext<FSLogStateModel>) {
+    const current = { ...getState() };
+    // NOTE: timestamps get serialized as strings
+    current.entries.forEach((entry: FSLogEntry) => {
+      entry.ts = new Date(entry.ts.toString());
+    });
+    setState(current);
   }
 
 }

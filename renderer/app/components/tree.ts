@@ -43,6 +43,8 @@ export class TreeComponent extends LifecycleComponent
   descriptorsByPath: { [path: string]: Descriptor[] } = { };
   dictionary: Dictionary[] = [];
 
+  loaded: boolean;
+
   subToActions: Subscription;
 
   /** ctor */
@@ -100,6 +102,7 @@ export class TreeComponent extends LifecycleComponent
           this.descriptorsByPath[path] =
             this.dictSvc.descriptorsForView(path, this.fs, this.dictionary, this.prefs, this.view);
         });
+        this.loaded = true;
         this.cdf.detectChanges();
       });
   }

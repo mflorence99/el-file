@@ -37,7 +37,7 @@ export class RootPageComponent {
   editView = { } as View;
   editViewID: string;
 
-  showFSLog = true;
+  showFSLog = false;
 
   /** ctor */
   constructor(private electron: ElectronService,

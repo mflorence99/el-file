@@ -51,6 +51,7 @@ export interface Descriptor {
   icon: string;
   isDirectory: boolean;
   isFile: boolean;
+  isReadable: boolean;
   isSymlink: boolean;
   isWritable: boolean;
   mode: string;
@@ -112,8 +113,11 @@ export interface FSStateModel {
             async.map(children, this.fs.lstat, (err, stats) => {
               const descs: Descriptor[] = names.reduce((acc, name, ix) => {
                 const stat = stats[ix];
-                if (stat.isDirectory() || stat.isFile() || stat.isSymbolicLink())
-                  acc.push(this.makeDescriptor(name, path, stat));
+                if (stat.isDirectory() || stat.isFile() || stat.isSymbolicLink()) {
+                  const desc = this.makeDescriptor(name, path, stat);
+                  if (desc.isReadable)
+                    acc.push(desc);
+                }
                 return acc;
               }, []);
               patchState({ [path]: descs });
@@ -166,6 +170,14 @@ export interface FSStateModel {
 
   // private methods
 
+  private isReadable(mode: Mode,
+                     uid: number,
+                     gid: number): boolean {
+    return (mode.others.read
+        || ((this.userInfo.uid === uid) && mode.owner.read)
+        || ((this.userInfo.gid === gid) && mode.group.read));
+  }
+
   private isWritable(mode: Mode,
                      uid: number,
                      gid: number): boolean {
@@ -208,6 +220,7 @@ export interface FSStateModel {
       icon: this.makeIcon(name, stat),
       isDirectory: stat.isDirectory(),
       isFile: stat.isFile(),
+      isReadable: this.isReadable(mode, stat.uid, stat.gid),
       isSymlink: stat.isSymbolicLink(),
       isWritable: this.isWritable(mode, stat.uid, stat.gid),
       mode: mode.toString(),
