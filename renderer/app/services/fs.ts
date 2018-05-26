@@ -32,8 +32,9 @@ export abstract class Operation {
       // manage the undo/redo stack
       if (this.original)
         fsSvc.clearRedoStack();
+      const copy = Object.assign(Object.create(this), { original: false });
       if (this.undo) {
-        this.undo.redo = Object.create(this);
+        this.undo.redo = copy;
         this.undo.undo = null;
         fsSvc.pushUndo(this.undo);
         // NOTE: we might never execute the undo action
@@ -42,7 +43,7 @@ export abstract class Operation {
       }
       else if (this.redo) {
         this.redo.redo = null;
-        this.redo.undo = Object.create(this);
+        this.redo.undo = copy;
         fsSvc.pushRedo(this.redo);
       }
     }
@@ -184,12 +185,14 @@ export class FSService {
   }
 
   /** Execute operation */
-  run(op: Operation): void {
-    if (op) {
-      const err = op.run(this);
-      if (!err)
-        this.store.dispatch(new LogOperation({ op }));
-    }
+  run(...ops: Operation[]): void {
+    ops.forEach(op => {
+      if (op) {
+        const err = op.run(this);
+        if (!err)
+          this.store.dispatch(new LogOperation({ op }));
+      }
+    });
   }
 
   /** Touch a file */

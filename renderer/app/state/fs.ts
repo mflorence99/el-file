@@ -227,7 +227,7 @@ export interface FSStateModel {
       mtime: stat.mtime,
       name: name,
       path: this.path.join(path, name),
-      size: stat.size,
+      size: stat.isFile()? stat.size : 0,
       user: String(stat.uid)
     } as Descriptor;
   }

@@ -67,9 +67,9 @@ export class RootCtrlComponent extends LifecycleComponent {
   @OnChange('propsForm') updateProps(): void {
     if (this.propsForm && this.propsForm.submitted) {
       const renameOp = RenameOperation.makeInstance(this.propsForm.path, this.propsForm.name, this.fsSvc);
-      this.fsSvc.run(renameOp);
       const chmodOp = ChmodOperation.makeInstance(this.propsForm.path, this.propsForm.mode, this.fsSvc);
-      this.fsSvc.run(chmodOp);
+      // NOTE: run chmod first in case we rename
+      this.fsSvc.run(chmodOp, renameOp);
     }
   }
 

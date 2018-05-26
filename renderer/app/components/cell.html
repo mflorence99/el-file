@@ -35,18 +35,28 @@
   class="cell quantity">
 
   <ng-container
-    *ngIf="prefs.quantityFormat === 'abbrev'">
-    {{ desc[entry.name] | libNumeral:'0a' }}
+    *ngIf="desc[entry.name]">
+
+    <ng-container
+      *ngIf="prefs.quantityFormat === 'abbrev'">
+      {{ desc[entry.name] | libNumeral:'0a' }}
+    </ng-container>
+
+    <ng-container
+      *ngIf="prefs.quantityFormat === 'bytes'">
+      {{ desc[entry.name] | libNumeral:'0b' }}
+    </ng-container>
+
+    <ng-container
+      *ngIf="prefs.quantityFormat === 'number'">
+      {{ desc[entry.name] | libNumeral:'0,0' }}
+    </ng-container>
+
   </ng-container>
 
   <ng-container
-    *ngIf="prefs.quantityFormat === 'bytes'">
-    {{ desc[entry.name] | libNumeral:'0b' }}
-  </ng-container>
-
-  <ng-container
-    *ngIf="prefs.quantityFormat === 'number'">
-    {{ desc[entry.name] | libNumeral:'0,0' }}
+    *ngIf="!desc[entry.name]">
+    &ndash;
   </ng-container>
 
 </div>
