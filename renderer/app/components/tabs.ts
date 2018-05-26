@@ -61,7 +61,11 @@ export class TabsComponent {
 
   onMoveTab(tab: Tab,
             ix: number): void {
-    this.store.dispatch(new MoveTab({ splitID: this.splitID, tab, ix }));
+    const actions = [
+      new MoveTab({ splitID: this.splitID, tab, ix }),
+      new SelectTab({ tab })    
+    ];
+    this.store.dispatch(actions);
   }
 
   onTabSelect(ix: number): void {
