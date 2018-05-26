@@ -1,0 +1,35 @@
+<table
+  [ngClass]="{gridlines: prefs.showGridLines}">
+
+  <thead>
+    <tr>
+      <td>
+        Redo Stack
+      </td>
+      <td>
+        Undo Stack
+      </td>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr *ngFor="let stack of zipped">
+
+      <td class="op">
+        <div *ngIf="stack[0]">
+          {{ stack[0].toString() }}
+        </div>
+      </td>
+
+      <td class="op">
+        <div *ngIf="stack[1]">
+          {{ stack[1].toString() }}
+        </div>
+      </td>
+
+    </tr>
+
+  </tbody>
+
+</table>

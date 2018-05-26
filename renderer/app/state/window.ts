@@ -7,8 +7,14 @@ export class SetBounds {
   constructor(public readonly bounds: { x, y, width, height }) { }
 }
 
+export class ShowLog {
+  static readonly type = '[Window] show log';
+  constructor(public readonly state: boolean) { }
+}
+
 export interface WindowStateModel {
   bounds?: {x, y, width, height};
+  showLog?: boolean;
 }
 
 @State<WindowStateModel>({
@@ -20,6 +26,12 @@ export interface WindowStateModel {
   setBounds({ patchState }: StateContext<WindowStateModel>,
             { bounds }: SetBounds) {
     patchState({ bounds });
+  }
+
+  @Action(ShowLog)
+  showLog({ patchState }: StateContext<WindowStateModel>,
+          { state }: ShowLog) {
+    patchState({ showLog: state });
   }
 
 }

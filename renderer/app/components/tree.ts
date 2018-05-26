@@ -3,7 +3,7 @@ import { AutoUnsubscribe, LifecycleComponent } from 'ellib';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Dictionary, DictionaryService } from '../services/dictionary';
 import { DirLoaded, FSStateModel } from '../state/fs';
-import { NewTab, Tab, TabsUpdated } from '../state/layout';
+import { NewTab, Tab, TabUpdated, TabsUpdated } from '../state/layout';
 import { PrefsStateModel, PrefsUpdated } from '../state/prefs';
 import { View, ViewUpdated } from '../state/views';
 import { debounceTime, filter } from 'rxjs/operators';
@@ -82,7 +82,7 @@ export class TreeComponent extends LifecycleComponent
   ngOnInit(): void {
     this.subToActions = this.actions$
       .pipe(
-        ofAction(DirLoaded, PrefsUpdated, TabsUpdated, ViewUpdated),
+        ofAction(DirLoaded, PrefsUpdated, TabsUpdated, TabUpdated, ViewUpdated),
         filter(action => {
           switch (action.constructor) {
             case DirLoaded:
@@ -91,6 +91,8 @@ export class TreeComponent extends LifecycleComponent
               return true;
             case TabsUpdated:
               return (<TabsUpdated>action).payload.splitID === this.splitID;
+            case TabUpdated:
+              return (<TabUpdated>action).payload.tab.id === this.tab.id;
             case ViewUpdated:
               return (<ViewUpdated>action).payload.viewID === this.tab.id;
           }

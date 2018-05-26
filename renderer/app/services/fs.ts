@@ -34,6 +34,9 @@ export abstract class Operation {
         this.undo.redo = Object.create(this);
         this.undo.undo = null;
         fsSvc.pushUndo(this.undo);
+        // NOTE: we might never execute the undo action
+        // but swe still want to know what it does!
+        this.undo.str = this.undo.toStringImpl(fsSvc);
       }
       else if (this.redo) {
         this.redo.redo = null;
@@ -65,8 +68,8 @@ export class FSService {
   path: any;
   touch: any;
 
-  redoStack: Operation[] = [];
-  undoStack: Operation[] = [];
+  private redoStack: Operation[] = [];
+  private undoStack: Operation[] = [];
 
   /** ctor */
   constructor(private electron: ElectronService,
@@ -106,9 +109,19 @@ export class FSService {
     return this.canRedo()? this.redoStack[this.redoStack.length - 1] : null;
   }
 
+  /** Peek at the entire redo stack */
+  peekRedoStack(): Operation[] {
+    return this.redoStack.slice(0);
+  }
+
   /** Peek at the topmost undo action */
   peekUndo(): Operation {
     return this.canUndo()? this.undoStack[this.undoStack.length - 1] : null;
+  }
+
+  /** Peek at the entire undo stack */
+  peekUndoStack(): Operation[] {
+    return this.undoStack.slice(0);
   }
 
   /** Push an operation onto the redo stack */

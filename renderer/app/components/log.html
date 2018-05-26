@@ -1,0 +1,37 @@
+<elfile-fslog
+  [fslog]="fslog"
+  [prefs]="prefs"
+  *ngIf="logType === 'fs'">
+</elfile-fslog>
+
+<elfile-stack
+  [prefs]="prefs"
+  [redoStack]="fsSvc.peekRedoStack()"
+  [undoStack]="fsSvc.peekUndoStack()"
+  *ngIf="logType === 'stack'">
+</elfile-stack>
+
+<mat-button-toggle-group
+  (change)="logType = $event.value">
+
+  <mat-button-toggle
+    [checked]="logType === 'fs'"
+    [disabled]="fslog.entries.length === 0"
+    mat-tooltip="Show file system log"
+    value="fs">
+    <fa-icon
+      [icon]="['far', 'file-alt']">
+    </fa-icon>
+  </mat-button-toggle>
+
+  <mat-button-toggle
+    [checked]="logType === 'stack'"
+    [disabled]="!fsSvc.canRedo() && !fsSvc.canUndo()"
+    mat-tooltip="Show undo/redo stack"
+    value="stack">
+    <fa-icon
+      [icon]="['fas', 'undo']">
+    </fa-icon>
+  </mat-button-toggle>
+
+</mat-button-toggle-group>

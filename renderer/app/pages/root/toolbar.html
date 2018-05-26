@@ -60,10 +60,11 @@
   </mat-button-toggle-group>
 
   <mat-button-toggle
-    (change)="toggleFSLog.emit($event.source.checked)"
+    (change)="showLog($event.source.checked)"
+    [checked]="window.showLog"
     mat-tooltip="Show log">
     <fa-icon
-      [icon]="['far', 'list-alt']"
+      [icon]="['far', 'file-alt']"
       size="lg">
     </fa-icon>
   </mat-button-toggle>

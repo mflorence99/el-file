@@ -1,0 +1,18 @@
+:host {
+  background-color: var(--mat-grey-850);
+  color: var(--mat-grey-400);
+  display: block;
+  height: 100%;
+  position: relative;
+  overflow: auto;
+}
+
+mat-button-toggle {
+  background-color: var(--mat-grey-850) !important;
+}
+
+mat-button-toggle-group {
+  bottom: 16px;
+  position: absolute;
+  right: 16px;
+}

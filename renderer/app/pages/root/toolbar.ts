@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CloseSplit, MakeSplit, Reorient } from '../../state/layout';
+import { ShowLog, WindowStateModel } from '../../state/window';
 
 import { ElectronService } from 'ngx-electron';
 import { FSService } from '../../services/fs';
@@ -23,9 +24,9 @@ import { Store } from '@ngxs/store';
 export class ToolbarComponent {
 
   @Input() layout = { } as LayoutStateModel;
+  @Input() window = { } as WindowStateModel;
 
   @Output() openPrefs = new EventEmitter<any>();
-  @Output() toggleFSLog = new EventEmitter<boolean>();
 
   /** ctor */
   constructor(private electron: ElectronService,
@@ -57,6 +58,11 @@ export class ToolbarComponent {
   reload(): void {
     const win = this.electron.remote.getCurrentWindow();
     win.webContents.reload();
+  }
+
+  /** Show/hide the log */
+  showLog(state: boolean): void {
+    this.store.dispatch(new ShowLog(state));
   }
 
   /** Split screen */

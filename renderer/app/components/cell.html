@@ -60,7 +60,16 @@
     [fixedWidth]="true"
     [icon]="desc.icon.split(' ')"
     [ngStyle]="{color: desc.color}"
-    *ngIf="entry.showIcon"
+    *ngIf="entry.showIcon && !desc.isDirectory"
+    size="xs">
+  </fa-icon>
+
+  <fa-icon
+    [fixedWidth]="true"
+    [icon]="branch.isEmpty(desc)? ['far', 'folder'] :
+           (branch.isExpanded(desc)? ['fas', 'folder-open'] : ['fas', 'folder'])"
+    [ngStyle]="{color: desc.color}"
+    *ngIf="entry.showIcon && desc.isDirectory"
     size="xs">
   </fa-icon>
 

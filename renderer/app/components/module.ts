@@ -4,11 +4,13 @@ import { CellComponent } from './cell';
 import { ColumnComponent } from './column';
 import { FSLogComponent } from './fslog';
 import { HeaderComponent } from './header';
+import { LogComponent } from './log';
 import { NgModule } from '@angular/core';
 import { PaneComponent } from './pane';
 import { PrefsComponent } from './prefs';
 import { PropsComponent } from './props';
 import { SplittableComponent } from './splittable';
+import { StackComponent } from './stack';
 import { TabComponent } from './tab';
 import { TabsComponent } from './tabs';
 import { TreeComponent } from './tree';
@@ -24,10 +26,12 @@ const COMPONENTS = [
   ColumnComponent,
   FSLogComponent,
   HeaderComponent,
+  LogComponent,
   PaneComponent,
   PrefsComponent,
   PropsComponent,
   SplittableComponent,
+  StackComponent,
   TabComponent,
   TabsComponent,
   TreeComponent,

@@ -3,8 +3,8 @@
 
   <elfile-toolbar
     (openPrefs)="prefsDrawer.open()"
-    (toggleFSLog)="showFSLog = $event"
-    [layout]="ctrl.layout$ | async">
+    [layout]="ctrl.layout$ | async"
+    [window]="ctrl.window$ | async">
   </elfile-toolbar>
 
   <main>
@@ -30,12 +30,12 @@
 
       <split-area
         [size]="25"
-        *ngIf="showFSLog">
+        *ngIf="(ctrl.window$ | async).showLog">
 
-        <elfile-fslog
+        <elfile-log
           [fslog]="ctrl.fslog$ | async"
           [prefs]="ctrl.prefs$ | async">
-        </elfile-fslog>
+        </elfile-log>
 
       </split-area>
 
