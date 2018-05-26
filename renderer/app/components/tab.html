@@ -225,42 +225,22 @@
 
   </div>
 
-  <div class="buttons">
+  <div class="okAndCancel">
+
+    <a
+      (click)="onCancel()"
+      mat-button>
+      Cancel
+    </a>
 
     <button
-      (click)="onRemove(false)"
-      [disabled]="noRemove"
-      [class.hidden]="areYouSure"
-      mat-button>
-      Remove
+      (click)="onSubmit()"
+      [disabled]="tabForm.invalid"
+      color="primary"
+      mat-raised-button
+      type="submit">
+      OK
     </button>
-
-    <button
-      (click)="onRemove(true)"
-      [disabled]="noRemove"
-      [class.hidden]="!areYouSure"
-      mat-button>
-      Are you sure? Cannot be undone!
-    </button>
-
-    <div class="okAndCancel">
-
-      <a
-        (click)="onCancel()"
-        mat-button>
-        Cancel
-      </a>
-
-      <button
-        (click)="onSubmit()"
-        [disabled]="tabForm.invalid"
-        color="primary"
-        mat-raised-button
-        type="submit">
-        OK
-      </button>
-
-    </div>
 
   </div>
 

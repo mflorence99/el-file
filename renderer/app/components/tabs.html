@@ -11,23 +11,19 @@
 
         <div
           (dropEvent)="onMoveTab($event, ix)"
+          [contextMenu]="contextMenu"
+          [contextMenuSubject]="tab"
           [dropHighlight]="'drop-target'"
           dropDirective>
 
           <div
             [dragDirective]="tab">
 
-            <button
-              (click)="onEditTab($event, tab)"
-              mat-button
-              mat-icon-button
-              matTooltip="Modify tab">
-              <fa-icon
-                [icon]="tab.icon.split(' ')"
-                [ngStyle]="{color: tab.color}"
-                size="lg">
-              </fa-icon>
-            </button>
+            <fa-icon
+              [icon]="tab.icon.split(' ')"
+              [ngStyle]="{color: tab.color}"
+              size="lg">
+            </fa-icon>
 
             <span>
               {{ tab.label }}
@@ -52,3 +48,20 @@
     [icon]="['fas', 'ellipsis-v']">
   </fa-icon>
 </button>
+
+<context-menu>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'edit')">
+    <div>Customize...</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onContextMenu($event, 'remove')"
+    [enabled]="isTabRemoveable.bind(this)">
+    <div>Remove</div>
+  </ng-template>
+
+</context-menu>

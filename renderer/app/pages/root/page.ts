@@ -53,10 +53,8 @@ export class RootPageComponent {
     this.propsDrawer.open();
   }
 
-  onEditTab(tab: Tab,
-            noRemove: boolean): void {
+  onEditTab(tab: Tab): void {
     this.editTab = tab;
-    this.noRemoveTab = noRemove;
     this.tabDrawer.open();
   }
 
