@@ -91,6 +91,11 @@ export class FSService {
     return this.undoStack.length > 0;
   }
 
+  /** Perform chmod */
+  lstat(path: string): fs.Stats {
+    return this.fs.lstatSync(path);
+  }
+
   /** Clear the entire redo stack */
   clearRedoStack(): void {
     this.redoStack = [];
@@ -112,8 +117,15 @@ export class FSService {
   }
 
   /** Perform lstat */
-  lstat(path: string): fs.Stats {
-    return this.fs.lstatSync(path);
+  chmod(path: string,
+        mode: number): string {
+    try {
+      this.fs.chmodSync(path, mode);
+      return null;
+    }
+    catch (err) {
+      return err.toString();
+    }
   }
 
   /** Peek at the topmost redo action */
@@ -188,7 +200,7 @@ export class FSService {
       return null;
     }
     catch (err) {
-      return err;
+      return err.toString();
     }
   }
 

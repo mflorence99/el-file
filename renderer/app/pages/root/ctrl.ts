@@ -10,6 +10,7 @@ import { StatusState, StatusStateModel } from '../../state/status';
 import { UpdateViewVisibility, ViewVisibility, ViewsState, ViewsStateModel } from '../../state/views';
 import { WindowState, WindowStateModel } from '../../state/window';
 
+import { ChmodOperation } from '../../services/chmod';
 import { ElectronService } from 'ngx-electron';
 import { FSService } from '../../services/fs';
 import { Observable } from 'rxjs';
@@ -67,6 +68,8 @@ export class RootCtrlComponent extends LifecycleComponent {
     if (this.propsForm && this.propsForm.submitted) {
       const renameOp = RenameOperation.makeInstance(this.propsForm.path, this.propsForm.name, this.fsSvc);
       this.fsSvc.run(renameOp);
+      const chmodOp = ChmodOperation.makeInstance(this.propsForm.path, this.propsForm.mode, this.fsSvc);
+      this.fsSvc.run(chmodOp);
     }
   }
 

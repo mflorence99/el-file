@@ -24,6 +24,10 @@
   novalidate>
 
   <input
+    formControlName="mode"
+    type="hidden">
+
+  <input
     formControlName="path"
     type="hidden">
 
@@ -35,7 +39,71 @@
       type="text">
   </mat-form-field>
 
-  <table>
+  <div
+    class="permissions"
+    formGroupName="flags">
+
+    <div>&nbsp;</div>
+    <div><b>+R</b></div>
+    <div><b>+W</b></div>
+    <div><b>+X</b></div>
+
+    <div class="tag">Owner</div>
+    <div>
+      <mat-checkbox
+        [disabled]="true"
+        formControlName="S_IRUSR">
+      </mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox
+        formControlName="S_IWUSR">
+      </mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox
+        formControlName="S_IXUSR">
+      </mat-checkbox>
+    </div>
+
+    <div class="tag">Group</div>
+    <div>
+      <mat-checkbox
+        formControlName="S_IRGRP">
+      </mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox
+        formControlName="S_IWGRP">
+      </mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox
+        formControlName="S_IXGRP">
+      </mat-checkbox>
+    </div>
+
+    <div class="tag">Others</div>
+    <div>
+      <mat-checkbox
+        formControlName="S_IROTH">
+      </mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox
+        formControlName="S_IWOTH">
+      </mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox
+        formControlName="S_IXOTH">
+      </mat-checkbox>
+    </div>
+
+  </div>
+
+  <table
+    class="info">
 
     <tr>
       <td>Size</td>

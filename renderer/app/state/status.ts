@@ -38,7 +38,7 @@ export interface StatusStateModel {
   statusMessage({ patchState }: StateContext<StatusStateModel>,
                 { payload }: StatusMessage) {
     const { msgLevel, msgText } = payload;
-    patchState({ msgLevel, msgText });
+    patchState({ alarm: msgLevel === 'warn', msgLevel, msgText });
   }
 
 }

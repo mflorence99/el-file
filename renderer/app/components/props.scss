@@ -12,8 +12,32 @@ form {
   grid-gap: 16px;
   grid-template-columns: 1fr;
 
+  .info {
+    font-size: 0.8rem;
+    width: 100%;
+
+    td:first-child {
+      font-weight: bold;
+      text-transform: uppercase;
+      width: 96px;
+    }
+
+  }
+
   .mono {
     font-family: monospace;
+  }
+
+  .permissions {
+    display: grid;
+    grid-gap: 4px;
+    grid-template-columns: 76px repeat(3, auto);
+    justify-items: center;
+
+    .tag {
+      justify-self: start;
+    }
+
   }
 
   .okAndCancel {
@@ -21,17 +45,6 @@ form {
     grid-gap: 16px;
     grid-template-columns: auto auto;
     justify-content: right;
-  }
-
-  table {
-    font-size: 0.8rem;
-    width: 100%;
-
-    td:first-child {
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-
   }
 
 }
