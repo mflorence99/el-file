@@ -19,7 +19,7 @@ export abstract class Operation {
 
   private str: string;
 
-  constructor(public async: boolean) { }
+  constructor(public original: boolean) { }
 
   run(fsSvc: FSService): string {
     // capture what we are about to run & run it
@@ -30,12 +30,14 @@ export abstract class Operation {
     else {
       fsSvc.handleSuccess(this.str);
       // manage the undo/redo stack
+      if (this.original)
+        fsSvc.clearRedoStack();
       if (this.undo) {
         this.undo.redo = Object.create(this);
         this.undo.undo = null;
         fsSvc.pushUndo(this.undo);
         // NOTE: we might never execute the undo action
-        // but swe still want to know what it does!
+        // but we still want to know what it does!
         this.undo.str = this.undo.toStringImpl(fsSvc);
       }
       else if (this.redo) {
@@ -87,6 +89,16 @@ export class FSService {
   /** Can we undo? */
   canUndo(): boolean {
     return this.undoStack.length > 0;
+  }
+
+  /** Clear the entire redo stack */
+  clearRedoStack(): void {
+    this.redoStack = [];
+  }
+
+  /** Clear the entire undo stack */
+  clearUndoStack(): void {
+    this.undoStack = [];
   }
 
   /** Handle an operation error */

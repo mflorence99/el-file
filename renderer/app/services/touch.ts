@@ -21,7 +21,7 @@ export class TouchOperation extends Operation {
               private time: Date,
                       orig: Date,
                       original = true) {
-    super(false);
+    super(original);
     if (original)
       this.undo = new TouchOperation(path, orig, time, false);
   }

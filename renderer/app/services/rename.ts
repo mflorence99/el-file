@@ -20,7 +20,7 @@ export class RenameOperation extends Operation {
   constructor(private from: string,
               private to: string,
                       original = true) {
-    super(false);
+    super(original);
     if (original)
       this.undo = new RenameOperation(to, from, false);
   }

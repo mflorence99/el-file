@@ -1,7 +1,7 @@
 {
   "name": "elfile",
   "main": "dist/electron.js",
-  "description": "El filador",
+  "description": "Elf",
   "author": "Mark Florence <mflo999@gmail.com>",
   "version": "1.0.0",
   "license": "MIT",

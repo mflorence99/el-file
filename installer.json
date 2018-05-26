@@ -5,7 +5,7 @@
     "Utility"
   ],
   "name": "elfile",
-  "productName": "El filador",
+  "productName": "Elf",
   "lintianOverrides": [
     "changelog-file-missing-in-native-package"
   ]
