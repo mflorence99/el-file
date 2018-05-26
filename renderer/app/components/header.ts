@@ -3,6 +3,7 @@ import { Dictionary, DictionaryService } from '../services/dictionary';
 import { LifecycleComponent, OnChange } from 'ellib';
 import { UpdateViewWidths, View, ViewWidths } from '../state/views';
 
+import { PrefsStateModel } from '../state/prefs';
 import { Store } from '@ngxs/store';
 
 /**
@@ -18,6 +19,7 @@ import { Store } from '@ngxs/store';
 
 export class HeaderComponent extends LifecycleComponent {
 
+  @Input() prefs = { } as PrefsStateModel;
   @Input() view = { } as View;
   @Input() viewID: string;
 

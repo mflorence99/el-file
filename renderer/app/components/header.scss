@@ -1,5 +1,16 @@
 :host {
-  border-bottom: 1px dotted var(--mat-grey-700);
   display: block;
   height: 100%;
+}
+
+.column {
+  border-left: 1px dotted var(--mat-grey-700);
+}
+
+.row {
+
+  &.gridlines {
+    border-bottom: 1px dotted var(--mat-grey-700);
+  }
+
 }

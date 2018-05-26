@@ -1,11 +1,15 @@
 <split
   (dragEnd)="onSplitSizeChange($event)"
+  [ngClass]="{gridlines: prefs.showGridLines}"
+  class="row"
   direction="horizontal"
-  gutterColor="var(--mat-grey-800)"
-  gutterSize="1">
+  gutterColor="transparent"
+  gutterImageH="url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=')"
+  gutterSize="2">
 
   <split-area
     *ngFor="let entry of dictionary"
+    class="column"
     [size]="entry.width">
 
     <elfile-column

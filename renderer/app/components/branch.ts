@@ -39,7 +39,6 @@ export class BranchComponent {
   isEmpty(desc: Descriptor): boolean {
     return desc
         && desc.isDirectory
-        && this.tab.paths.includes(desc.path)
         && !!this.fs[desc.path]
         && (this.fs[desc.path].length === 0);
   }
