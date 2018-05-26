@@ -260,9 +260,10 @@ export interface LayoutStateModel {
     if (split) {
       // making a split on the same axis is easy
       // we set everyone to the same size, distributed evenly
+      const newSplit = LayoutState.defaultSplit({ size: 50 });
       if (split.direction === direction) {
         const iy = ix + (before? 0 : 1);
-        split.splits.splice(iy, 0, LayoutState.defaultSplit({ size: 0 }));
+        split.splits.splice(iy, 0, newSplit);
         const size = 100 / split.splits.length;
         split.splits.forEach(split => split.size = size);
       }
@@ -276,19 +277,18 @@ export interface LayoutStateModel {
         const splatTabs = splat.tabs;
         splat.id = UUID.UUID();
         delete splat.tabs;
-        if (before) {
-          splat.splits = [LayoutState.defaultSplit({ size: 50 }),
-                          { id: splatID, size: 50, tabs: splatTabs }];
-        }
-        else {
-          splat.splits = [{ id: splatID, size: 50, tabs: splatTabs },
-                          LayoutState.defaultSplit({ size: 50 })];
-        }
+        if (before)
+          splat.splits = [newSplit, { id: splatID, size: 50, tabs: splatTabs }];
+        else splat.splits = [{ id: splatID, size: 50, tabs: splatTabs }, newSplit];
       }
       setState(updated);
       // initialize any new tab preferences
       LayoutState.visitTabs(updated, (tab: Tab) => {
         dispatch(new InitView({ viewID: tab.id }));
+      });
+      // sync model
+      nextTick(() => {
+        dispatch(new TabsUpdated({ splitID: newSplit.id, tabs: newSplit.tabs }));
       });
     }
   }

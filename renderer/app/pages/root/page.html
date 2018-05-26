@@ -16,7 +16,7 @@
       gutterSize="5">
 
       <split-area
-        [size]="75">
+        [size]="90">
 
         <elfile-splittable
           [fs]="ctrl.fs$ | async"
@@ -29,7 +29,7 @@
       </split-area>
 
       <split-area
-        [size]="25"
+        [size]="10"
         *ngIf="(ctrl.window$ | async).showLog">
 
         <elfile-log

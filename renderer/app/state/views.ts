@@ -87,12 +87,16 @@ export interface ViewsStateModel {
   }
 
   @Action(InitView)
-  initView({ getState, patchState }: StateContext<ViewsStateModel>,
+  initView({ dispatch, getState, patchState }: StateContext<ViewsStateModel>,
            { payload }: InitView) {
     const { viewID } = payload;
     const current = getState();
-    if (!current[viewID])
-      patchState({ [viewID]: { ...current['0'] } } );
+    if (!current[viewID]) {
+      const view = { ...current['0'] };
+      patchState({ [viewID]: view } );
+      // sync model
+      nextTick(() => dispatch(new ViewUpdated({ viewID, view })));
+  }
   }
 
   @Action(RemoveView)
