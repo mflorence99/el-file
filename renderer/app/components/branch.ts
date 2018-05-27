@@ -61,6 +61,18 @@ export class BranchComponent {
 
   // event handlers
 
+  onContextMenu(event: MouseEvent,
+                desc: Descriptor): void {
+    // if the context isn't part of the selection,
+    // then it becomes the selection
+    if (!this.selection.paths.includes(desc.path)) {
+      this.store.dispatch([
+        new ClearSelection(),
+        new AddPathToSelection({ path: desc.path })
+      ]);
+    }
+  }
+
   onExpand(event: MouseEvent,
            path: string): void {
     const action = this.tab.paths.includes(path)?

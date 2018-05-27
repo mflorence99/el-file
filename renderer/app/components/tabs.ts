@@ -38,9 +38,9 @@ export class TabsComponent {
 
   // event handlers
 
-  onContextMenu(event: {event?: MouseEvent,
-                        item: Tab},
-                command: string): void {
+  onExecute(event: {event?: MouseEvent,
+                    item: Tab},
+            command: string): void {
     const tab = event.item;
     switch (command) {
       case 'edit':
@@ -61,11 +61,10 @@ export class TabsComponent {
 
   onMoveTab(tab: Tab,
             ix: number): void {
-    const actions = [
+    this.store.dispatch([
       new MoveTab({ splitID: this.splitID, tab, ix }),
-      new SelectTab({ tab })    
-    ];
-    this.store.dispatch(actions);
+      new SelectTab({ tab })
+    ]);
   }
 
   onTabSelect(ix: number): void {

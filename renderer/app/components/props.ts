@@ -77,7 +77,7 @@ export class PropsComponent extends LifecycleComponent {
     if (this.desc) {
       this.propsForm.reset();
       this.propsForm.patchValue({
-        flags: {
+        flags: this.desc.mode? {
           S_IRGRP: this.desc.mode[4] === 'r',
           S_IWGRP: this.desc.mode[5] === 'w',
           S_IXGRP: this.desc.mode[6] === 'x',
@@ -87,7 +87,7 @@ export class PropsComponent extends LifecycleComponent {
           S_IRUSR: this.desc.mode[1] === 'r',
           S_IWUSR: this.desc.mode[2] === 'w',
           S_IXUSR: this.desc.mode[3] === 'x'
-        },
+        } : { },
         name: this.desc.name,
         path: this.desc.path
       }, { emitEvent: false });

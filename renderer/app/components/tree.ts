@@ -77,6 +77,27 @@ export class TreeComponent extends LifecycleComponent
     return desc.isFile && desc.isWritable;
   }
 
+  // event handlers
+
+  onExecute(event: {event?: MouseEvent,
+                    item: Descriptor},
+            command: string): void {
+    const desc = event.item;
+    // execute command
+    switch (command) {
+      case 'open':
+        this.store.dispatch(new NewTab({ splitID: this.splitID, path: desc.path }));
+        break;
+      case 'properties':
+        this.root.onEditProps(desc);
+        break;
+      case 'touch':
+        const touchOp = TouchOperation.makeInstance(desc.path, this.fsSvc);
+        this.fsSvc.run(touchOp);
+        break;
+    }
+  }
+
   // lifecycle methods
 
   ngOnInit(): void {
@@ -107,26 +128,6 @@ export class TreeComponent extends LifecycleComponent
         this.loaded = true;
         this.cdf.detectChanges();
       });
-  }
-
-  // event handlers
-
-  onContextMenu(event: {event?: MouseEvent,
-                        item: Descriptor},
-                command: string): void {
-    const desc = event.item;
-    switch (command) {
-      case 'open':
-        this.store.dispatch(new NewTab({ splitID: this.splitID, path: desc.path }));
-        break;
-      case 'properties':
-        this.root.onEditProps(desc);
-        break;
-      case 'touch':
-        const touchOp = TouchOperation.makeInstance(desc.path, this.fsSvc);
-        this.fsSvc.run(touchOp);
-        break;
-    }
   }
 
 }

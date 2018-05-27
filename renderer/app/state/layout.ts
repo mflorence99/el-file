@@ -2,6 +2,7 @@ import { Action, Actions, NgxsOnInit, State, StateContext, ofAction } from '@ngx
 import { DirUnloaded, LoadDirs } from './fs';
 import { InitView, RemoveView, ViewUpdated } from './views';
 
+import { ClearSelection } from '../state/selection';
 import { UUID } from 'angular2-uuid';
 import { nextTick } from 'ellib';
 
@@ -410,6 +411,8 @@ export interface LayoutStateModel {
       if (split) {
         split.tabs = tx.tabs.map((tab, iy) => ({ ...tab, selected: (tx.ix === iy) }));
         setState(updated);
+        // sync model
+        dispatch(new ClearSelection());
         // sync model
         nextTick(() => dispatch(new TabsUpdated({ splitID: tx.splitID, tabs: tx.tabs })));
       }

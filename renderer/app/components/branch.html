@@ -3,6 +3,7 @@
 
   <div
     (click)="onSelect($event, desc.path)"
+    (contextmenu)="onContextMenu($event, desc)"
     [contextMenu]="contextMenu"
     [contextMenuSubject]="desc"
     [ngClass]="{gridlines: prefs.showGridLines,

@@ -53,13 +53,13 @@
 
   <ng-template
     contextMenuItem
-    (execute)="onContextMenu($event, 'edit')">
+    (execute)="onExecute($event, 'edit')">
     <div>Customize...</div>
   </ng-template>
 
   <ng-template
     contextMenuItem
-    (execute)="onContextMenu($event, 'remove')"
+    (execute)="onExecute($event, 'remove')"
     [enabled]="isTabRemoveable.bind(this)">
     <div>Remove</div>
   </ng-template>

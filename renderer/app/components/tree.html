@@ -26,21 +26,21 @@
 
   <ng-template
     contextMenuItem
-    (execute)="onContextMenu($event, 'open')"
+    (execute)="onExecute($event, 'open')"
     [enabled]="isDirectory.bind(this)">
     <div>Open in a new tab</div>
   </ng-template>
 
   <ng-template
     contextMenuItem
-    (execute)="onContextMenu($event, 'touch')"
+    (execute)="onExecute($event, 'touch')"
     [enabled]="isWritableFile.bind(this)">
     <div>Touch</div>
   </ng-template>
 
   <ng-template
     contextMenuItem
-    (execute)="onContextMenu($event, 'properties')">
+    (execute)="onExecute($event, 'properties')">
     <div>Properties...</div>
   </ng-template>
 
