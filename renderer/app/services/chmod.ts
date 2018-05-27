@@ -1,4 +1,4 @@
-import { FSService, Operation } from './fs';
+import { FSService, Operation, OperationResult } from './fs';
 
 /**
  * chmod
@@ -25,7 +25,7 @@ export class ChmodOperation extends Operation {
   }
 
   /** @override */
-  runImpl(fsSvc: FSService): string {
+  runImpl(fsSvc: FSService): OperationResult {
     return fsSvc.chmod(this.path, this.mode);
   }
 

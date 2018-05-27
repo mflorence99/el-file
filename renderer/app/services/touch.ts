@@ -1,4 +1,4 @@
-import { FSService, Operation } from './fs';
+import { FSService, Operation, OperationResult } from './fs';
 
 import { formatDate } from '@angular/common';
 
@@ -9,34 +9,43 @@ import { formatDate } from '@angular/common';
 export class TouchOperation extends Operation {
 
   /** Make a rename operation */
-  static makeInstance(path: string,
+  static makeInstance(paths: string[],
                       fsSvc: FSService): TouchOperation {
-    const time = new Date();
-    const orig = fsSvc.lstat(path).mtime;
-    return new TouchOperation(path, time, orig);
+    const origs = fsSvc.lstats(paths).map(stat => stat.mtime);
+    const times = origs.map(orig => new Date());
+    return new TouchOperation(paths, times, origs);
   }
 
   /** ctor */
-  constructor(private path: string,
-              private time: Date,
-                      orig: Date,
+  constructor(private paths: string[],
+              private times: Date[],
+                      origs: Date[],
                       original = true) {
     super(original);
     if (original)
-      this.undo = new TouchOperation(path, orig, time, false);
+      this.undo = new TouchOperation(paths, origs, times, false);
   }
 
   /** @override */
-  runImpl(fsSvc: FSService): string {
-    return fsSvc.touchFile(this.path, this.time);
+  runImpl(fsSvc: FSService): OperationResult {
+    const result = fsSvc.touchFiles(this.paths, this.times);
+    if (result && result.partial && this.undo) {
+      (<TouchOperation>this.undo).paths = result.partial;
+      (<TouchOperation>this.undo).times.length = result.partial.length;
+    }
+    return result;
   }
 
   /** @override */
   toStringImpl(fsSvc: FSService): string {
     const basename = fsSvc.path.basename;
     // @see http://www.linfo.org/touch.html
-    const ts = formatDate(this.time, 'yyyyMMddHHmm.ss', 'en_US');
-    return `touch -f -t '${ts}' ${basename(this.path)}`;
+    const path = this.paths[0];
+    const time = this.times[0];
+    const ts = formatDate(time, 'yyyyMMddHHmm.ss', 'en_US');
+    return (this.paths.length === 1)?
+      `touch -f -t '${ts}' ${basename(path)}` :
+      `touch -f -t '${ts}' ${basename(path)} and ${this.paths.length - 1} other(s)`;
   }
 
 }

@@ -85,14 +85,16 @@ export class TreeComponent extends LifecycleComponent
     const desc = event.item;
     // execute command
     switch (command) {
+      // these commands are singular
       case 'open':
         this.store.dispatch(new NewTab({ splitID: this.splitID, path: desc.path }));
         break;
       case 'properties':
         this.root.onEditProps(desc);
         break;
+      // these commands affect the entire selection
       case 'touch':
-        const touchOp = TouchOperation.makeInstance(desc.path, this.fsSvc);
+        const touchOp = TouchOperation.makeInstance(this.selection.paths, this.fsSvc);
         this.fsSvc.run(touchOp);
         break;
     }

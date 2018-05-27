@@ -33,15 +33,20 @@
 
   <ng-template
     contextMenuItem
-    (execute)="onExecute($event, 'touch')"
-    [enabled]="isWritableFile.bind(this)">
-    <div>Touch</div>
+    (execute)="onExecute($event, 'properties')">
+    <div>Properties...</div>
   </ng-template>
 
   <ng-template
     contextMenuItem
-    (execute)="onExecute($event, 'properties')">
-    <div>Properties...</div>
+    divider="true">
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onExecute($event, 'touch')"
+    [enabled]="isWritableFile.bind(this)">
+    <div>Touch</div>
   </ng-template>
 
 </context-menu>

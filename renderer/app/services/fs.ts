@@ -21,12 +21,12 @@ export abstract class Operation {
 
   constructor(public original: boolean) { }
 
-  run(fsSvc: FSService): string {
+  run(fsSvc: FSService): OperationResult {
     // capture what we are about to run & run it
     this.str = this.toStringImpl(fsSvc);
-    const err = this.runImpl(fsSvc);
-    if (err)
-      fsSvc.handleError(err);
+    const result = this.runImpl(fsSvc);
+    if (result)
+      fsSvc.handleError(result.err);
     else {
       fsSvc.handleSuccess(this.str);
       // manage the undo/redo stack
@@ -47,10 +47,10 @@ export abstract class Operation {
         fsSvc.pushRedo(this.redo);
       }
     }
-    return err;
+    return result;
   }
 
-  abstract runImpl(fsSvc: FSService): string;
+  abstract runImpl(fsSvc: FSService): OperationResult;
 
   toString(): string {
     return this.str;
@@ -58,6 +58,11 @@ export abstract class Operation {
 
   abstract toStringImpl(fsSvc: FSService): string;
 
+}
+
+export interface OperationResult {
+  err: string;
+  partial?: any[];
 }
 
 /**
@@ -92,11 +97,6 @@ export class FSService {
     return this.undoStack.length > 0;
   }
 
-  /** Perform chmod */
-  lstat(path: string): fs.Stats {
-    return this.fs.lstatSync(path);
-  }
-
   /** Clear the entire redo stack */
   clearRedoStack(): void {
     this.redoStack = [];
@@ -118,15 +118,16 @@ export class FSService {
   }
 
   /** Perform lstat */
-  chmod(path: string,
-        mode: number): string {
-    try {
-      this.fs.chmodSync(path, mode);
-      return null;
-    }
-    catch (err) {
-      return err.toString();
-    }
+  lstat(path: string): fs.Stats {
+    return this.fs.lstatSync(path);
+  }
+
+  /** Perform lstat */
+  lstats(paths: string[]): fs.Stats[] {
+    return paths.reduce((acc, path) => {
+      acc.push(this.fs.lstatSync(path));
+      return acc;
+    }, [] as fs.Stats[]);
   }
 
   /** Peek at the topmost redo action */
@@ -171,19 +172,6 @@ export class FSService {
     }
   }
 
-  /** Rename a file or directory */
-  rename(from: string,
-         to: string): string {
-    try {
-      this.fs.accessSync(to);
-      return `${to} already exists`;
-    }
-    catch (err) {
-      this.fs.renameSync(from, to);
-      return null;
-    }
-  }
-
   /** Execute operation */
   run(...ops: Operation[]): void {
     ops.forEach(op => {
@@ -195,23 +183,53 @@ export class FSService {
     });
   }
 
-  /** Touch a file */
-  touchFile(path: string,
-            time: Date): string {
-    try {
-      this.touch.sync(path, { force: true, time });
-      return null;
-    }
-    catch (err) {
-      return err.toString();
-    }
-  }
-
   /** Perform undo operation */
   undo(): void {
     if (this.canUndo()) {
       const op = this.undoStack.splice(-1, 1)[0];
       this.run(op);
+    }
+  }
+
+  // operations
+
+  chmod(path: string,
+        mode: number): OperationResult {
+    try {
+      this.fs.chmodSync(path, mode);
+      return null;
+    }
+    catch (err) {
+      return { err: err.message };
+    }
+  }
+
+  rename(from: string,
+         to: string): OperationResult {
+    try {
+      this.fs.accessSync(to);
+      return { err: `${to} already exists` };
+    }
+    catch (err) {
+      this.fs.renameSync(from, to);
+      return null;
+    }
+  }
+
+  touchFiles(paths: string[],
+             times: Date[]): OperationResult {
+    const partial = [];
+    try {
+      for (let ix = 0; ix < paths.length; ix++) {
+        const path = paths[ix];
+        const time = times[ix];
+        this.touch.sync(path, { force: true, time });
+        partial.push(path);
+      }
+      return null;
+    }
+    catch (err) {
+      return { err: err.message, partial };
     }
   }
 

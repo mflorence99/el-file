@@ -1,4 +1,4 @@
-import { FSService, Operation } from './fs';
+import { FSService, Operation, OperationResult } from './fs';
 
 /**
  * Rename
@@ -26,7 +26,7 @@ export class RenameOperation extends Operation {
   }
 
   /** @override */
-  runImpl(fsSvc: FSService): string {
+  runImpl(fsSvc: FSService): OperationResult {
     return fsSvc.rename(this.from, this.to);
   }
 
