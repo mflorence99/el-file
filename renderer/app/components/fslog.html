@@ -34,7 +34,7 @@
         *ngIf="fslog.entries[fslog.entries.length - ix - 1] as entry">
 
         <td
-          *ngIf="allInOneDay()"
+          *ngIf="allInOneDay() || (prefs.dateFormat === 'ago')"
           class="ts">
           <div *ngIf="prefs.dateFormat === 'ago'">
             {{ entry.ts | libTimeAgo }}
@@ -45,7 +45,7 @@
           </div>
         </td>
 
-        <ng-container *ngIf="!allInOneDay()">
+        <ng-container *ngIf="!(allInOneDay() || (prefs.dateFormat === 'ago'))">
           <td class="ts">
             {{ entry.ts | date:prefs.dateFormat }}
           </td>

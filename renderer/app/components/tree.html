@@ -33,6 +33,46 @@
 
   <ng-template
     contextMenuItem
+    [subMenu]="newFileSubMenu">
+    <div>Rename...</div>
+  </ng-template>
+
+  <context-menu
+    [menuClass]="'form'"
+    #newFileSubMenu>
+
+    <ng-template
+      contextMenuItem
+      let-item
+      [passive]="true">
+      <mat-form-field>
+        <input
+          (input)="onNewName($event.target.value)"
+          [attr._value]="prepareNewName(item.name, newFileName)"
+          matInput
+          placeholder="New name"
+          type="text"
+          #newFileName>
+      </mat-form-field>
+    </ng-template>
+
+    <ng-template
+      contextMenuItem
+      (execute)="onExecute($event, 'rename')"
+      [enabled]="canNewName.bind(this)">
+      <div>&nbsp;</div>
+      <button
+        [disabled]="!canNewName()"
+        color="primary"
+        mat-raised-button>
+        OK
+      </button>
+    </ng-template>
+
+  </context-menu>
+
+  <ng-template
+    contextMenuItem
     (execute)="onExecute($event, 'properties')">
     <div>Properties...</div>
   </ng-template>

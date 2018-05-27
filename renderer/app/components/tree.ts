@@ -11,6 +11,7 @@ import { debounceTime, filter } from 'rxjs/operators';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Descriptor } from '../state/fs';
 import { FSService } from '../services/fs';
+import { RenameOperation } from '../services/rename';
 import { RootPageComponent } from '../pages/root/page';
 import { SelectionStateModel } from '../state/selection';
 import { Subscription } from 'rxjs';
@@ -44,6 +45,7 @@ export class TreeComponent extends LifecycleComponent
   dictionary: Dictionary[] = [];
 
   loaded: boolean;
+  newName: string;
 
   subToActions: Subscription;
 
@@ -55,6 +57,11 @@ export class TreeComponent extends LifecycleComponent
               private root: RootPageComponent,
               private store: Store) {
     super();
+  }
+
+  /** Is new name allowed? */
+  canNewName(): boolean {
+    return this.newName && (this.newName.length > 0);
   }
 
   /** Is context menu bound to a directory? */
@@ -77,6 +84,24 @@ export class TreeComponent extends LifecycleComponent
     return desc.isFile && desc.isWritable;
   }
 
+  /** Prepare for a new name */
+  prepareNewName(initial: string,
+                 ctrl: HTMLInputElement): string {
+    if (!ctrl.getAttribute('_init')) {
+      ctrl.setAttribute('_init', 'true');
+      setTimeout(() => {
+        ctrl.value = this.newName = initial;
+        const ix = initial.lastIndexOf('.');
+        if (ix === -1)
+          ctrl.select();
+        else ctrl.setSelectionRange(0, ix);
+        console.log(`CTRL=${ctrl.value} NEW NAME=${this.newName}`);
+        ctrl.focus();
+      }, 100);
+    }
+    return this.newName;
+  }
+
   // event handlers
 
   onExecute(event: {event?: MouseEvent,
@@ -92,12 +117,21 @@ export class TreeComponent extends LifecycleComponent
       case 'properties':
         this.root.onEditProps(desc);
         break;
+      case 'rename':
+        const renameOp = RenameOperation.makeInstance(desc.path, this.newName, this.fsSvc);
+        this.fsSvc.run(renameOp);
+        break;
       // these commands affect the entire selection
       case 'touch':
         const touchOp = TouchOperation.makeInstance(this.selection.paths, this.fsSvc);
         this.fsSvc.run(touchOp);
         break;
     }
+  }
+
+  onNewName(name: string): void {
+    this.newName = name;
+    console.log(`NEW NAME=${this.newName}`);
   }
 
   // lifecycle methods
