@@ -1,6 +1,5 @@
 import { FSService, Operation, OperationResult } from './fs';
-
-import { formatDate } from '@angular/common';
+import { formatDate, pluralize } from 'ellib';
 
 /**
  * Touch
@@ -42,10 +41,13 @@ export class TouchOperation extends Operation {
     // @see http://www.linfo.org/touch.html
     const path = this.paths[0];
     const time = this.times[0];
-    const ts = formatDate(time, 'yyyyMMddHHmm.ss', 'en_US');
+    const ts = formatDate(time, 'yyyyMMddHHmm.ss');
+    const others = pluralize(this.paths.length - 1, {
+      '=1': 'one other', 'other': '# others'
+    });
     return (this.paths.length === 1)?
       `touch -f -t '${ts}' ${basename(path)}` :
-      `touch -f -t '${ts}' ${basename(path)} and ${this.paths.length - 1} other(s)`;
+      `touch -f -t '${ts}' ${basename(path)} and ${others}`;
   }
 
 }
