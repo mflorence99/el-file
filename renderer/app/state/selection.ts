@@ -20,6 +20,11 @@ export class RemovePathFromSelection {
   constructor(public readonly payload: { path: string }) { }
 }
 
+export class ReplacePathsInSelection {
+  static readonly type = '[Selection] replace paths';
+  constructor(public readonly payload: { paths: string[] }) { }
+}
+
 export class SelectionUpdated {
   static readonly type = '[Selection] updated';
   constructor(public readonly payload: { paths: string[] }) { }
@@ -74,6 +79,15 @@ export interface SelectionStateModel {
       // sync model
       nextTick(() => dispatch(new SelectionUpdated({ paths: updated.paths })));
     }
+  }
+
+  @Action(ReplacePathsInSelection)
+  removePathsInSelection({ dispatch, patchState }: StateContext<SelectionStateModel>,
+                         { payload }: ReplacePathsInSelection) {
+    const { paths } = payload;
+    patchState({ paths });
+      // sync model
+      nextTick(() => dispatch(new SelectionUpdated({ paths })));
   }
 
   @Action(SelectionUpdated)

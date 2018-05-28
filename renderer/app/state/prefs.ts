@@ -19,6 +19,7 @@ export interface PrefsStateModel {
   quantityFormat?: 'abbrev' | 'bytes' | 'number';
   showGridLines?: boolean;
   showHiddenFiles?: boolean;
+  showOnlyWritableFiles?: boolean;
   sortDirectories?: 'alpha' | 'first' | 'last';
   submitted?: boolean;
   timeFormat?: 'none' | 'shortTime' | 'mediumTime' | 'longTime' | 'fullTime';
@@ -31,6 +32,7 @@ export interface PrefsStateModel {
     quantityFormat: 'bytes',
     showGridLines: false,
     showHiddenFiles: false,
+    showOnlyWritableFiles: false,
     sortDirectories: 'first',
     timeFormat: 'none'
   }

@@ -32,6 +32,9 @@ export class PaneComponent extends LifecycleComponent {
   tabIndex: number;
   view = { } as View;
 
+  // NOTE: TreeComponent is a more natural spot for these methods
+  // but I needed to break a circular dependency
+
   // bind OnChange handlers
 
   @OnChange('tabs', 'views') onTabs(): void {

@@ -34,6 +34,7 @@ export class PrefsComponent extends LifecycleComponent {
       quantityFormat: '',
       showGridLines: false,
       showHiddenFiles: false,
+      showOnlyWritableFiles: false,
       sortDirectories: '',
       timeFormat: ''
     });

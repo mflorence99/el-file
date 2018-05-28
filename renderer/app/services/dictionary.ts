@@ -57,8 +57,12 @@ export class DictionaryService {
                      dictionary: Dictionary[],
                      prefs: PrefsStateModel,
                      view: View): Descriptor[] {
-    const descriptors = fs[path]?
-      fs[path].filter(desc => prefs.showHiddenFiles || !desc.name.startsWith('.')) : [];
+    let descriptors = [];
+    if (fs[path]) {
+      descriptors = fs[path]
+        .filter(desc => prefs.showHiddenFiles || !desc.name.startsWith('.'))
+        .filter(desc => !prefs.showOnlyWritableFiles || desc.isWritable);
+    }
     return this.sort(descriptors, dictionary, prefs, view);
   }
 

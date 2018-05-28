@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
-import { BranchComponent } from './branch';
 import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
 import { PrefsStateModel } from '../state/prefs';
+import { TreeComponent } from './tree';
 
 /**
  * Cell component
@@ -23,6 +23,6 @@ export class CellComponent {
   @Input() prefs = { } as PrefsStateModel;
 
   /** ctor */
-  constructor(public branch: BranchComponent) { }
+  constructor(public tree: TreeComponent) { }
 
 }

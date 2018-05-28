@@ -72,6 +72,30 @@ export class TreeComponent extends LifecycleComponent
     return desc.isDirectory;
   }
 
+  /** Is this path empty? */
+  isEmpty(desc: Descriptor): boolean {
+    return desc
+        && desc.isDirectory
+        && !!this.fs[desc.path]
+        && (this.fs[desc.path].length === 0);
+  }
+
+  /** Is this path expanded? */
+  isExpanded(desc: Descriptor): boolean {
+    return desc
+        && desc.isDirectory
+        && this.tab.paths.includes(desc.path)
+        && !!this.fs[desc.path];
+  }
+
+  /** Is this path expanding? */
+  isExpanding(desc: Descriptor): boolean {
+    return desc
+        && desc.isDirectory
+        && this.tab.paths.includes(desc.path)
+        && !this.fs[desc.path];
+  }
+
   /** Is context menu bound to a file? */
   isFile(desc: Descriptor): boolean {
     return desc.isFile;
@@ -173,8 +197,6 @@ export class TreeComponent extends LifecycleComponent
   onNewName(name: string): void {
     this.newName = name;
   }
-
-  // lifecycle methods
 
   ngOnInit(): void {
     this.subToActions = this.actions$

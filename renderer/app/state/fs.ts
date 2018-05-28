@@ -170,6 +170,14 @@ export interface FSStateModel {
 
   // private methods
 
+  private isExecutable(mode: Mode,
+                       uid: number,
+                       gid: number): boolean {
+    return (mode.others.execute
+        || ((this.userInfo.uid === uid) && mode.owner.read)
+        || ((this.userInfo.gid === gid) && mode.group.read));
+  }
+
   private isReadable(mode: Mode,
                      uid: number,
                      gid: number): boolean {
@@ -219,6 +227,7 @@ export interface FSStateModel {
       group: String(stat.gid),
       icon: this.makeIcon(name, stat),
       isDirectory: stat.isDirectory(),
+      isExecutable: this.isExecutable(mode, stat.uid, stat.gid),
       isFile: stat.isFile(),
       isReadable: this.isReadable(mode, stat.uid, stat.gid),
       isSymlink: stat.isSymbolicLink(),

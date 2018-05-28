@@ -3,9 +3,9 @@
 
 //  Custom Angulat Material theme
 
-$custom-primary: mat-palette($mat-blue, 400, 400, 600);
-$custom-accent:  mat-palette($mat-green, 300, 300, 500);
-$custom-warn:  mat-palette($mat-orange, 400, 200, 600);
+$custom-primary: mat-palette($mat-blue, 400, 200, 600);
+$custom-accent:  mat-palette($mat-amber, 400, 200, 600);
+$custom-warn:  mat-palette($mat-red, 400, 200, 600);
 $custom-theme: mat-dark-theme($custom-primary, $custom-accent, $custom-warn);
 
 @include angular-material-theme($custom-theme);
@@ -21,8 +21,8 @@ $custom-theme: mat-dark-theme($custom-primary, $custom-accent, $custom-warn);
 :root {
 
   --primary-color: var(--mat-blue-400);
-  --accent-color: var(--mat-green-300);
-  --warn-color: var(--mat-orange-400);
+  --accent-color: var(--mat-amber-300);
+  --warn-color: var(--mat-red-400);
 
   --text-color: var(--mat-grey-100);
   --disabled-color: var(--mat-grey-500);
@@ -37,6 +37,7 @@ $custom-theme: mat-dark-theme($custom-primary, $custom-accent, $custom-warn);
 body {
   background-color: var(--background-color);
   color: var(--text-color);
+  user-select: none;
 }
 
 .drawer-header {

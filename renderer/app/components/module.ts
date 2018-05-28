@@ -9,6 +9,7 @@ import { NgModule } from '@angular/core';
 import { PaneComponent } from './pane';
 import { PrefsComponent } from './prefs';
 import { PropsComponent } from './props';
+import { RowComponent } from './row';
 import { SplittableComponent } from './splittable';
 import { StackComponent } from './stack';
 import { TabComponent } from './tab';
@@ -30,6 +31,7 @@ const COMPONENTS = [
   PaneComponent,
   PrefsComponent,
   PropsComponent,
+  RowComponent,
   SplittableComponent,
   StackComponent,
   TabComponent,

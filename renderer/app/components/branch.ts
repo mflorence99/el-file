@@ -1,5 +1,3 @@
-import { AddPathToSelection, ClearSelection, SelectionStateModel, TogglePathInSelection } from '../state/selection';
-import { AddPathToTab, RemovePathFromTab, Tab } from '../state/layout';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 import { ContextMenuComponent } from 'ngx-contextmenu';
@@ -7,7 +5,9 @@ import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
 import { FSStateModel } from '../state/fs';
 import { PrefsStateModel } from '../state/prefs';
-import { Store } from '@ngxs/store';
+import { SelectionStateModel } from '../state/selection';
+import { Tab } from '../state/layout';
+import { TreeComponent } from './tree';
 
 /**
  * Branch component
@@ -33,69 +33,6 @@ export class BranchComponent {
   @Input() tab = { } as Tab;
 
   /** ctor */
-  constructor(private store: Store) { }
-
-  /** Is this path empty? */
-  isEmpty(desc: Descriptor): boolean {
-    return desc
-        && desc.isDirectory
-        && !!this.fs[desc.path]
-        && (this.fs[desc.path].length === 0);
-  }
-
-  /** Is this path expanded? */
-  isExpanded(desc: Descriptor): boolean {
-    return desc
-        && desc.isDirectory
-        && this.tab.paths.includes(desc.path)
-        && !!this.fs[desc.path];
-  }
-
-  /** Is this path expanding? */
-  isExpanding(desc: Descriptor): boolean {
-    return desc
-        && desc.isDirectory
-        && this.tab.paths.includes(desc.path)
-        && !this.fs[desc.path];
-  }
-
-  // event handlers
-
-  onContextMenu(event: MouseEvent,
-                desc: Descriptor): void {
-    // if the context isn't part of the selection,
-    // then it becomes the selection
-    if (!this.selection.paths.includes(desc.path)) {
-      this.store.dispatch([
-        new ClearSelection(),
-        new AddPathToSelection({ path: desc.path })
-      ]);
-    }
-  }
-
-  onExpand(event: MouseEvent,
-           path: string): void {
-    const action = this.tab.paths.includes(path)?
-      new RemovePathFromTab({ path, tab: this.tab }) :
-      new AddPathToTab({ path, tab: this.tab });
-    this.store.dispatch(action);
-    event.stopPropagation();
-  }
-
-  onSelect(event: MouseEvent,
-           path: string): void {
-    const actions = [];
-    if (event.shiftKey) {
-      // TODO
-    }
-    else if (event.ctrlKey)
-      actions.push(new TogglePathInSelection({ path }));
-    else {
-      actions.push(new ClearSelection());
-      actions.push(new AddPathToSelection({ path }));
-    }
-    if (actions.length > 0)
-      this.store.dispatch(actions);
-  }
+  constructor(public tree: TreeComponent) { }
 
 }

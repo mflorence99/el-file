@@ -76,8 +76,8 @@
 
   <fa-icon
     [fixedWidth]="true"
-    [icon]="branch.isEmpty(desc)? ['far', 'folder'] :
-           (branch.isExpanded(desc)? ['fas', 'folder-open'] : ['fas', 'folder'])"
+    [icon]="tree.isEmpty(desc)? ['far', 'folder'] :
+           (tree.isExpanded(desc)? ['fas', 'folder-open'] : ['fas', 'folder'])"
     [ngStyle]="{color: desc.color}"
     *ngIf="entry.showIcon && desc.isDirectory"
     size="xs">
