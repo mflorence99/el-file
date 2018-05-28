@@ -55,6 +55,7 @@
     "rxjs-compat": "6",
     "stat-mode": "^0.2.2",
     "touch": "3",
+    "trash": "4",
     "web-animations-js": "2",
     "zone.js": "^0.8.26"
   },

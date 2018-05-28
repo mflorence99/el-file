@@ -29,9 +29,14 @@ export abstract class Operation {
       fsSvc.handleError(result.err);
     else {
       fsSvc.handleSuccess(this.str);
-      // manage the undo/redo stack
-      if (this.original)
+      // a new operation clears the redo stack
+      // an operation w/o undo clears the undo stack
+      if (this.original) {
+        if (!this.undo)
+          fsSvc.clearUndoStack();
         fsSvc.clearRedoStack();
+      }
+      // manage the undo/redo stack
       const copy = Object.assign(Object.create(this), { original: false });
       if (this.undo) {
         this.undo.redo = copy;
@@ -75,6 +80,7 @@ export class FSService {
   fs: any;
   path: any;
   touch: any;
+  trash: any;
 
   private redoStack: Operation[] = [];
   private undoStack: Operation[] = [];
@@ -85,6 +91,7 @@ export class FSService {
     this.fs = this.electron.remote.require('fs');
     this.path = this.electron.remote.require('path');
     this.touch = this.electron.remote.require('touch');
+    this.trash = this.electron.remote.require('trash');
   }
 
   /** Can we redo? */
@@ -263,6 +270,12 @@ export class FSService {
     catch (err) {
       return { err: err.message, partial };
     }
+  }
+
+  trashFiles(paths: string[]): OperationResult {
+    // NOTE: trash has no error semantics
+    this.trash(paths).then(() => console.log(`${paths} trashed`));
+    return null;
   }
 
 }

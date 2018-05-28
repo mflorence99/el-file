@@ -33,6 +33,11 @@
 
   <ng-template
     contextMenuItem
+    divider="true">
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
     [subMenu]="newFileSubMenu">
     <div>New file...</div>
   </ng-template>
@@ -170,6 +175,12 @@
     (execute)="onExecute($event, 'touch')"
     [enabled]="isWritableFile.bind(this)">
     <div>Touch</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onExecute($event, 'trash')">
+    <div>Move to trash</div>
   </ng-template>
 
 </context-menu>
