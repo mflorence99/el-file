@@ -307,6 +307,7 @@ const ICON_BY_EXT = {
   'cgi': 'far file-code',
   'cmd': 'fas microchip',
   'com': 'fas microchip',
+  'config': 'fas cog',
   'cpp': 'far file-code',
   'cson': 'far file-code',
   'css': 'fab css3-alt',

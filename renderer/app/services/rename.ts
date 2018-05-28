@@ -32,8 +32,7 @@ export class RenameOperation extends Operation {
 
   /** @override */
   toStringImpl(fsSvc: FSService): string {
-    const basename = fsSvc.path.basename;
-    return `mv ${basename(this.from)} ${basename(this.to)}`;
+    return `mv ${this.from} ${this.to}`;
   }
 
 }

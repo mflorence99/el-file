@@ -37,7 +37,6 @@ export class TouchOperation extends Operation {
 
   /** @override */
   toStringImpl(fsSvc: FSService): string {
-    const basename = fsSvc.path.basename;
     // @see http://www.linfo.org/touch.html
     const path = this.paths[0];
     const time = this.times[0];
@@ -46,8 +45,8 @@ export class TouchOperation extends Operation {
       '=1': 'one other', 'other': '# others'
     });
     return (this.paths.length === 1)?
-      `touch -f -t '${ts}' ${basename(path)}` :
-      `touch -f -t '${ts}' ${basename(path)} and ${others}`;
+      `touch -f -t '${ts}' ${path}` :
+      `touch -f -t '${ts}' ${path} and ${others}`;
   }
 
 }

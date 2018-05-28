@@ -34,7 +34,7 @@
   <ng-template
     contextMenuItem
     [subMenu]="newFileSubMenu">
-    <div>Rename...</div>
+    <div>New file...</div>
   </ng-template>
 
   <context-menu
@@ -48,11 +48,94 @@
       <mat-form-field>
         <input
           (input)="onNewName($event.target.value)"
-          [attr._value]="prepareNewName(item.name, newFileName)"
+          (keyup)="($event.keyCode === 13)? onExecute({item: item}, 'new-file') : noop()"
+          [attr._value]="prepareNewName('', newFileName)"
+          matInput
+          placeholder="New file name"
+          type="text"
+          #newFileName>
+      </mat-form-field>
+    </ng-template>
+
+    <ng-template
+      contextMenuItem
+      (execute)="onExecute($event, 'new-file')"
+      [enabled]="canNewName.bind(this)">
+      <div>&nbsp;</div>
+      <button
+        [disabled]="!canNewName()"
+        color="primary"
+        mat-raised-button>
+        OK
+      </button>
+    </ng-template>
+
+  </context-menu>
+
+  <ng-template
+    contextMenuItem
+    [subMenu]="newDirSubMenu">
+    <div>New directory...</div>
+  </ng-template>
+
+  <context-menu
+    [menuClass]="'form'"
+    #newDirSubMenu>
+
+    <ng-template
+      contextMenuItem
+      let-item
+      [passive]="true">
+      <mat-form-field>
+        <input
+          (input)="onNewName($event.target.value)"
+          (keyup)="($event.keyCode === 13)? onExecute({item: item}, 'new-dir') : noop()"
+          [attr._value]="prepareNewName('', newDirName)"
+          matInput
+          placeholder="New directory name"
+          type="text"
+          #newDirName>
+      </mat-form-field>
+    </ng-template>
+
+    <ng-template
+      contextMenuItem
+      (execute)="onExecute($event, 'new-dir')"
+      [enabled]="canNewName.bind(this)">
+      <div>&nbsp;</div>
+      <button
+        [disabled]="!canNewName()"
+        color="primary"
+        mat-raised-button>
+        OK
+      </button>
+    </ng-template>
+
+  </context-menu>
+
+  <ng-template
+    contextMenuItem
+    [subMenu]="renameSubMenu">
+    <div>Rename...</div>
+  </ng-template>
+
+  <context-menu
+    [menuClass]="'form'"
+    #renameSubMenu>
+
+    <ng-template
+      contextMenuItem
+      let-item
+      [passive]="true">
+      <mat-form-field>
+        <input
+          (input)="onNewName($event.target.value)"
+          (keyup)="($event.keyCode === 13)? onExecute({item: item}, 'rename') : noop()"
+          [attr._value]="prepareNewName(item.name, newName)"
           matInput
           placeholder="New name"
           type="text"
-          #newFileName>
+          #newName>
       </mat-form-field>
     </ng-template>
 

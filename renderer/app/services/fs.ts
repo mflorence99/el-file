@@ -204,6 +204,38 @@ export class FSService {
     }
   }
 
+  newDir(path: string): OperationResult {
+    try {
+      this.fs.accessSync(path);
+      return { err: `${path} already exists` };
+    }
+    catch (e1) {
+      try {
+        this.fs.mkdirSync(path);
+        return null;
+      }
+      catch (e2) {
+        return { err: `${path} permission denied` };
+      }
+    }
+  }
+
+  newFile(path: string): OperationResult {
+    try {
+      this.fs.accessSync(path);
+      return { err: `${path} already exists` };
+    }
+    catch (e1) {
+      try {
+        this.touch.sync(path, { force: true });
+        return null;
+      }
+      catch (e2) {
+        return { err: `${path} permission denied` };
+      }
+    }
+  }
+
   rename(from: string,
          to: string): OperationResult {
     try {
@@ -223,7 +255,7 @@ export class FSService {
       for (let ix = 0; ix < paths.length; ix++) {
         const path = paths[ix];
         const time = times[ix];
-        this.touch.sync(path, { force: true, time });
+        this.touch.sync(path, { force: true, nocreate: true, time });
         partial.push(path);
       }
       return null;

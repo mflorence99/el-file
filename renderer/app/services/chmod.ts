@@ -31,8 +31,7 @@ export class ChmodOperation extends Operation {
 
   /** @override */
   toStringImpl(fsSvc: FSService): string {
-    const basename = fsSvc.path.basename;
-    return `chmod ${this.mode.toString(8)} ${basename(this.path)}`;
+    return `chmod ${this.mode.toString(8)} ${this.path}`;
   }
 
 }

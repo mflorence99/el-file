@@ -1,9 +1,9 @@
 import { Actions, Store, ofAction } from '@ngxs/store';
+import { AddPathToTab, NewTab, Tab, TabUpdated, TabsUpdated } from '../state/layout';
 import { AutoUnsubscribe, LifecycleComponent } from 'ellib';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Dictionary, DictionaryService } from '../services/dictionary';
 import { DirLoaded, FSStateModel } from '../state/fs';
-import { NewTab, Tab, TabUpdated, TabsUpdated } from '../state/layout';
 import { PrefsStateModel, PrefsUpdated } from '../state/prefs';
 import { View, ViewUpdated } from '../state/views';
 import { debounceTime, filter } from 'rxjs/operators';
@@ -11,6 +11,8 @@ import { debounceTime, filter } from 'rxjs/operators';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Descriptor } from '../state/fs';
 import { FSService } from '../services/fs';
+import { NewDirOperation } from '../services/new-dir';
+import { NewFileOperation } from '../services/new-file';
 import { RenameOperation } from '../services/rename';
 import { RootPageComponent } from '../pages/root/page';
 import { SelectionStateModel } from '../state/selection';
@@ -84,6 +86,9 @@ export class TreeComponent extends LifecycleComponent
     return desc.isFile && desc.isWritable;
   }
 
+  /** Helper for ternary expr in template */
+  noop(): void { }
+
   /** Prepare for a new name */
   prepareNewName(initial: string,
                  ctrl: HTMLInputElement): string {
@@ -95,7 +100,6 @@ export class TreeComponent extends LifecycleComponent
         if (ix === -1)
           ctrl.select();
         else ctrl.setSelectionRange(0, ix);
-        console.log(`CTRL=${ctrl.value} NEW NAME=${this.newName}`);
         ctrl.focus();
       }, 100);
     }
@@ -109,8 +113,29 @@ export class TreeComponent extends LifecycleComponent
             command: string): void {
     const desc = event.item;
     // execute command
+    let base, path;
     switch (command) {
       // these commands are singular
+      case 'new-dir':
+        base = desc.path;
+        if (desc.isFile)
+          base = this.fsSvc.path.dirname(desc.path);
+        path = this.fsSvc.path.join(base, this.newName);
+        const newDirOp = NewDirOperation.makeInstance(path, this.fsSvc);
+        this.fsSvc.run(newDirOp);
+        if (desc.isDirectory)
+          this.store.dispatch(new AddPathToTab({ path: desc.path, tab: this.tab }));
+        break;
+      case 'new-file':
+        base = desc.path;
+        if (desc.isFile)
+          base = this.fsSvc.path.dirname(desc.path);
+        path = this.fsSvc.path.join(base, this.newName);
+        const newFileOp = NewFileOperation.makeInstance(path, this.fsSvc);
+        this.fsSvc.run(newFileOp);
+        if (desc.isDirectory)
+          this.store.dispatch(new AddPathToTab({ path: desc.path, tab: this.tab }));
+        break;
       case 'open':
         this.store.dispatch(new NewTab({ splitID: this.splitID, path: desc.path }));
         break;
@@ -131,7 +156,6 @@ export class TreeComponent extends LifecycleComponent
 
   onNewName(name: string): void {
     this.newName = name;
-    console.log(`NEW NAME=${this.newName}`);
   }
 
   // lifecycle methods
