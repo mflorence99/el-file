@@ -1,10 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
+import { CopyToClipboard, CutToClipboard } from '../../state/clipboard';
 import { DrawerPanelComponent, debounce } from 'ellib';
 
 import { Alarm } from '../../state/status';
 import { Descriptor } from '../../state/fs';
 import { ElectronService } from 'ngx-electron';
 import { FSService } from '../../services/fs';
+import { SelectionState } from '../../state/selection';
 import { SetBounds } from '../../state/window';
 import { SplittableComponent } from '../../components/splittable';
 import { Store } from '@ngxs/store';
@@ -12,7 +14,7 @@ import { Tab } from '../../state/layout';
 import { View } from '../../state/views';
 
 /**
- * EL-Term Root
+ * EL-file Root
  */
 
 @Component({
@@ -67,7 +69,20 @@ export class RootPageComponent {
 
   onKeystroke(event: KeyboardEvent): void {
     if (event.ctrlKey) {
+      let paths: string[];
       switch (event.key) {
+        case 'c':
+          paths = this.store.selectSnapshot(SelectionState.getPaths);
+          if (paths.length > 0)
+            this.store.dispatch(new CopyToClipboard({ paths }));
+          else this.store.dispatch(new Alarm({ alarm: true }));
+          break;
+        case 'x':
+          paths = this.store.selectSnapshot(SelectionState.getPaths);
+          if (paths.length > 0)
+            this.store.dispatch(new CutToClipboard({ paths }));
+          else this.store.dispatch(new Alarm({ alarm: true }));
+          break;
         case 'z':
           if (this.fsSvc.canUndo())
             this.fsSvc.undo();

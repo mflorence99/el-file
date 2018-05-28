@@ -35,6 +35,10 @@
   display: flex;
   flex-direction: row;
 
+  &.cut {
+    color: var(--disabled-color);
+  }
+
   &.gridlines {
     border-bottom: 1px dotted var(--mat-grey-700);
   }

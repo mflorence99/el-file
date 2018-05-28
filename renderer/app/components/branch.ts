@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
+import { ClipboardStateModel } from '../state/clipboard';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
@@ -22,6 +23,7 @@ import { TreeComponent } from './tree';
 
 export class BranchComponent {
 
+  @Input() clipboard = { } as ClipboardStateModel;
   @Input() contextMenu: ContextMenuComponent;
   @Input() descriptorsByPath: { [path: string]: Descriptor[] } = { };
   @Input() dictionary: Dictionary[] = [];

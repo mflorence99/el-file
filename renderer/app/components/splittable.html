@@ -19,6 +19,7 @@
         *ngIf="!split.splits; else splittable">
 
         <elfile-pane
+          [clipboard]="clipboard"
           [fs]="fs"
           [index]="ix"
           [prefs]="prefs"

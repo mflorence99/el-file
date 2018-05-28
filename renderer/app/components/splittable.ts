@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
+import { ClipboardStateModel } from '../state/clipboard';
 import { FSStateModel } from '../state/fs';
 import { LayoutStateModel } from '../state/layout';
 import { PrefsStateModel } from '../state/prefs';
@@ -22,6 +23,7 @@ import { debounce } from 'ellib';
 
 export class SplittableComponent {
 
+  @Input() clipboard = { } as ClipboardStateModel;
   @Input() fs = { } as FSStateModel;
   @Input() layout = { } as LayoutStateModel;
   @Input() prefs = { } as PrefsStateModel;

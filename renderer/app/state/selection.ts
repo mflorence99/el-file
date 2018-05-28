@@ -1,7 +1,7 @@
-import { Action, State, StateContext } from '@ngxs/store';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { nextTick, pluralize } from 'ellib';
 
 import { StatusMessage } from './status';
-import { nextTick } from 'ellib';
 
 /** NOTE: actions must come first because of AST */
 
@@ -46,6 +46,10 @@ export interface SelectionStateModel {
   }
 }) export class SelectionState {
 
+  @Selector() static getPaths(state: SelectionStateModel): string[] {
+    return state.paths;
+  }
+
   @Action(AddPathToSelection)
   addPathToSelection({ dispatch, getState, setState }: StateContext<SelectionStateModel>,
                      { payload }: AddPathToSelection) {
@@ -82,8 +86,8 @@ export interface SelectionStateModel {
   }
 
   @Action(ReplacePathsInSelection)
-  removePathsInSelection({ dispatch, patchState }: StateContext<SelectionStateModel>,
-                         { payload }: ReplacePathsInSelection) {
+  replacePathsInSelection({ dispatch, patchState }: StateContext<SelectionStateModel>,
+                          { payload }: ReplacePathsInSelection) {
     const { paths } = payload;
     patchState({ paths });
       // sync model
@@ -97,8 +101,12 @@ export interface SelectionStateModel {
     let msgText = '';
     if (paths.length === 1)
       msgText = `${paths[0]} selected`;
-    else if (paths.length > 1)
-      msgText = `${paths.length} files/directories selected`;
+    else if (paths.length > 1) {
+      const others = pluralize(paths.length, {
+        '=1': 'one other', 'other': '# others'
+      });
+      msgText = `${paths[0]} and ${others} selected`;
+    }
     dispatch(new StatusMessage({ msgLevel: 'info', msgText }));
   }
 

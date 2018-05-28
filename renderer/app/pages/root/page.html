@@ -19,6 +19,7 @@
         [size]="90">
 
         <elfile-splittable
+          [clipboard]="ctrl.clipboard$ | async"
           [fs]="ctrl.fs$ | async"
           [layout]="ctrl.layout$ | async"
           [prefs]="ctrl.prefs$ | async"

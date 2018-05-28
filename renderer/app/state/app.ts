@@ -1,3 +1,4 @@
+import { ClipboardState, ClipboardStateModel } from './clipboard';
 import { FSColorState, FSColorStateModel } from './fscolor';
 import { FSLogState, FSLogStateModel } from './fslog';
 import { FSState, FSStateModel } from './fs';
@@ -9,6 +10,7 @@ import { ViewsState, ViewsStateModel } from './views';
 import { WindowState, WindowStateModel } from './window';
 
 export interface AppState {
+  clipboard: ClipboardStateModel;
   fs: FSStateModel;
   fscolor: FSColorStateModel;
   fslog: FSLogStateModel;
@@ -21,6 +23,7 @@ export interface AppState {
 }
 
 export const states = [
+  ClipboardState,
   FSState,
   FSColorState,
   FSLogState,

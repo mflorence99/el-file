@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { LifecycleComponent, OnChange } from 'ellib';
 import { View, ViewsStateModel } from '../state/views';
 
+import { ClipboardStateModel } from '../state/clipboard';
 import { FSStateModel } from '../state/fs';
 import { PrefsStateModel } from '../state/prefs';
 import { SelectionStateModel } from '../state/selection';
@@ -20,6 +21,7 @@ import { Tab } from '../state/layout';
 
 export class PaneComponent extends LifecycleComponent {
 
+  @Input() clipboard = { } as ClipboardStateModel;
   @Input() fs = { } as FSStateModel;
   @Input() index: number;
   @Input() prefs = { } as PrefsStateModel;

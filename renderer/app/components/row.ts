@@ -2,6 +2,7 @@ import { AddPathToSelection, ClearSelection, ReplacePathsInSelection, SelectionS
 import { AddPathToTab, RemovePathFromTab, Tab } from '../state/layout';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
+import { ClipboardStateModel } from '../state/clipboard';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
@@ -23,6 +24,7 @@ import { TreeComponent } from './tree';
 
 export class RowComponent {
 
+  @Input() clipboard = { } as ClipboardStateModel;
   @Input() contextMenu: ContextMenuComponent;
   @Input() desc: Descriptor;
   @Input() dictionary: Dictionary[] = [];

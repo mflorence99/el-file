@@ -68,9 +68,17 @@
 
   <fa-icon
     [fixedWidth]="true"
+    [icon]="['fas', 'clipboard']"
+    [ngStyle]="{color: tree.isCut(desc)? 'var(--disabled-color)' : 'vat(--text-color)'}"
+    *ngIf="entry.showIcon && tree.isClipped(desc)"
+    size="xs">
+  </fa-icon>
+
+  <fa-icon
+    [fixedWidth]="true"
     [icon]="desc.icon.split(' ')"
     [ngStyle]="{color: desc.color}"
-    *ngIf="entry.showIcon && !desc.isDirectory"
+    *ngIf="entry.showIcon && !tree.isClipped(desc) && !desc.isDirectory"
     size="xs">
   </fa-icon>
 
@@ -79,7 +87,7 @@
     [icon]="tree.isEmpty(desc)? ['far', 'folder'] :
            (tree.isExpanded(desc)? ['fas', 'folder-open'] : ['fas', 'folder'])"
     [ngStyle]="{color: desc.color}"
-    *ngIf="entry.showIcon && desc.isDirectory"
+    *ngIf="entry.showIcon && !tree.isClipped(desc) && desc.isDirectory"
     size="xs">
   </fa-icon>
 

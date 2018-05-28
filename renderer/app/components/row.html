@@ -3,7 +3,8 @@
   (contextmenu)="onContextMenu($event, desc)"
   [contextMenu]="contextMenu"
   [contextMenuSubject]="desc"
-  [ngClass]="{gridlines: prefs.showGridLines,
+  [ngClass]="{cut: tree.isCut(desc),
+              gridlines: prefs.showGridLines,
               selected: selection.paths.includes(desc.path)}"
   class="row">
 

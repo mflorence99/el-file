@@ -1,4 +1,5 @@
 <elfile-branch
+  [clipboard]="clipboard"
   [contextMenu]="contextMenu"
   [descriptorsByPath]="descriptorsByPath"
   [dictionary]="dictionary"
@@ -193,6 +194,40 @@
     contextMenuItem
     (execute)="onExecute($event, 'trash')">
     <div>Move to trash</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    divider="true">
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onExecute($event, 'ctrl+x')">
+    <div>Cut</div>
+    <div class="accelerator">Ctrl+X</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onExecute($event, 'ctrl+c')">
+    <div>Copy</div>
+    <div class="accelerator">Ctrl+C</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onExecute($event, 'ctrl+v')"
+    [enabled]="isClipboard.bind(this)">
+    <div>Paste</div>
+    <div class="accelerator">Ctrl+V</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onExecute($event, 'clear')"
+    [enabled]="isClipboard.bind(this)">
+    <div>Clear clipboard</div>
   </ng-template>
 
 </context-menu>

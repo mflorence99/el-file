@@ -2,6 +2,7 @@ import { Actions, Store, ofAction } from '@ngxs/store';
 import { AddPathToTab, NewTab, ReplacePathsInTab, Tab, TabUpdated, TabsUpdated } from '../state/layout';
 import { AutoUnsubscribe, LifecycleComponent } from 'ellib';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ClearClipboard, ClipboardStateModel, ClipboardUpdated, CopyToClipboard, CutToClipboard } from '../state/clipboard';
 import { Dictionary, DictionaryService } from '../services/dictionary';
 import { DirLoaded, FSStateModel } from '../state/fs';
 import { PrefsStateModel, PrefsUpdated } from '../state/prefs';
@@ -35,6 +36,7 @@ import { TrashOperation } from '../services/trash';
 export class TreeComponent extends LifecycleComponent
                            implements OnInit {
 
+  @Input() clipboard = { } as ClipboardStateModel;
   @Input() fs = { } as FSStateModel;
   @Input() prefs = { } as PrefsStateModel;
   @Input() selection = { } as SelectionStateModel;
@@ -65,6 +67,23 @@ export class TreeComponent extends LifecycleComponent
   /** Is new name allowed? */
   canNewName(): boolean {
     return this.newName && (this.newName.length > 0);
+  }
+
+  /** Is there anything on the clipboard? */
+  isClipboard(): boolean {
+    return this.clipboard.paths.length > 0;
+  }
+
+  /** Is this path on the clipboard? */
+  isClipped(desc: Descriptor): boolean {
+    return desc
+        && this.clipboard.paths.includes(desc.path);
+  }
+
+  /** Is this path on the clipboard? */
+  isCut(desc: Descriptor): boolean {
+    return this.isClipped(desc)
+        && (this.clipboard.op === 'cut');
   }
 
   /** Is context menu bound to a directory? */
@@ -179,6 +198,19 @@ export class TreeComponent extends LifecycleComponent
         this.fsSvc.run(renameOp);
         break;
       // these commands affect the entire selection
+      case 'clear':
+        this.store.dispatch(new ClearClipboard());
+        break;
+      case 'ctrl+c':
+        this.store.dispatch(new CopyToClipboard({ paths: this.selection.paths }));
+        break;
+      case 'ctrl+v':
+        // TODO
+        this.store.dispatch(new ClearClipboard());
+        break;
+      case 'ctrl+x':
+        this.store.dispatch(new CutToClipboard({ paths: this.selection.paths }));
+        break;
       case 'touch':
         const touchOp = TouchOperation.makeInstance(this.selection.paths, this.fsSvc);
         this.fsSvc.run(touchOp);
@@ -201,9 +233,11 @@ export class TreeComponent extends LifecycleComponent
   ngOnInit(): void {
     this.subToActions = this.actions$
       .pipe(
-        ofAction(DirLoaded, PrefsUpdated, TabsUpdated, TabUpdated, ViewUpdated),
+        ofAction(ClipboardUpdated, DirLoaded, PrefsUpdated, TabsUpdated, TabUpdated, ViewUpdated),
         filter(action => {
           switch (action.constructor) {
+            case ClipboardUpdated:
+              return true;
             case DirLoaded:
               return this.tab.paths.includes((<DirLoaded>action).payload.path);
             case PrefsUpdated:

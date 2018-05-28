@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ClipboardState, ClipboardStateModel } from '../../state/clipboard';
 import { FSLogState, FSLogStateModel } from '../../state/fslog';
 import { FSState, FSStateModel } from '../../state/fs';
 import { LayoutState, LayoutStateModel } from '../../state/layout';
@@ -34,6 +35,7 @@ export class RootCtrlComponent extends LifecycleComponent {
   @Input() propsForm: any = { };
   @Input() viewForm: any = { };
 
+  @Select(ClipboardState) clipboard$: Observable<ClipboardStateModel>;
   @Select(FSState) fs$: Observable<FSStateModel>;
   @Select(FSLogState) fslog$: Observable<FSLogStateModel>;
   @Select(LayoutState) layout$: Observable<LayoutStateModel>;
