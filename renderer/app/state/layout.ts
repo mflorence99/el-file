@@ -48,6 +48,11 @@ export class Reorient {
   constructor(public readonly payload: { splitID: string, direction: 'horizontal' | 'vertical'} ) { }
 }
 
+export class ReplacePathsInTab {
+  static readonly type = '[Layout] replace paths in tab';
+  constructor(public readonly payload: { paths: string[], tab: Tab }) { }
+}
+
 export class SelectTab {
   static readonly type = '[Layout] select tab';
   constructor(public readonly payload: { tab: Tab }) { }
@@ -397,6 +402,23 @@ export interface LayoutStateModel {
     if (split) {
       split.direction = direction;
       setState(updated);
+    }
+  }
+
+  @Action(ReplacePathsInTab)
+  replacePathsInTab({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
+                    { payload }: ReplacePathsInTab) {
+    const { paths, tab } = payload;
+    tab.paths = paths;
+    const updated = { ...getState() };
+    const tx = LayoutState.findTabIndexByID(updated, tab.id);
+    if (tx.ix !== -1) {
+      tx.tabs[tx.ix] = { ...tab };
+      setState(updated);
+      // sync model
+      dispatch(new LoadDirs({ paths: paths }));
+      // sync model
+      nextTick(() => dispatch(new TabUpdated({ tab })));
     }
   }
 

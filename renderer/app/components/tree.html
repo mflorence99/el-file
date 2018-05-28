@@ -26,9 +26,22 @@
 
   <ng-template
     contextMenuItem
-    (execute)="onExecute($event, 'open')"
+    (execute)="onExecute($event, 'open-new')"
     [enabled]="isDirectory.bind(this)">
     <div>Open in a new tab</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onExecute($event, 'open-this')"
+    [enabled]="isDirectory.bind(this)">
+    <div>Open in this tab</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onExecute($event, 'open-parent')">
+    <div>Open parent in this tab</div>
   </ng-template>
 
   <ng-template

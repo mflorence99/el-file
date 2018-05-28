@@ -1,5 +1,5 @@
 import { Actions, Store, ofAction } from '@ngxs/store';
-import { AddPathToTab, NewTab, Tab, TabUpdated, TabsUpdated } from '../state/layout';
+import { AddPathToTab, NewTab, ReplacePathsInTab, Tab, TabUpdated, TabsUpdated } from '../state/layout';
 import { AutoUnsubscribe, LifecycleComponent } from 'ellib';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Dictionary, DictionaryService } from '../services/dictionary';
@@ -137,8 +137,15 @@ export class TreeComponent extends LifecycleComponent
         if (desc.isDirectory)
           this.store.dispatch(new AddPathToTab({ path: desc.path, tab: this.tab }));
         break;
-      case 'open':
+      case 'open-new':
         this.store.dispatch(new NewTab({ splitID: this.splitID, path: desc.path }));
+        break;
+      case 'open-parent':
+        base = this.fsSvc.path.resolve(this.fsSvc.path.dirname(desc.path), '..');
+        this.store.dispatch(new ReplacePathsInTab({ paths: [base], tab: this.tab }));
+        break;
+      case 'open-this':
+        this.store.dispatch(new ReplacePathsInTab({ paths: [desc.path], tab: this.tab }));
         break;
       case 'properties':
         this.root.onEditProps(desc);
