@@ -68,7 +68,7 @@
 
   <fa-icon
     [fixedWidth]="true"
-    [icon]="['fas', 'clipboard']"
+    [icon]="['fas', tree.isCut(desc)? 'cut' : 'clipboard']"
     [ngStyle]="{color: tree.isCut(desc)? 'var(--disabled-color)' : 'vat(--text-color)'}"
     *ngIf="entry.showIcon && tree.isClipped(desc)"
     size="xs">
