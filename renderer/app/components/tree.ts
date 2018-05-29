@@ -86,6 +86,11 @@ export class TreeComponent extends LifecycleComponent
         && (this.clipboard.op === 'cut');
   }
 
+  /** Is this some kind of descriptor? */
+  isDescriptor(desc: Descriptor): boolean {
+    return !!desc;
+  }
+
   /** Is context menu bound to a directory? */
   isDirectory(desc: Descriptor): boolean {
     return desc && desc.isDirectory;
@@ -172,34 +177,28 @@ export class TreeComponent extends LifecycleComponent
         this.store.dispatch(new UpdateTab({ tab: { ...this.tab, icon: 'fas home', label: 'Home' } }));
         break;
       case 'new-dir':
-        base = desc.path;
-        if (desc.isFile)
-          base = this.fsSvc.dirname(desc.path);
-        path = this.fsSvc.join(base, this.newName);
-        const newDirOp = NewDirOperation.makeInstance(path, this.fsSvc);
-        this.fsSvc.run(newDirOp);
-        if (desc.isDirectory)
-          this.store.dispatch(new AddPathToTab({ path: desc.path, tab: this.tab }));
-        break;
       case 'new-file':
-        base = desc.path;
-        if (desc.isFile)
+        base = this.tab.paths[0];
+        if (this.isDirectory(desc))
+          base = desc.path;
+        else if (this.isFile(desc))
           base = this.fsSvc.dirname(desc.path);
         path = this.fsSvc.join(base, this.newName);
-        const newFileOp = NewFileOperation.makeInstance(path, this.fsSvc);
-        this.fsSvc.run(newFileOp);
-        if (desc.isDirectory)
+        const newDirOp = (command === 'new-dir')?
+          NewDirOperation.makeInstance(path, this.fsSvc) :
+          NewFileOperation.makeInstance(path, this.fsSvc);
+        this.fsSvc.run(newDirOp);
+        if (this.isDirectory(desc))
           this.store.dispatch(new AddPathToTab({ path: desc.path, tab: this.tab }));
         break;
       case 'open-new':
         this.store.dispatch(new NewTab({ splitID: this.splitID, path: desc.path }));
         break;
       case 'open-parent':
-        base = this.fsSvc.resolve(this.fsSvc.dirname(desc.path), '..');
-        this.store.dispatch(new ReplacePathsInTab({ paths: [base], tab: this.tab }));
-        break;
       case 'open-this':
-        this.store.dispatch(new ReplacePathsInTab({ paths: [desc.path], tab: this.tab }));
+        base = (command === 'open-parent')?
+          this.fsSvc.resolve(this.fsSvc.dirname(desc.path), '..') : desc.path;
+        this.store.dispatch(new ReplacePathsInTab({ paths: [base], tab: this.tab }));
         break;
       case 'properties':
         this.root.onEditProps(desc);

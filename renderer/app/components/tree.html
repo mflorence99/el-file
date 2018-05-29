@@ -1,49 +1,53 @@
-<elfile-branch
-  [clipboard]="clipboard"
-  [contextMenu]="contextMenu"
-  [descriptorsByPath]="descriptorsByPath"
-  [dictionary]="dictionary"
-  [fs]="fs"
-  [level]="0"
-  [path]="tab.paths[0]"
-  [prefs]="prefs"
-  [selection]="selection"
-  [tab]="tab"
-  *ngIf="isViewPopulated()">
-</elfile-branch>
+  <main
+    [contextMenu]="contextMenu"
+    [contextMenuSubject]="null">
 
-<div
-  *ngIf="!loaded"
-  class="no-data">
+  <elfile-branch
+    [clipboard]="clipboard"
+    [contextMenu]="contextMenu"
+    [descriptorsByPath]="descriptorsByPath"
+    [dictionary]="dictionary"
+    [fs]="fs"
+    [level]="0"
+    [path]="tab.paths[0]"
+    [prefs]="prefs"
+    [selection]="selection"
+    [tab]="tab"
+    *ngIf="isViewPopulated()">
+  </elfile-branch>
 
-  <fa-icon
-    [icon]="['fas', 'spinner']"
-    [pulse]="true"
-    size="4x">
-  </fa-icon>
-
-</div>
-
-<div
-  [contextMenu]="contextMenu"
-  [contextMenuSubject]="null"
-  *ngIf="!isViewPopulated()"
-  class="no-data">
-
-  <div class="message">
+  <div
+    *ngIf="!loaded"
+    class="no-data">
 
     <fa-icon
-      [icon]="['fas', 'exclamation']"
-      size="lg">
+      [icon]="['fas', 'spinner']"
+      [pulse]="true"
+      size="4x">
     </fa-icon>
 
-    <div>
-      This directory is empty
+  </div>
+
+  <div
+    *ngIf="!isViewPopulated()"
+    class="no-data">
+
+    <div class="message">
+
+      <fa-icon
+        [icon]="['fas', 'exclamation']"
+        size="2x">
+      </fa-icon>
+
+      <div>
+        This directory has no visible entries
+      </div>
+
     </div>
 
   </div>
 
-</div>
+</main>
 
 <context-menu>
 
@@ -167,6 +171,7 @@
 
   <ng-template
     contextMenuItem
+    [enabled]="isDescriptor.bind(this)"
     [subMenu]="renameSubMenu">
     <div>Rename...</div>
   </ng-template>
@@ -183,7 +188,7 @@
         <input
           (input)="onNewName($event.target.value)"
           (keyup)="($event.keyCode === 13)? onExecute({item: item}, 'rename') : noop()"
-          [attr._value]="prepareNewName(item.name, newName)"
+          [attr._value]="prepareNewName(item? item.name : '', newName)"
           matInput
           placeholder="New name"
           type="text"
@@ -208,7 +213,8 @@
 
   <ng-template
     contextMenuItem
-    (execute)="onExecute($event, 'properties')">
+    (execute)="onExecute($event, 'properties')"
+    [enabled]="isDescriptor.bind(this)">
     <div>Properties...</div>
   </ng-template>
 
@@ -219,13 +225,15 @@
 
   <ng-template
     contextMenuItem
-    (execute)="onExecute($event, 'touch')">
+    (execute)="onExecute($event, 'touch')"
+    [enabled]="isDescriptor.bind(this)">
     <div>Touch</div>
   </ng-template>
 
   <ng-template
     contextMenuItem
-    (execute)="onExecute($event, 'trash')">
+    (execute)="onExecute($event, 'trash')"
+    [enabled]="isDescriptor.bind(this)">
     <div>Move to trash</div>
   </ng-template>
 
@@ -236,14 +244,16 @@
 
   <ng-template
     contextMenuItem
-    (execute)="onExecute($event, 'ctrl+x')">
+    (execute)="onExecute($event, 'ctrl+x')"
+    [enabled]="isDescriptor.bind(this)">
     <div>Cut</div>
     <div class="accelerator">Ctrl+X</div>
   </ng-template>
 
   <ng-template
     contextMenuItem
-    (execute)="onExecute($event, 'ctrl+c')">
+    (execute)="onExecute($event, 'ctrl+c')"
+    [enabled]="isDescriptor.bind(this)">
     <div>Copy</div>
     <div class="accelerator">Ctrl+C</div>
   </ng-template>
