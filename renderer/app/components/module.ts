@@ -1,6 +1,7 @@
 import { BarrelModule } from '../barrel';
 import { BranchComponent } from './branch';
 import { CellComponent } from './cell';
+import { ClipboardComponent } from './clipboard';
 import { ColumnComponent } from './column';
 import { FSLogComponent } from './fslog';
 import { HeaderComponent } from './header';
@@ -24,6 +25,7 @@ import { ViewComponent } from './view';
 const COMPONENTS = [
   BranchComponent,
   CellComponent,
+  ClipboardComponent,
   ColumnComponent,
   FSLogComponent,
   HeaderComponent,

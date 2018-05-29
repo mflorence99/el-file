@@ -1,0 +1,33 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+table {
+  font-size: 0.66rem;
+  width: 100%;
+
+  thead {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 2px 8px;
+
+    &.path {
+      font-family: monospace;
+    }
+
+  }
+
+  &.gridlines {
+
+    td {
+      border-right: 1px dotted var(--mat-grey-700);
+      border-bottom: 1px dotted var(--mat-grey-700);
+    }
+
+  }
+
+}

@@ -52,6 +52,17 @@
 
   <ng-template
     contextMenuItem
+    (execute)="onExecute($event, 'homedir')">
+    <div>Go to $HOME</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    divider="true">
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
     [subMenu]="newFileSubMenu">
     <div>New file...</div>
   </ng-template>

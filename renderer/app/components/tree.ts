@@ -1,8 +1,8 @@
 import { Actions, Store, ofAction } from '@ngxs/store';
-import { AddPathToTab, NewTab, ReplacePathsInTab, Tab, TabUpdated, TabsUpdated } from '../state/layout';
+import { AddPathToTab, NewTab, ReplacePathsInTab, Tab, TabUpdated, TabsUpdated, UpdateTab } from '../state/layout';
 import { AutoUnsubscribe, LifecycleComponent } from 'ellib';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { ClearClipboard, ClipboardStateModel, ClipboardUpdated, CopyToClipboard, CutToClipboard } from '../state/clipboard';
+import { ClearClipboard, ClipboardStateModel, CopyToClipboard, CutToClipboard } from '../state/clipboard';
 import { Dictionary, DictionaryService } from '../services/dictionary';
 import { DirLoaded, FSStateModel } from '../state/fs';
 import { PrefsStateModel, PrefsUpdated } from '../state/prefs';
@@ -160,11 +160,16 @@ export class TreeComponent extends LifecycleComponent
     let base, path;
     switch (command) {
       // these commands are singular
+      case 'homedir':
+        path = this.fsSvc.homedir();
+        this.store.dispatch(new ReplacePathsInTab({ paths: [path], tab: this.tab }));
+        this.store.dispatch(new UpdateTab({ tab: { ...this.tab, icon: 'fas home', label: 'Home' } }));
+        break;
       case 'new-dir':
         base = desc.path;
         if (desc.isFile)
-          base = this.fsSvc.path.dirname(desc.path);
-        path = this.fsSvc.path.join(base, this.newName);
+          base = this.fsSvc.dirname(desc.path);
+        path = this.fsSvc.join(base, this.newName);
         const newDirOp = NewDirOperation.makeInstance(path, this.fsSvc);
         this.fsSvc.run(newDirOp);
         if (desc.isDirectory)
@@ -173,8 +178,8 @@ export class TreeComponent extends LifecycleComponent
       case 'new-file':
         base = desc.path;
         if (desc.isFile)
-          base = this.fsSvc.path.dirname(desc.path);
-        path = this.fsSvc.path.join(base, this.newName);
+          base = this.fsSvc.dirname(desc.path);
+        path = this.fsSvc.join(base, this.newName);
         const newFileOp = NewFileOperation.makeInstance(path, this.fsSvc);
         this.fsSvc.run(newFileOp);
         if (desc.isDirectory)
@@ -184,7 +189,7 @@ export class TreeComponent extends LifecycleComponent
         this.store.dispatch(new NewTab({ splitID: this.splitID, path: desc.path }));
         break;
       case 'open-parent':
-        base = this.fsSvc.path.resolve(this.fsSvc.path.dirname(desc.path), '..');
+        base = this.fsSvc.resolve(this.fsSvc.dirname(desc.path), '..');
         this.store.dispatch(new ReplacePathsInTab({ paths: [base], tab: this.tab }));
         break;
       case 'open-this':
@@ -230,14 +235,14 @@ export class TreeComponent extends LifecycleComponent
     this.newName = name;
   }
 
+  // lifecycle methods
+
   ngOnInit(): void {
     this.subToActions = this.actions$
       .pipe(
-        ofAction(ClipboardUpdated, DirLoaded, PrefsUpdated, TabsUpdated, TabUpdated, ViewUpdated),
+        ofAction(DirLoaded, PrefsUpdated, TabsUpdated, TabUpdated, ViewUpdated),
         filter(action => {
           switch (action.constructor) {
-            case ClipboardUpdated:
-              return true;
             case DirLoaded:
               return this.tab.paths.includes((<DirLoaded>action).payload.path);
             case PrefsUpdated:
@@ -248,6 +253,8 @@ export class TreeComponent extends LifecycleComponent
               return (<TabUpdated>action).payload.tab.id === this.tab.id;
             case ViewUpdated:
               return (<ViewUpdated>action).payload.viewID === this.tab.id;
+            default:
+              return false;
           }
         }),
         debounceTime(100),

@@ -11,6 +11,12 @@
   *ngIf="logType === 'stack'">
 </elfile-stack>
 
+<elfile-clipboard
+  [clipboard]="clipboard"
+  [prefs]="prefs"
+  *ngIf="logType === 'clipboard'">
+</elfile-clipboard>
+
 <mat-button-toggle-group
   (change)="logType = $event.value">
 
@@ -31,6 +37,16 @@
     value="stack">
     <fa-icon
       [icon]="['fas', 'undo']">
+    </fa-icon>
+  </mat-button-toggle>
+
+  <mat-button-toggle
+    [checked]="logType === 'clipboard'"
+    [disabled]="clipboard.op === 'clear'"
+    mat-tooltip="Show clipboard contents"
+    value="clipboard">
+    <fa-icon
+      [icon]="['fas', 'clipboard']">
     </fa-icon>
   </mat-button-toggle>
 

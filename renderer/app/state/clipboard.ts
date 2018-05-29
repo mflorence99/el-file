@@ -42,8 +42,8 @@ export interface ClipboardStateModel {
   clearClipboard({ dispatch, patchState }: StateContext<ClipboardStateModel>,
                  { payload }: ClearClipboard) {
     patchState({ op: 'clear', paths: [] });
-      // sync model
-      nextTick(() => dispatch(new ClipboardUpdated({ op: 'clear', paths: [] })));
+    // sync model
+    nextTick(() => dispatch(new ClipboardUpdated({ op: 'clear', paths: [] })));
   }
 
   @Action(ClipboardUpdated)
@@ -76,8 +76,8 @@ export interface ClipboardStateModel {
                  { payload }: CutToClipboard) {
     const { paths } = payload;
     patchState({ op: 'cut', paths });
-      // sync model
-      nextTick(() => dispatch(new ClipboardUpdated({ op: 'cut', paths })));
+    // sync model
+    nextTick(() => dispatch(new ClipboardUpdated({ op: 'cut', paths })));
   }
 
 }

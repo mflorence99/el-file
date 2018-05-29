@@ -77,10 +77,11 @@ export interface OperationResult {
 @Injectable()
 export class FSService {
 
-  fs: any;
-  path: any;
-  touch: any;
-  trash: any;
+  private fs: any;
+  private os: any;
+  private path: any;
+  private touch: any;
+  private trash: any;
 
   private redoStack: Operation[] = [];
   private undoStack: Operation[] = [];
@@ -89,6 +90,7 @@ export class FSService {
   constructor(private electron: ElectronService,
               private store: Store) {
     this.fs = this.electron.remote.require('fs');
+    this.os = this.electron.remote.require('os');
     this.path = this.electron.remote.require('path');
     this.touch = this.electron.remote.require('touch');
     this.trash = this.electron.remote.require('trash');
@@ -114,6 +116,11 @@ export class FSService {
     this.undoStack = [];
   }
 
+  /** Extract directory name from path */
+  dirname(path: string): string {
+    return this.path.dirname(path);
+  }
+
   /** Handle an operation error */
   handleError(err: string): void {
     this.store.dispatch(new StatusMessage({ msgLevel: 'warn', msgText: err }));
@@ -122,6 +129,16 @@ export class FSService {
   /** Handle an operation success */
   handleSuccess(msg: string): void {
     this.store.dispatch(new StatusMessage({ msgLevel: 'info', msgText: msg }));
+  }
+
+  /** Get the user's home directory */
+  homedir(): string {
+    return this.os.homedir();
+  }
+
+  /** Join names to form path */
+  join(...paths: string[]): string {
+    return this.path.join(...paths);
   }
 
   /** Perform lstat */
@@ -177,6 +194,11 @@ export class FSService {
       const op = this.redoStack.splice(-1, 1)[0];
       this.run(op);
     }
+  }
+
+  /** Resolve names to form path */
+  resolve(...paths: string[]): string {
+    return this.path.resolve(...paths);
   }
 
   /** Execute operation */

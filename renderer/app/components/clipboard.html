@@ -1,0 +1,24 @@
+<table
+  [ngClass]="{gridlines: prefs.showGridLines}">
+
+  <thead>
+    <tr>
+      <td>
+        {{ clipboard.op | titlecase }} to Clipboard
+      </td>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr *ngFor="let path of clipboard.paths">
+
+      <td class="path">
+        {{ path }}
+      </td>
+
+    </tr>
+
+  </tbody>
+
+</table>

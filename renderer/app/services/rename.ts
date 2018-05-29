@@ -11,8 +11,8 @@ export class RenameOperation extends Operation {
                       name: string,
                       fsSvc: FSService): RenameOperation {
     const from = path;
-    const base = fsSvc.path.dirname(path);
-    const to = fsSvc.path.join(base, name);
+    const base = fsSvc.dirname(path);
+    const to = fsSvc.join(base, name);
     return (from !== to)? new RenameOperation(from, to) : null;
   }
 
