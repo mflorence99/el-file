@@ -4,7 +4,7 @@ import { AutoUnsubscribe, LifecycleComponent } from 'ellib';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ClearClipboard, ClipboardStateModel, CopyToClipboard, CutToClipboard } from '../state/clipboard';
 import { Dictionary, DictionaryService } from '../services/dictionary';
-import { DirLoaded, FSStateModel } from '../state/fs';
+import { DirLoaded, DirUnloaded, FSStateModel } from '../state/fs';
 import { PrefsStateModel, PrefsUpdated } from '../state/prefs';
 import { View, ViewUpdated } from '../state/views';
 import { debounceTime, filter } from 'rxjs/operators';
@@ -70,7 +70,7 @@ export class TreeComponent extends LifecycleComponent
   }
 
   /** Is there anything on the clipboard? */
-  isClipboard(): boolean {
+  isClipboardPopulated(): boolean {
     return this.clipboard.paths.length > 0;
   }
 
@@ -88,7 +88,7 @@ export class TreeComponent extends LifecycleComponent
 
   /** Is context menu bound to a directory? */
   isDirectory(desc: Descriptor): boolean {
-    return desc.isDirectory;
+    return desc && desc.isDirectory;
   }
 
   /** Is this path empty? */
@@ -117,17 +117,23 @@ export class TreeComponent extends LifecycleComponent
 
   /** Is context menu bound to a file? */
   isFile(desc: Descriptor): boolean {
-    return desc.isFile;
+    return desc && desc.isFile;
+  }
+
+  /** Is there anything inside this view? */
+  isViewPopulated(): boolean {
+    const descs = this.descriptorsByPath[this.tab.paths[0]];
+    return descs && (descs.length > 0);
   }
 
   /** Is context menu bound to a writable directory? */
   isWritableDirectory(desc: Descriptor): boolean {
-    return desc.isDirectory && desc.isWritable;
+    return desc && desc.isDirectory && desc.isWritable;
   }
 
   /** Is context menu bound to a writable directory? */
   isWritableFile(desc: Descriptor): boolean {
-    return desc.isFile && desc.isWritable;
+    return desc && desc.isFile && desc.isWritable;
   }
 
   /** Helper for ternary expr in template */
@@ -240,11 +246,13 @@ export class TreeComponent extends LifecycleComponent
   ngOnInit(): void {
     this.subToActions = this.actions$
       .pipe(
-        ofAction(DirLoaded, PrefsUpdated, TabsUpdated, TabUpdated, ViewUpdated),
+        ofAction(DirLoaded, DirUnloaded, PrefsUpdated, TabsUpdated, TabUpdated, ViewUpdated),
         filter(action => {
           switch (action.constructor) {
             case DirLoaded:
               return this.tab.paths.includes((<DirLoaded>action).payload.path);
+            case DirUnloaded:
+              return this.tab.paths.includes((<DirUnloaded>action).payload.path);
             case PrefsUpdated:
               return true;
             case TabsUpdated:

@@ -8,18 +8,40 @@
   [path]="tab.paths[0]"
   [prefs]="prefs"
   [selection]="selection"
-  [tab]="tab">
+  [tab]="tab"
+  *ngIf="isViewPopulated()">
 </elfile-branch>
 
 <div
   *ngIf="!loaded"
-  class="loading">
+  class="no-data">
 
   <fa-icon
     [icon]="['fas', 'spinner']"
     [pulse]="true"
     size="4x">
   </fa-icon>
+
+</div>
+
+<div
+  [contextMenu]="contextMenu"
+  [contextMenuSubject]="null"
+  *ngIf="!isViewPopulated()"
+  class="no-data">
+
+  <div class="message">
+
+    <fa-icon
+      [icon]="['fas', 'exclamation']"
+      size="lg">
+    </fa-icon>
+
+    <div>
+      This directory is empty
+    </div>
+
+  </div>
 
 </div>
 
@@ -229,7 +251,7 @@
   <ng-template
     contextMenuItem
     (execute)="onExecute($event, 'ctrl+v')"
-    [enabled]="isClipboard.bind(this)">
+    [enabled]="isClipboardPopulated.bind(this)">
     <div>Paste</div>
     <div class="accelerator">Ctrl+V</div>
   </ng-template>
@@ -237,7 +259,7 @@
   <ng-template
     contextMenuItem
     (execute)="onExecute($event, 'clear')"
-    [enabled]="isClipboard.bind(this)">
+    [enabled]="isClipboardPopulated.bind(this)">
     <div>Clear clipboard</div>
   </ng-template>
 
