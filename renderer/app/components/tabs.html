@@ -17,17 +17,17 @@
           dropDirective>
 
           <div
-            [dragDirective]="tab">
+            [dragDirective]="tab"
+            class="label">
 
             <fa-icon
               [icon]="tab.icon.split(' ')"
-              [ngStyle]="{color: tab.color}"
-              size="lg">
+              [ngStyle]="{color: tab.color}">
             </fa-icon>
 
-            <span>
+            <div>
               {{ tab.label }}
-            </span>
+            </div>
 
           </div>
 

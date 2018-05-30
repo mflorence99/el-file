@@ -31,6 +31,7 @@
 
         <mat-button-toggle value="fas laptop">
           <fa-icon
+            [fixedWidth]="true"
             [icon]="['fas', 'laptop']"
             size="lg">
           </fa-icon>
@@ -38,34 +39,103 @@
 
         <mat-button-toggle value="fas home">
           <fa-icon
+            [fixedWidth]="true"
             [icon]="['fas', 'home']"
             size="lg">
           </fa-icon>
         </mat-button-toggle>
 
-        <mat-button-toggle value="fas keyboard">
+        <mat-button-toggle value="fas database">
           <fa-icon
-            [icon]="['fas', 'keyboard']"
+            [fixedWidth]="true"
+            [icon]="['fas', 'database']"
             size="lg">
           </fa-icon>
         </mat-button-toggle>
 
         <mat-button-toggle value="fas server">
           <fa-icon
+            [fixedWidth]="true"
             [icon]="['fas', 'server']"
+            size="lg">
+          </fa-icon>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fas code">
+          <fa-icon
+            [fixedWidth]="true"
+            [icon]="['fas', 'code']"
+            size="lg">
+          </fa-icon>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fas image">
+          <fa-icon
+            [fixedWidth]="true"
+            [icon]="['fas', 'image']"
+            size="lg">
+          </fa-icon>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fas user-secret">
+          <fa-icon
+            [fixedWidth]="true"
+            [icon]="['fas', 'user-secret']"
+            size="lg">
+          </fa-icon>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fas trash">
+          <fa-icon
+            [fixedWidth]="true"
+            [icon]="['fas', 'trash']"
+            size="lg">
+          </fa-icon>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fas music">
+          <fa-icon
+            [fixedWidth]="true"
+            [icon]="['fas', 'music']"
+            size="lg">
+          </fa-icon>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fas video">
+          <fa-icon
+            [fixedWidth]="true"
+            [icon]="['fas', 'video']"
             size="lg">
           </fa-icon>
         </mat-button-toggle>
 
         <mat-button-toggle value="fas cloud">
           <fa-icon
+            [fixedWidth]="true"
             [icon]="['fas', 'cloud']"
+            size="lg">
+          </fa-icon>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fas sitemap">
+          <fa-icon
+            [fixedWidth]="true"
+            [icon]="['fas', 'sitemap']"
+            size="lg">
+          </fa-icon>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="fas cog">
+          <fa-icon
+            [fixedWidth]="true"
+            [icon]="['fas', 'cog']"
             size="lg">
           </fa-icon>
         </mat-button-toggle>
 
         <mat-button-toggle value="fab apple">
           <fa-icon
+            [fixedWidth]="true"
             [icon]="['fab', 'apple']"
             size="lg">
           </fa-icon>
@@ -73,6 +143,7 @@
 
         <mat-button-toggle value="fab aws">
           <fa-icon
+            [fixedWidth]="true"
             [icon]="['fab', 'aws']"
             size="lg">
           </fa-icon>
@@ -80,6 +151,7 @@
 
         <mat-button-toggle value="fab docker">
           <fa-icon
+            [fixedWidth]="true"
             [icon]="['fab', 'docker']"
             size="lg">
           </fa-icon>
@@ -87,6 +159,7 @@
 
         <mat-button-toggle value="fab github">
           <fa-icon
+            [fixedWidth]="true"
             [icon]="['fab', 'github']"
             size="lg">
           </fa-icon>
@@ -94,6 +167,7 @@
 
         <mat-button-toggle value="fab linux">
           <fa-icon
+            [fixedWidth]="true"
             [icon]="['fab', 'linux']"
             size="lg">
           </fa-icon>
@@ -101,6 +175,7 @@
 
         <mat-button-toggle value="fab node-js">
           <fa-icon
+            [fixedWidth]="true"
             [icon]="['fab', 'node-js']"
             size="lg">
           </fa-icon>
@@ -108,6 +183,7 @@
 
         <mat-button-toggle value="fab windows">
           <fa-icon
+            [fixedWidth]="true"
             [icon]="['fab', 'windows']"
             size="lg">
           </fa-icon>
@@ -131,6 +207,38 @@
           </fa-icon>
         </mat-button-toggle>
 
+        <mat-button-toggle value="var(--mat-grey-400)">
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-grey-400)">
+          </fa-icon>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-blue-grey-400)">
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-blue-grey-400)">
+          </fa-icon>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-brown-300)">
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-brown-300)">
+          </fa-icon>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-red-a400)">
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-red-a400)">
+          </fa-icon>
+        </mat-button-toggle>
+
         <mat-button-toggle value="var(--mat-pink-a400)">
           <fa-icon
             [icon]="['fas', 'square']"
@@ -147,6 +255,14 @@
           </fa-icon>
         </mat-button-toggle>
 
+        <mat-button-toggle value="var(--mat-deep-purple-a400)">
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-deep-purple-a400)">
+          </fa-icon>
+        </mat-button-toggle>
+
         <mat-button-toggle value="var(--mat-indigo-a400)">
           <fa-icon
             [icon]="['fas', 'square']"
@@ -160,6 +276,14 @@
             [icon]="['fas', 'square']"
             size="lg"
             style="color: var(--mat-blue-a400)">
+          </fa-icon>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-light-blue-a400)">
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-light-blue-a400)">
           </fa-icon>
         </mat-button-toggle>
 
@@ -187,6 +311,14 @@
           </fa-icon>
         </mat-button-toggle>
 
+        <mat-button-toggle value="var(--mat-light-green-a400)">
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-light-green-a400)">
+          </fa-icon>
+        </mat-button-toggle>
+
         <mat-button-toggle value="var(--mat-lime-a400)">
           <fa-icon
             [icon]="['fas', 'square']"
@@ -208,6 +340,14 @@
             [icon]="['fas', 'square']"
             size="lg"
             style="color: var(--mat-amber-a400)">
+          </fa-icon>
+        </mat-button-toggle>
+
+        <mat-button-toggle value="var(--mat-orange-a400)">
+          <fa-icon
+            [icon]="['fas', 'square']"
+            size="lg"
+            style="color: var(--mat-orange-a400)">
           </fa-icon>
         </mat-button-toggle>
 

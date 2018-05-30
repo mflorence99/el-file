@@ -10,6 +10,12 @@ div.drop-target {
   outline: 1px solid var(--text-color);
 }
 
+.label {
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: auto auto;
+}
+
 .mat-tab-group {
   width: calc(100% - 48px);
 }

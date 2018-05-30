@@ -5,11 +5,11 @@
   <thead>
     <tr>
 
-      <td *ngIf="allInOneDay()">
+      <td *ngIf="allInOneDay() || (prefs.dateFormat === 'ago')">
         When
       </td>
 
-      <ng-container *ngIf="!allInOneDay()">
+      <ng-container *ngIf="!(allInOneDay() || (prefs.dateFormat === 'ago'))">
         <td>
           Date
         </td>
