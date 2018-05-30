@@ -66,7 +66,7 @@ export abstract class Operation {
 }
 
 export interface OperationResult {
-  err: string;
+  err?: string;
   partial?: any[];
 }
 
@@ -78,6 +78,7 @@ export interface OperationResult {
 export class FSService {
 
   private fs: any;
+  private fsExtra: any;
   private os: any;
   private path: any;
   private touch: any;
@@ -90,10 +91,16 @@ export class FSService {
   constructor(private electron: ElectronService,
               private store: Store) {
     this.fs = this.electron.remote.require('fs');
+    this.fsExtra = this.electron.remote.require('fs-extra');
     this.os = this.electron.remote.require('os');
     this.path = this.electron.remote.require('path');
     this.touch = this.electron.remote.require('touch');
     this.trash = this.electron.remote.require('trash');
+  }
+
+  /** Extract base name from path */
+  basename(path: string): string {
+    return this.path.basename(path);
   }
 
   /** Can we redo? */
@@ -119,6 +126,11 @@ export class FSService {
   /** Extract directory name from path */
   dirname(path: string): string {
     return this.path.dirname(path);
+  }
+
+  /** Extract extension from file name */
+  extname(base: string): string {
+    return this.path.extname(base);
   }
 
   /** Handle an operation error */
@@ -233,6 +245,34 @@ export class FSService {
     }
   }
 
+  copyPaths(froms: string[],
+            tos: string[]): OperationResult {
+    const opts = { errorOnExist: true, overwrite: false, preserveTimestamps: true };
+    const partial = [];
+    froms.forEach((from, ix) => {
+      let to = tos[ix];
+      const dir = this.dirname(to);
+      const base = this.basename(to);
+      const ext = this.extname(base);
+      let iy = 0, iz = 0;
+      while (true) {
+        try {
+          this.fsExtra.copySync(from, to, opts);
+          break;
+        }
+        catch (err) {
+          iz = base.lastIndexOf('.');
+          if (iz === -1)
+            to = this.join(dir, base) + String(iy);
+          else to = this.join(dir, base.substring(iz)) + String(iy) + ext;
+          iy += 1;
+        }
+      }
+      partial.push(to);
+    });
+    return { partial };
+  }
+
   newDir(path: string): OperationResult {
     try {
       this.fs.accessSync(path);
@@ -265,6 +305,13 @@ export class FSService {
     }
   }
 
+  removePaths(paths: string[]): OperationResult {
+    paths.forEach(path => {
+      this.fsExtra.removeSync(path);
+    });
+    return null;
+  }
+
   rename(from: string,
          to: string): OperationResult {
     try {
@@ -277,7 +324,7 @@ export class FSService {
     }
   }
 
-  touchFiles(paths: string[],
+  touchPaths(paths: string[],
              times: Date[]): OperationResult {
     const partial = [];
     try {
@@ -294,7 +341,7 @@ export class FSService {
     }
   }
 
-  trashFiles(paths: string[]): OperationResult {
+  trashPaths(paths: string[]): OperationResult {
     // NOTE: trash has no error semantics
     this.trash(paths).then(() => console.log(`${paths} trashed`));
     return null;

@@ -10,6 +10,7 @@ import { View, ViewUpdated } from '../state/views';
 import { debounceTime, filter } from 'rxjs/operators';
 
 import { ContextMenuComponent } from 'ngx-contextmenu';
+import { CopyOperation } from '../services/copy';
 import { Descriptor } from '../state/fs';
 import { FSService } from '../services/fs';
 import { NewDirOperation } from '../services/new-dir';
@@ -125,6 +126,11 @@ export class TreeComponent extends LifecycleComponent
     return desc && desc.isFile;
   }
 
+  /** Is context menu target pastable? */
+  isPasteable(desc: Descriptor): boolean {
+    return this.isDirectory(desc) && this.isClipboardPopulated();
+  }
+
   /** Is there anything inside this view? */
   isViewPopulated(): boolean {
     const descs = this.descriptorsByPath[this.tab.paths[0]];
@@ -215,7 +221,8 @@ export class TreeComponent extends LifecycleComponent
         this.store.dispatch(new CopyToClipboard({ paths: this.selection.paths }));
         break;
       case 'ctrl+v':
-        // TODO
+        const copyOp = CopyOperation.makeInstance(this.clipboard.paths, desc.path, this.fsSvc);
+        this.fsSvc.run(copyOp);
         this.store.dispatch(new ClearClipboard());
         break;
       case 'ctrl+x':

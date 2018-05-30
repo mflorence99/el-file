@@ -27,7 +27,7 @@ export class TouchOperation extends Operation {
 
   /** @override */
   runImpl(fsSvc: FSService): OperationResult {
-    const result = fsSvc.touchFiles(this.paths, this.times);
+    const result = fsSvc.touchPaths(this.paths, this.times);
     if (result && result.partial && this.undo) {
       (<TouchOperation>this.undo).paths = result.partial;
       (<TouchOperation>this.undo).times.length = result.partial.length;
