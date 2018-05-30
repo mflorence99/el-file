@@ -1,4 +1,4 @@
-import { Action, State, StateContext } from '@ngxs/store';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { nextTick, pluralize } from 'ellib';
 
 import { StatusMessage } from './status';
@@ -12,7 +12,7 @@ export class ClearClipboard {
 
 export class ClipboardUpdated {
   static readonly type = '[Clipboard] updated';
-  constructor(public readonly payload: { op: 'clear' | 'copy' | 'cut', paths: string[] }) { }
+  constructor(public readonly payload: { op: ClipboardOp, paths: string[] }) { }
 }
 
 export class CopyToClipboard {
@@ -25,8 +25,10 @@ export class CutToClipboard {
   constructor(public readonly payload: { paths: string[] }) { }
 }
 
+export type ClipboardOp = 'clear' | 'copy' | 'cut';
+
 export interface ClipboardStateModel {
-  op: 'clear' | 'copy' | 'cut';
+  op: ClipboardOp;
   paths: string[];
 }
 
@@ -37,6 +39,14 @@ export interface ClipboardStateModel {
     paths: [],
   }
 }) export class ClipboardState {
+
+  @Selector() static getOp(state: ClipboardStateModel): ClipboardOp {
+    return state.op;
+  }
+
+  @Selector() static getPaths(state: ClipboardStateModel): string[] {
+    return state.paths;
+  }
 
   @Action(ClearClipboard)
   clearClipboard({ dispatch, patchState }: StateContext<ClipboardStateModel>,

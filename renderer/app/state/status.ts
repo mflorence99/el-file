@@ -9,12 +9,14 @@ export class Alarm {
 
 export class StatusMessage {
   static readonly type = '[Status] message';
-  constructor(public readonly payload: { msgLevel: 'info' | 'warn', msgText: string }) { }
+  constructor(public readonly payload: { msgLevel: MsgLevel, msgText: string }) { }
 }
+
+export type MsgLevel = 'info' | 'warn';
 
 export interface StatusStateModel {
   alarm: boolean;
-  msgLevel: 'info' | 'warn';
+  msgLevel: MsgLevel;
   msgText: string;
 }
 

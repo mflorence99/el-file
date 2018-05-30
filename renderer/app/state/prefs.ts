@@ -14,15 +14,20 @@ export class UpdatePrefs {
   constructor(public readonly prefs: PrefsStateModel) { }
 }
 
+export type DateFmt = 'ago' | 'shortDate' | 'mediumDate' | 'longDate' | 'fullDate';
+export type QuantityFmt = 'abbrev' | 'bytes' | 'number';
+export type SortOrder = 'alpha' | 'first' | 'last';
+export type TimeFmt = 'none' | 'shortTime' | 'mediumTime' | 'longTime' | 'fullTime';
+
 export interface PrefsStateModel {
-  dateFormat?: 'ago' | 'shortDate' | 'mediumDate' | 'longDate' | 'fullDate';
-  quantityFormat?: 'abbrev' | 'bytes' | 'number';
+  dateFormat?: DateFmt;
+  quantityFormat?: QuantityFmt;
   showGridLines?: boolean;
   showHiddenFiles?: boolean;
   showOnlyWritableFiles?: boolean;
-  sortDirectories?: 'alpha' | 'first' | 'last';
+  sortDirectories?: SortOrder;
   submitted?: boolean;
-  timeFormat?: 'none' | 'shortTime' | 'mediumTime' | 'longTime' | 'fullTime';
+  timeFormat?: TimeFmt;
 }
 
 @State<PrefsStateModel>({

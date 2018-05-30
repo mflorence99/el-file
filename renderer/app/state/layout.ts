@@ -20,7 +20,7 @@ export class CloseSplit {
 
 export class MakeSplit {
   static readonly type = '[Layout] make split';
-  constructor(public readonly payload: { splitID: string, ix: number, direction: 'horizontal' | 'vertical', before: boolean }) { }
+  constructor(public readonly payload: { splitID: string, ix: number, direction: SplitDir, before: boolean }) { }
 }
 
 export class MoveTab {
@@ -45,7 +45,7 @@ export class RemoveTab {
 
 export class Reorient {
   static readonly type = '[Layout] reorient';
-  constructor(public readonly payload: { splitID: string, direction: 'horizontal' | 'vertical'} ) { }
+  constructor(public readonly payload: { splitID: string, direction: SplitDir } ) { }
 }
 
 export class ReplacePathsInTab {
@@ -78,6 +78,8 @@ export class UpdateTab {
   constructor(public readonly payload: { tab: Tab }) { }
 }
 
+export type SplitDir = 'horizontal' | 'vertical';
+
 export interface Tab {
   color: string;
   icon: string;
@@ -88,7 +90,7 @@ export interface Tab {
 }
 
 export interface LayoutStateModel {
-  direction?: 'horizontal' | 'vertical';
+  direction?: SplitDir;
   id?: string;
   root?: boolean;
   size?: number;

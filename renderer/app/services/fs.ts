@@ -81,8 +81,8 @@ export class FSService {
   private fsExtra: any;
   private os: any;
   private path: any;
-  private touch: any;
-  private trash: any;
+  private touch_: any;
+  private trash_: any;
 
   private redoStack: Operation[] = [];
   private undoStack: Operation[] = [];
@@ -94,8 +94,8 @@ export class FSService {
     this.fsExtra = this.electron.remote.require('fs-extra');
     this.os = this.electron.remote.require('os');
     this.path = this.electron.remote.require('path');
-    this.touch = this.electron.remote.require('touch');
-    this.trash = this.electron.remote.require('trash');
+    this.touch_ = this.electron.remote.require('touch');
+    this.trash_ = this.electron.remote.require('trash');
   }
 
   /** Extract base name from path */
@@ -245,9 +245,11 @@ export class FSService {
     }
   }
 
-  copyPaths(froms: string[],
-            tos: string[]): OperationResult {
-    const opts = { errorOnExist: true, overwrite: false, preserveTimestamps: true };
+  copy(froms: string[],
+       tos: string[],
+       doMove = false,
+       opts?: any): OperationResult {
+    opts = opts || { errorOnExist: true, overwrite: false, preserveTimestamps: true };
     const partial = [];
     froms.forEach((from, ix) => {
       let to = tos[ix];
@@ -257,20 +259,27 @@ export class FSService {
       let iy = 0, iz = 0;
       while (true) {
         try {
-          this.fsExtra.copySync(from, to, opts);
+          if (doMove)
+            this.fsExtra.moveSync(from, to, opts);
+          else this.fsExtra.copySync(from, to, opts);
           break;
         }
         catch (err) {
           iz = base.lastIndexOf('.');
           if (iz === -1)
             to = this.join(dir, base) + String(iy);
-          else to = this.join(dir, base.substring(iz)) + String(iy) + ext;
+          else to = this.join(dir, base.substring(0, iz)) + String(iy) + ext;
           iy += 1;
         }
       }
       partial.push(to);
     });
     return { partial };
+  }
+
+  move(froms: string[],
+       tos: string[]): OperationResult {
+    return this.copy(froms, tos, true, { overwrite: false });
   }
 
   newDir(path: string): OperationResult {
@@ -296,7 +305,7 @@ export class FSService {
     }
     catch (e1) {
       try {
-        this.touch.sync(path, { force: true });
+        this.touch_.sync(path, { force: true });
         return null;
       }
       catch (e2) {
@@ -305,7 +314,7 @@ export class FSService {
     }
   }
 
-  removePaths(paths: string[]): OperationResult {
+  remove(paths: string[]): OperationResult {
     paths.forEach(path => {
       this.fsExtra.removeSync(path);
     });
@@ -324,14 +333,14 @@ export class FSService {
     }
   }
 
-  touchPaths(paths: string[],
-             times: Date[]): OperationResult {
+  touch(paths: string[],
+        times: Date[]): OperationResult {
     const partial = [];
     try {
       for (let ix = 0; ix < paths.length; ix++) {
         const path = paths[ix];
         const time = times[ix];
-        this.touch.sync(path, { force: true, nocreate: true, time });
+        this.touch_.sync(path, { force: true, nocreate: true, time });
         partial.push(path);
       }
       return null;
@@ -341,9 +350,9 @@ export class FSService {
     }
   }
 
-  trashPaths(paths: string[]): OperationResult {
+  trash(paths: string[]): OperationResult {
     // NOTE: trash has no error semantics
-    this.trash(paths).then(() => console.log(`${paths} trashed`));
+    this.trash_(paths).then(() => console.log(`${paths} trashed`));
     return null;
   }
 

@@ -1,24 +1,23 @@
 import { FSService, Operation, OperationResult } from './fs';
 
-import { DeleteOperation } from './delete';
 import { pluralize } from 'ellib';
 
 /**
- * Copy
+ * Move
  */
 
-export class CopyOperation extends Operation {
+export class MoveOperation extends Operation {
 
   /** Make a rename operation */
   static makeInstance(froms: string[],
                       to: string,
-                      fsSvc: FSService): CopyOperation {
+                      fsSvc: FSService): MoveOperation {
     const stat = fsSvc.lstat(to);
     const tos = froms.map(from => {
       const base = fsSvc.basename(from);
       return fsSvc.join(stat.isDirectory()? to : fsSvc.dirname(to), base);
     });
-    return new CopyOperation(froms, tos);
+    return new MoveOperation(froms, tos);
   }
 
   /** ctor */
@@ -27,15 +26,15 @@ export class CopyOperation extends Operation {
                       original = true) {
     super(original);
     if (original)
-      this.undo = new DeleteOperation(tos, false);
+      this.undo = new MoveOperation(tos, froms, false);
   }
 
   /** @override */
   runImpl(fsSvc: FSService): OperationResult {
-    const result = fsSvc.copy(this.froms, this.tos);
+    const result = fsSvc.move(this.froms, this.tos);
     // we may have had to change the names of the destinations
     if (this.undo)
-      (<DeleteOperation>this.undo).paths = result.partial;
+      (<MoveOperation>this.undo).froms = result.partial;
     return null;
   }
 
@@ -47,8 +46,8 @@ export class CopyOperation extends Operation {
       '=1': 'one other', 'other': '# others'
     });
     return (this.froms.length === 1)?
-      `cp -r ${from} ${to}` :
-      `cp -r ${from} ${to} and ${others}`;
+      `mv ${from} ${to}` :
+      `mv ${from} ${to} and ${others}`;
   }
 
 }

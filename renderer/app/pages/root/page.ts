@@ -1,11 +1,14 @@
+import { ClearClipboard, ClipboardState } from '../../state/clipboard';
+import { ClipboardOp, CopyToClipboard, CutToClipboard } from '../../state/clipboard';
 import { Component, ViewChild } from '@angular/core';
-import { CopyToClipboard, CutToClipboard } from '../../state/clipboard';
 import { DrawerPanelComponent, debounce } from 'ellib';
 
 import { Alarm } from '../../state/status';
+import { CopyOperation } from '../../services/copy';
 import { Descriptor } from '../../state/fs';
 import { ElectronService } from 'ngx-electron';
 import { FSService } from '../../services/fs';
+import { MoveOperation } from '../../services/move';
 import { SelectionState } from '../../state/selection';
 import { SetBounds } from '../../state/window';
 import { SplittableComponent } from '../../components/splittable';
@@ -69,31 +72,45 @@ export class RootPageComponent {
 
   onKeystroke(event: KeyboardEvent): void {
     if (event.ctrlKey) {
-      let paths: string[];
+      let alarm = false, clip: string[], clipOp: ClipboardOp, paths: string[];
       switch (event.key) {
         case 'c':
-          paths = this.store.selectSnapshot(SelectionState.getPaths);
-          if (paths.length > 0)
-            this.store.dispatch(new CopyToClipboard({ paths }));
-          else this.store.dispatch(new Alarm({ alarm: true }));
-          break;
+        case 'v':
         case 'x':
+          clip = this.store.selectSnapshot(ClipboardState.getPaths);
+          clipOp = this.store.selectSnapshot(ClipboardState.getOp);
           paths = this.store.selectSnapshot(SelectionState.getPaths);
-          if (paths.length > 0)
-            this.store.dispatch(new CutToClipboard({ paths }));
-          else this.store.dispatch(new Alarm({ alarm: true }));
+          if (paths.length > 0) {
+            if (event.key === 'c')
+              this.store.dispatch(new CopyToClipboard({ paths }));
+            else if (event.key === 'v') {
+              if ((clip.length > 0) && (paths.length === 1)) {
+                const pasteOp = (clipOp === 'copy')?
+                  CopyOperation.makeInstance(clip, paths[0], this.fsSvc) :
+                  MoveOperation.makeInstance(clip, paths[0], this.fsSvc);
+                this.fsSvc.run(pasteOp);
+                this.store.dispatch(new ClearClipboard());
+              }
+              else alarm = true;
+            }
+            else if (event.key === 'x')
+              this.store.dispatch(new CutToClipboard({ paths }));
+          }
+          else alarm = true;
           break;
         case 'z':
           if (this.fsSvc.canUndo())
             this.fsSvc.undo();
-          else this.store.dispatch(new Alarm({ alarm: true }));
+          else alarm = true;
           break;
         case 'y':
           if (this.fsSvc.canRedo())
             this.fsSvc.redo();
-          else this.store.dispatch(new Alarm({ alarm: true }));
+          else alarm = true;
           break;
       }
+      if (alarm)
+        this.store.dispatch(new Alarm({ alarm: true }));
     }
   }
 

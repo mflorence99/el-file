@@ -22,7 +22,7 @@ export class TrashOperation extends Operation {
 
   /** @override */
   runImpl(fsSvc: FSService): OperationResult {
-    return fsSvc.trashPaths(this.paths);
+    return fsSvc.trash(this.paths);
   }
 
   /** @override */

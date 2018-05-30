@@ -13,6 +13,7 @@ import { ContextMenuComponent } from 'ngx-contextmenu';
 import { CopyOperation } from '../services/copy';
 import { Descriptor } from '../state/fs';
 import { FSService } from '../services/fs';
+import { MoveOperation } from '../services/move';
 import { NewDirOperation } from '../services/new-dir';
 import { NewFileOperation } from '../services/new-file';
 import { RenameOperation } from '../services/rename';
@@ -221,8 +222,10 @@ export class TreeComponent extends LifecycleComponent
         this.store.dispatch(new CopyToClipboard({ paths: this.selection.paths }));
         break;
       case 'ctrl+v':
-        const copyOp = CopyOperation.makeInstance(this.clipboard.paths, desc.path, this.fsSvc);
-        this.fsSvc.run(copyOp);
+        const pasteOp = (this.clipboard.op === 'copy')?
+          CopyOperation.makeInstance(this.clipboard.paths, desc.path, this.fsSvc) :
+          MoveOperation.makeInstance(this.clipboard.paths, desc.path, this.fsSvc);
+        this.fsSvc.run(pasteOp);
         this.store.dispatch(new ClearClipboard());
         break;
       case 'ctrl+x':
@@ -239,8 +242,10 @@ export class TreeComponent extends LifecycleComponent
     }
     // if event is missing, that means we were invoked programatically
     // so we need to close the menu ourselves
-    if (!event.event)
+    if (!event.event) {
       window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    }
   }
 
   onNewName(name: string): void {

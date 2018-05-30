@@ -22,7 +22,7 @@ export class DeleteOperation extends Operation {
 
   /** @override */
   runImpl(fsSvc: FSService): OperationResult {
-    fsSvc.removePaths(this.paths);
+    fsSvc.remove(this.paths);
     // NOTE: we fail silently because we only use it for undo
     // also we may delete a directory before we try to delete files inside it
     return null;
