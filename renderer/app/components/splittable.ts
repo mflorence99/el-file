@@ -25,6 +25,7 @@ export class SplittableComponent {
 
   @Input() clipboard = { } as ClipboardStateModel;
   @Input() fs = { } as FSStateModel;
+  @Input() isOpRunning: boolean;
   @Input() layout = { } as LayoutStateModel;
   @Input() prefs = { } as PrefsStateModel;
   @Input() selection = { } as SelectionStateModel;

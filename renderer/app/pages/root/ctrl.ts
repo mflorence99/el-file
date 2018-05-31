@@ -42,6 +42,7 @@ export class RootCtrlComponent extends LifecycleComponent {
   @Select(PrefsState) prefs$: Observable<PrefsStateModel>;
   @Select(SelectionState) selection$: Observable<SelectionStateModel>;
   @Select(StatusState) status$: Observable<StatusStateModel>;
+  @Select(StatusState.isOpRunning) isOpRunning$: Observable<boolean>;
   @Select(ViewsState) views$: Observable<ViewsStateModel>;
   @Select(WindowState) window$: Observable<WindowStateModel>;
 

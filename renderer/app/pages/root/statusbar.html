@@ -15,9 +15,17 @@
 
   <mat-progress-bar
     [mode]="(status.progress.state === 'running')? 'indeterminate' : 'determinate'"
-    [value]="status.progress.scale"
-    *ngIf="status.progress.state !== 'completed'">
+    [ngStyle]="{visibility: (status.progress.state !== 'completed')? 'visible' : 'hidden'}"
+    [value]="status.progress.scale">
   </mat-progress-bar>
+
+  <fa-icon
+    (click)="cancel()"
+    [icon]="['fas', 'times-circle']"
+    [ngStyle]="{visibility: (status.progress.state === 'scaled')? 'visible' : 'hidden'}"
+    matTooltip="Cancel long-running operation"
+    class="canceler">
+  </fa-icon>
 
 </section>
 

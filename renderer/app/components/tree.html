@@ -171,7 +171,7 @@
 
   <ng-template
     contextMenuItem
-    [enabled]="isDescriptor.bind(this)"
+    [enabled]="isRenamable.bind(this)"
     [subMenu]="renameSubMenu">
     <div>Rename...</div>
   </ng-template>
@@ -233,7 +233,7 @@
   <ng-template
     contextMenuItem
     (execute)="onExecute($event, 'trash')"
-    [enabled]="isDescriptor.bind(this)">
+    [enabled]="isTrashable.bind(this)">
     <div>Move to trash</div>
   </ng-template>
 
@@ -261,7 +261,7 @@
   <ng-template
     contextMenuItem
     (execute)="onExecute($event, 'ctrl+v')"
-    [enabled]="isClipboardPopulated.bind(this)">
+    [enabled]="isPastable.bind(this)">
     <div>Paste</div>
     <div class="accelerator">Ctrl+V</div>
   </ng-template>

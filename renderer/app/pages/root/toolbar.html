@@ -2,7 +2,7 @@
 
   <button
     (click)="fsSvc.redo()"
-    [disabled]="!fsSvc.canRedo()"
+    [disabled]="!canRedo()"
     [matTooltip]="fsSvc.peekRedo()?.toString()"
     mat-icon-button>
     <fa-icon
@@ -12,8 +12,8 @@
   </button>
 
   <button
-    (click)="fsSvc.undo()"
-    [disabled]="!fsSvc.canUndo()"
+    (click)="isOpRunning || fsSvc.undo()"
+    [disabled]="!canUndo()"
     [matTooltip]="fsSvc.peekUndo()?.toString()"
     mat-icon-button>
     <fa-icon

@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 
-import { Message, Progress } from '../state/status';
+import { Actions, Store, ofAction } from '@ngxs/store';
+import { Canceled, Message, Progress } from '../state/status';
 
 import { ElectronService } from 'ngx-electron';
 import { Injectable } from '@angular/core';
 import { LogOperation } from '../state/fslog';
-import { Store } from '@ngxs/store';
 import async from 'async-es';
 
 const MAX_STACK = 100;
@@ -87,11 +87,14 @@ export class FSService {
   private touch_: any;
   private trash_: any;
 
+  private canceled: boolean;
+
   private redoStack: Operation[] = [];
   private undoStack: Operation[] = [];
 
   /** ctor */
-  constructor(private electron: ElectronService,
+  constructor(private actions$: Actions,
+              private electron: ElectronService,
               private store: Store) {
     this.dir_ = this.electron.remote.require('node-dir');
     this.fs_ = this.electron.remote.require('fs');
@@ -100,6 +103,9 @@ export class FSService {
     this.path_ = this.electron.remote.require('path');
     this.touch_ = this.electron.remote.require('touch');
     this.trash_ = this.electron.remote.require('trash');
+    // listen for a canceled notification
+    this.actions$.pipe(ofAction(Canceled))
+      .subscribe(() => this.canceled = true);
   }
 
   /** Extract base name from path */
@@ -185,29 +191,6 @@ export class FSService {
     }
   }
 
-  /** Convert directory names to file names */
-  itemize(froms: string[],
-          tos: string[]): { ifroms: string[], itos: string[] } {
-    let ifroms = [];
-    let itos = [];
-    froms.forEach((from, ix) => {
-      let xfroms, xtos;
-      const to = tos[ix];
-      const stat = this.lstat(from);
-      if (stat.isDirectory()) {
-        xfroms = this.dir_.files(from, { sync: true });
-        xtos = xfroms.map(path => this.path_.join(to, path.substring(from.length)));
-        ifroms = ifroms.concat(xfroms);
-        itos = itos.concat(xtos);
-      }
-      else {
-        ifroms.push(from);
-        itos.push(to);
-      }
-    });
-    return { ifroms, itos };
-  }
-
   /** Join names to form path */
   join(...paths: string[]): string {
     return this.path_.join(...paths);
@@ -246,6 +229,16 @@ export class FSService {
     return this.undoStack.slice(0);
   }
 
+  /** Pop top item on the redo stack */
+  popRedoStack(): Operation {
+    return this.canRedo()? this.redoStack.splice(-1, 1)[0] : null;
+  }
+
+  /** Pop top item on the undo stack */
+  popUndoStack(): Operation {
+    return this.canUndo()? this.undoStack.splice(-1, 1)[0] : null;
+  }
+
   /** Push an operation onto the redo stack */
   pushRedo(op: Operation): void {
     if (this.redoStack.length > MAX_STACK)
@@ -263,7 +256,7 @@ export class FSService {
   /** Perform redo operation */
   redo(): void {
     if (this.canRedo()) {
-      const op = this.redoStack.splice(-1, 1)[0];
+      const op = this.popRedoStack();
       this.run(op);
     }
   }
@@ -287,28 +280,9 @@ export class FSService {
   /** Perform undo operation */
   undo(): void {
     if (this.canUndo()) {
-      const op = this.undoStack.splice(-1, 1)[0];
+      const op = this.popUndoStack();
       this.run(op);
     }
-  }
-
-  /** Make paths unique */
-  uniquify(paths: string[]): string[] {
-    const uniques = [];
-    paths.forEach(path => {
-      let unique = path;
-      for (let ix = 0; this.exists(unique); ix++) {
-        const dir = this.dirname(path);
-        const base = this.basename(path);
-        const ext = this.extname(base);
-        const iy = base.lastIndexOf('.');
-        if (iy === -1)
-          unique = this.join(dir, base) + String(ix);
-        else unique = this.join(dir, base.substring(0, iy)) + String(ix) + ext;
-      }
-      uniques.push(unique);
-    });
-    return uniques;
   }
 
   // operations
@@ -331,24 +305,19 @@ export class FSService {
     opts = opts || { errorOnExist: true, overwrite: false, preserveTimestamps: true };
     tos = this.uniquify(tos);
     const { ifroms, itos } = this.itemize(froms, tos);
+    this.canceled = false;
     async.forEachOfSeries(ifroms, (from, ix, cb) => {
-      const to = itos[ix];
-      const scale = Math.round(((ix + 1) / ifroms.length) * 100);
-      this.store.dispatch(new Progress({ path: from, scale }));
-      if (doMove)
-        this.fsExtra_.move(from, to, opts).then(() => cb());
-      else this.fsExtra_.copy(from, to, opts).then(() => cb());
-    }, () => this.copyCompleted(froms, doMove));
+      if (this.canceled)
+        cb('canceled');
+      else {
+        const to = itos[ix];
+        const scale = Math.round(((ix + 1) / ifroms.length) * 100);
+        this.store.dispatch(new Progress({ path: from, scale }));
+        // NOTE: we implement move as a copy+remove so it can be canceled
+        this.fsExtra_.copy(from, to, opts).then(() => cb());
+      }
+    }, err => this.copyCompleted(err, froms, doMove));
     return { partial: tos };
-  }
-
-  copyCompleted(froms: string[],
-                doMove: boolean): void {
-    this.store.dispatch(new Progress({ state: 'completed' }));
-    // NOTE: because we itemized all the files inside their directories
-    // we must manually remove the now-empty directories
-    if (doMove)
-      this.remove(froms);
   }
 
   move(froms: string[],
@@ -432,6 +401,62 @@ export class FSService {
     }, () => this.store.dispatch(new Progress({ state: 'completed' })));
     // NOTE: trash has no error semantics
     return null;
+  }
+
+  // private methods
+
+  private copyCompleted(err: any,
+                        froms: string[],
+                        doMove: boolean): void {
+    this.store.dispatch(new Progress({ state: 'completed' }));
+    // NOTE: we implement move as a copy+remove so it can be canceled
+    // NOTE: we can't undo a canceled move as it wasn't complete
+    if (doMove) {
+      if (err)
+        this.popUndoStack();
+      else this.remove(froms);
+    }
+  }
+
+  private itemize(froms: string[],
+                  tos: string[]): { ifroms: string[], itos: string[] } {
+    let ifroms = [];
+    let itos = [];
+    froms.forEach((from, ix) => {
+      let xfroms, xtos;
+      const to = tos[ix];
+      const stat = this.lstat(from);
+      if (stat.isDirectory()) {
+        xfroms = this.dir_.files(from, { sync: true });
+        xtos = xfroms.map(path => this.path_.join(to, path.substring(from.length)));
+        ifroms = ifroms.concat(xfroms);
+        itos = itos.concat(xtos);
+      }
+      else {
+        ifroms.push(from);
+        itos.push(to);
+      }
+    });
+    return { ifroms, itos };
+  }
+
+  /** Make paths unique */
+  private uniquify(paths: string[]): string[] {
+    const uniques = [];
+    paths.forEach(path => {
+      let unique = path;
+      for (let ix = 0; this.exists(unique); ix++) {
+        const dir = this.dirname(path);
+        const base = this.basename(path);
+        const ext = this.extname(base);
+        const iy = base.lastIndexOf('.');
+        if (iy === -1)
+          unique = this.join(dir, base) + String(ix);
+        else unique = this.join(dir, base.substring(0, iy)) + String(ix) + ext;
+      }
+      uniques.push(unique);
+    });
+    return uniques;
   }
 
 }

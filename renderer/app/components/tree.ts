@@ -41,6 +41,7 @@ export class TreeComponent extends LifecycleComponent
 
   @Input() clipboard = { } as ClipboardStateModel;
   @Input() fs = { } as FSStateModel;
+  @Input() isOpRunning: boolean;
   @Input() prefs = { } as PrefsStateModel;
   @Input() selection = { } as SelectionStateModel;
   @Input() splitID: string;
@@ -126,6 +127,21 @@ export class TreeComponent extends LifecycleComponent
   /** Is context menu bound to a file? */
   isFile(desc: Descriptor): boolean {
     return desc && desc.isFile;
+  }
+
+  /** Is paste allowed? */
+  isPastable(): boolean {
+    return this.isClipboardPopulated() && !this.isOpRunning;
+  }
+
+  /** Is this path renamable? */
+  isRenamable(desc: Descriptor): boolean {
+    return desc && !this.isOpRunning;
+  }
+
+  /** Is this path trashable? */
+  isTrashable(desc: Descriptor): boolean {
+    return desc && !this.isOpRunning;
   }
 
   /** Is there anything inside this view? */

@@ -1,10 +1,15 @@
-import { Action, State, StateContext } from '@ngxs/store';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
 
 /** NOTE: actions must come first because of AST */
 
 export class Alarm {
   static readonly type = '[Status] alarm';
   constructor(public readonly payload: { alarm: boolean }) { }
+}
+
+export class Canceled {
+  static readonly type = '[Status] canceled';
+  constructor(public readonly payload?: any) { }
 }
 
 export class Message {
@@ -46,6 +51,10 @@ export interface StatusStateModel {
     }
   }
 }) export class StatusState {
+
+  @Selector() static isOpRunning(state: StatusStateModel): boolean {
+    return state.progress.state === 'scaled';
+  }
 
   @Action(Alarm)
   alarm({ patchState }: StateContext<StatusStateModel>,

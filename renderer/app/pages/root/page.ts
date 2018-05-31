@@ -1,6 +1,6 @@
 import { ClearClipboard, ClipboardState } from '../../state/clipboard';
-import { ClipboardOp, CopyToClipboard, CutToClipboard } from '../../state/clipboard';
 import { Component, ViewChild } from '@angular/core';
+import { CopyToClipboard, CutToClipboard } from '../../state/clipboard';
 import { DrawerPanelComponent, debounce } from 'ellib';
 
 import { Alarm } from '../../state/status';
@@ -12,6 +12,7 @@ import { MoveOperation } from '../../services/move';
 import { SelectionState } from '../../state/selection';
 import { SetBounds } from '../../state/window';
 import { SplittableComponent } from '../../components/splittable';
+import { StatusState } from '../../state/status';
 import { Store } from '@ngxs/store';
 import { Tab } from '../../state/layout';
 import { View } from '../../state/views';
@@ -72,19 +73,20 @@ export class RootPageComponent {
 
   onKeystroke(event: KeyboardEvent): void {
     if (event.ctrlKey) {
-      let alarm = false, clip: string[], clipOp: ClipboardOp, paths: string[];
+      let alarm = false;
       switch (event.key) {
         case 'c':
         case 'v':
         case 'x':
-          clip = this.store.selectSnapshot(ClipboardState.getPaths);
-          clipOp = this.store.selectSnapshot(ClipboardState.getOp);
-          paths = this.store.selectSnapshot(SelectionState.getPaths);
+          const clip = this.store.selectSnapshot(ClipboardState.getPaths);
+          const clipOp = this.store.selectSnapshot(ClipboardState.getOp);
+          const isOpRunning = this.store.selectSnapshot(StatusState.isOpRunning);
+          const paths = this.store.selectSnapshot(SelectionState.getPaths);
           if (paths.length > 0) {
             if (event.key === 'c')
               this.store.dispatch(new CopyToClipboard({ paths }));
             else if (event.key === 'v') {
-              if ((clip.length > 0) && (paths.length === 1)) {
+              if (!isOpRunning && (clip.length > 0) && (paths.length === 1)) {
                 const pasteOp = (clipOp === 'copy')?
                   CopyOperation.makeInstance(clip, paths[0], this.fsSvc) :
                   MoveOperation.makeInstance(clip, paths[0], this.fsSvc);

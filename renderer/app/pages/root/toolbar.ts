@@ -23,6 +23,7 @@ import { Store } from '@ngxs/store';
 
 export class ToolbarComponent {
 
+  @Input() isOpRunning: boolean;
   @Input() layout = { } as LayoutStateModel;
   @Input() window = { } as WindowStateModel;
 
@@ -32,6 +33,16 @@ export class ToolbarComponent {
   constructor(private electron: ElectronService,
               public fsSvc: FSService,
               private store: Store) { }
+
+  /** Is redo available? */
+  canRedo() {
+    return !this.isOpRunning && this.fsSvc.canRedo();
+  }
+
+  /** Is undo available? */
+  canUndo() {
+    return !this.isOpRunning && this.fsSvc.canUndo();
+  }
 
   /** Open dev tools */
   devTools(): void {

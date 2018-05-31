@@ -3,6 +3,7 @@
 
   <elfile-toolbar
     (openPrefs)="prefsDrawer.open()"
+    [isOpRunning]="ctrl.isOpRunning$ | async"
     [layout]="ctrl.layout$ | async"
     [window]="ctrl.window$ | async">
   </elfile-toolbar>
@@ -21,6 +22,7 @@
         <elfile-splittable
           [clipboard]="ctrl.clipboard$ | async"
           [fs]="ctrl.fs$ | async"
+          [isOpRunning]="ctrl.isOpRunning$ | async"
           [layout]="ctrl.layout$ | async"
           [prefs]="ctrl.prefs$ | async"
           [selection]="ctrl.selection$ | async"

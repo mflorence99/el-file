@@ -24,6 +24,7 @@ export class PaneComponent extends LifecycleComponent {
   @Input() clipboard = { } as ClipboardStateModel;
   @Input() fs = { } as FSStateModel;
   @Input() index: number;
+  @Input() isOpRunning: boolean;
   @Input() prefs = { } as PrefsStateModel;
   @Input() selection = { } as SelectionStateModel;
   @Input() splitID: string;

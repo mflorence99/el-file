@@ -10,8 +10,13 @@ section {
   display: grid;
   font-size: 0.66rem;
   grid-gap: 16px;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr auto auto;
   height: 100%;
+
+  .canceler {
+    color: var(--error-color);
+    cursor: pointer;
+  }
 
   .info,
   .warn {
