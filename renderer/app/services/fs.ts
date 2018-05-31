@@ -82,6 +82,7 @@ export class FSService {
   private dir_: any;
   private fs_: any;
   private fsExtra_: any;
+  private mkdirp_: any;
   private os_: any;
   private path_: any;
   private touch_: any;
@@ -99,6 +100,7 @@ export class FSService {
     this.dir_ = this.electron.remote.require('node-dir');
     this.fs_ = this.electron.remote.require('fs');
     this.fsExtra_ = this.electron.remote.require('fs-extra');
+    this.mkdirp_ = this.electron.remote.require('mkdirp');
     this.os_ = this.electron.remote.require('os');
     this.path_ = this.electron.remote.require('path');
     this.touch_ = this.electron.remote.require('touch');
@@ -427,10 +429,17 @@ export class FSService {
       const to = tos[ix];
       const stat = this.lstat(from);
       if (stat.isDirectory()) {
-        xfroms = this.dir_.files(from, { sync: true });
-        xtos = xfroms.map(path => this.path_.join(to, path.substring(from.length)));
-        ifroms = ifroms.concat(xfroms);
-        itos = itos.concat(xtos);
+        // NOTE: we can't list the files of an empty directory -- there are none!
+        // so itemization won't work -- instead, it does no harm to pre-emptively
+        // create the target directory(s)
+        this.mkdirp_.sync(to);
+        try {
+          xfroms = this.dir_.files(from, { sync: true });
+          xtos = xfroms.map(path => this.path_.join(to, path.substring(from.length)));
+          ifroms = ifroms.concat(xfroms);
+          itos = itos.concat(xtos);
+        }
+        catch (err) { }
       }
       else {
         ifroms.push(from);
