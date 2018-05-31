@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { Tab, UpdatePathLRU } from '../state/layout';
 
 import { ClipboardStateModel } from '../state/clipboard';
 import { ContextMenuComponent } from 'ngx-contextmenu';
@@ -7,7 +8,7 @@ import { Dictionary } from '../services/dictionary';
 import { FSStateModel } from '../state/fs';
 import { PrefsStateModel } from '../state/prefs';
 import { SelectionStateModel } from '../state/selection';
-import { Tab } from '../state/layout';
+import { Store } from '@ngxs/store';
 import { TreeComponent } from './tree';
 
 /**
@@ -21,7 +22,7 @@ import { TreeComponent } from './tree';
   styleUrls: ['branch.scss']
 })
 
-export class BranchComponent {
+export class BranchComponent implements OnInit {
 
   @Input() clipboard = { } as ClipboardStateModel;
   @Input() contextMenu: ContextMenuComponent;
@@ -35,6 +36,13 @@ export class BranchComponent {
   @Input() tab = { } as Tab;
 
   /** ctor */
-  constructor(public tree: TreeComponent) { }
+  constructor(private store: Store,
+              public tree: TreeComponent) { }
+
+  // lifecycle methods
+
+  ngOnInit(): void {
+    this.store.dispatch(new UpdatePathLRU({ path: this.path, tab: this.tab}));
+  }
 
 }

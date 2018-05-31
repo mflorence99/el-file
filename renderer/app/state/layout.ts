@@ -5,6 +5,10 @@ import { InitView, RemoveView, ViewUpdated } from './views';
 import { ClearSelection } from '../state/selection';
 import { UUID } from 'angular2-uuid';
 import { nextTick } from 'ellib';
+import { timer } from 'rxjs';
+
+const PURGE_INTERVAL = 60 * 1000;
+const PURGE_PERIOD = 15 * 60 * 1000;
 
 /** NOTE: actions must come first because of AST */
 
@@ -68,6 +72,11 @@ export class TabUpdated {
   constructor(public readonly payload: { tab: Tab }) { }
 }
 
+export class UpdatePathLRU {
+  static readonly type = '[Layout] update path LRU';
+  constructor(public readonly payload: { path: string, tab: Tab }) { }
+}
+
 export class UpdateSplitSizes {
   static readonly type = '[Layout] update split sizes';
   constructor(public readonly payload: { splitID: string, sizes: number[] }) { }
@@ -80,11 +89,16 @@ export class UpdateTab {
 
 export type SplitDir = 'horizontal' | 'vertical';
 
+export interface LRUCache {
+  [path: string]: number;
+ }
+
 export interface Tab {
   color: string;
   icon: string;
   id: string;
   label: string;
+  lru: LRUCache;
   paths: string[];
   selected: boolean;
 }
@@ -124,6 +138,7 @@ export interface LayoutStateModel {
         icon: 'fab linux',
         id: UUID.UUID(),
         label: 'Root',
+        lru: { },
         paths: ['/'],
         selected: true
       } as Tab]
@@ -342,6 +357,7 @@ export interface LayoutStateModel {
         icon: 'fab linux',
         id: UUID.UUID(),
         label: this.makeLabelFromPath(path),
+        lru: { },
         paths: [path],
         selected: false
       };
@@ -365,6 +381,7 @@ export interface LayoutStateModel {
     const { path, tab } = payload;
     if (tab.paths.includes(path)) {
       const ix = tab.paths.indexOf(path);
+      delete tab.lru[path];
       tab.paths.splice(ix, 1);
       const updated = { ...getState() };
       const tx = LayoutState.findTabIndexByID(updated, tab.id);
@@ -412,6 +429,7 @@ export interface LayoutStateModel {
                     { payload }: ReplacePathsInTab) {
     const { paths, tab } = payload;
     tab.paths = paths;
+    tab.lru = { };
     const updated = { ...getState() };
     const tx = LayoutState.findTabIndexByID(updated, tab.id);
     if (tx.ix !== -1) {
@@ -439,6 +457,21 @@ export interface LayoutStateModel {
         dispatch(new ClearSelection());
         // sync model
         nextTick(() => dispatch(new TabsUpdated({ splitID: tx.splitID, tabs: tx.tabs })));
+      }
+    }
+  }
+
+  @Action(UpdatePathLRU)
+  updatePathLRU({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
+                { payload }: UpdatePathLRU) {
+    const { path, tab } = payload;
+    const updated = { ...getState() };
+    const tx = LayoutState.findTabIndexByID(updated, tab.id);
+    if (tx.ix !== -1) {
+      const split = LayoutState.findSplitByID(updated, tx.splitID);
+      if (split) {
+        split.tabs[tx.ix].lru[path] = Date.now();
+        setState(updated);
       }
     }
   }
@@ -471,22 +504,34 @@ export interface LayoutStateModel {
 
   // lifecycle methods
 
-  ngxsOnInit({ dispatch, getState, setState }: StateContext<LayoutStateModel>) {
+  ngxsOnInit({ dispatch, getState }: StateContext<LayoutStateModel>) {
     // listen for directory removal
     this.actions$
       .pipe(ofAction(DirUnloaded))
-      .subscribe(({ payload }) => {
-        let changed = false;
-        const layout = { ...getState() };
+      .subscribe(({ path }) => {
+        const layout = getState();
         LayoutState.visitTabs(layout, (tab: Tab) => {
-          const ix = tab.paths.indexOf(payload);
-          if (ix !== -1) {
-            tab.paths.splice(ix, 1);
-            changed = true;
+          const ix = tab.paths.indexOf(path);
+          if (ix !== -1)
+            dispatch(new RemovePathFromTab({ path, tab }));
+        });
+      });
+    // wake up to purge unused paths
+    // NOTE: don't purge anything in a selected tab, nor the root path
+    timer(PURGE_INTERVAL, PURGE_INTERVAL)
+      .subscribe( () => {
+        const layout = getState();
+        LayoutState.visitTabs(layout, (tab: Tab) => {
+          if (!tab.selected) {
+            tab.paths.forEach((path, ix) => {
+              if (ix > 0) {
+                const lru = tab.lru[path];
+                if (lru < (Date.now() - PURGE_PERIOD))
+                  dispatch(new RemovePathFromTab({ path, tab }));
+              }
+            });
           }
         });
-        if (changed)
-          setState(layout);
       });
     // load initial paths and set initial prefs
     const layout = getState();
@@ -494,8 +539,13 @@ export interface LayoutStateModel {
       if (split.tabs)
         nextTick(() => dispatch(new TabsUpdated({ splitID: split.id, tabs: split.tabs })));
     });
+    // make paths unique
+    const paths = { };
     LayoutState.visitTabs(layout, (tab: Tab) => {
-      dispatch(new LoadDirs({ paths: tab.paths }));
+      tab.paths.forEach(path => paths[path] = true);
+    });
+    dispatch(new LoadDirs({ paths: Object.keys(paths) }));
+    LayoutState.visitTabs(layout, (tab: Tab) => {
       dispatch(new InitView({ viewID: tab.id }));
       // sync model
       nextTick(() => dispatch(new ViewUpdated({ viewID: tab.id, view: null })));
