@@ -88,8 +88,11 @@ export class RootPageComponent {
                 const pasteOp = (clipOp === 'copy')?
                   CopyOperation.makeInstance(clip, paths[0], this.fsSvc) :
                   MoveOperation.makeInstance(clip, paths[0], this.fsSvc);
-                this.fsSvc.run(pasteOp);
-                this.store.dispatch(new ClearClipboard());
+                if (pasteOp) {
+                  this.fsSvc.run(pasteOp);
+                  this.store.dispatch(new ClearClipboard());
+                }
+                else alarm = true;
               }
               else alarm = true;
             }

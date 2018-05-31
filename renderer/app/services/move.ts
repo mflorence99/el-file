@@ -13,11 +13,15 @@ export class MoveOperation extends Operation {
                       to: string,
                       fsSvc: FSService): MoveOperation {
     const stat = fsSvc.lstat(to);
-    const tos = froms.map(from => {
-      const base = fsSvc.basename(from);
-      return fsSvc.join(stat.isDirectory()? to : fsSvc.dirname(to), base);
-    });
-    return new MoveOperation(froms, tos);
+    to = stat.isDirectory()? to : fsSvc.dirname(to);
+    if (fsSvc.isWritable(to)) {
+      const tos = froms.map(from => {
+        const base = fsSvc.basename(from);
+        return fsSvc.join(to, base);
+      });
+      return new MoveOperation(froms, tos);
+    }
+    else return null;
   }
 
   /** ctor */

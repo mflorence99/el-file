@@ -16,6 +16,7 @@ import { FSService } from '../services/fs';
 import { MoveOperation } from '../services/move';
 import { NewDirOperation } from '../services/new-dir';
 import { NewFileOperation } from '../services/new-file';
+import { Progress } from '../state/status';
 import { RenameOperation } from '../services/rename';
 import { RootPageComponent } from '../pages/root/page';
 import { SelectionStateModel } from '../state/selection';
@@ -125,11 +126,6 @@ export class TreeComponent extends LifecycleComponent
   /** Is context menu bound to a file? */
   isFile(desc: Descriptor): boolean {
     return desc && desc.isFile;
-  }
-
-  /** Is context menu target pastable? */
-  isPasteable(desc: Descriptor): boolean {
-    return this.isDirectory(desc) && this.isClipboardPopulated();
   }
 
   /** Is there anything inside this view? */
@@ -255,6 +251,7 @@ export class TreeComponent extends LifecycleComponent
   // lifecycle methods
 
   ngOnInit(): void {
+    this.store.dispatch(new Progress({ state: 'running' }));
     this.subToActions = this.actions$
       .pipe(
         ofAction(DirLoaded, DirUnloaded, PrefsUpdated, TabsUpdated, TabUpdated, ViewUpdated),
@@ -283,6 +280,8 @@ export class TreeComponent extends LifecycleComponent
           this.descriptorsByPath[path] =
             this.dictSvc.descriptorsForView(path, this.fs, this.dictionary, this.prefs, this.view);
         });
+        if (!this.loaded)
+          this.store.dispatch(new Progress({ state: 'completed' }));
         this.loaded = true;
         this.cdf.detectChanges();
       });

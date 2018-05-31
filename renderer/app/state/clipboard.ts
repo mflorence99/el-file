@@ -1,7 +1,7 @@
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { nextTick, pluralize } from 'ellib';
 
-import { StatusMessage } from './status';
+import { Message } from './status';
 
 /** NOTE: actions must come first because of AST */
 
@@ -60,16 +60,16 @@ export interface ClipboardStateModel {
   clipboardUpdated({ dispatch }: StateContext<ClipboardStateModel>,
                    { payload }: ClipboardUpdated) {
     const { op, paths } = payload;
-    let msgText = '';
+    let text = '';
     if (paths.length === 1)
-      msgText = `${paths[0]} ${op} to clipboard`;
+      text = `${paths[0]} ${op} to clipboard`;
     else if (paths.length > 1) {
       const others = pluralize(paths.length, {
         '=1': 'one other', 'other': '# others'
       });
-      msgText = `${paths[0]} and ${others} ${op} to clipboard`;
+      text = `${paths[0]} and ${others} ${op} to clipboard`;
     }
-    dispatch(new StatusMessage({ msgLevel: 'info', msgText }));
+    dispatch(new Message({ text }));
   }
 
   @Action(CopyToClipboard)

@@ -7,25 +7,43 @@ export class Alarm {
   constructor(public readonly payload: { alarm: boolean }) { }
 }
 
-export class StatusMessage {
+export class Message {
   static readonly type = '[Status] message';
-  constructor(public readonly payload: { msgLevel: MsgLevel, msgText: string }) { }
+  constructor(public readonly payload: { level?: MessageLevel, text: string }) { }
 }
 
-export type MsgLevel = 'info' | 'warn';
+export class Progress {
+  static readonly type = '[Status] progress';
+  constructor(public readonly payload: { path?: string, scale?: number, state?: ProgressState }) { }
+}
+
+export type MessageLevel = 'info' | 'warn';
+export type ProgressState = 'completed' | 'running' | 'scaled';
 
 export interface StatusStateModel {
   alarm: boolean;
-  msgLevel: MsgLevel;
-  msgText: string;
+  message: {
+    level: MessageLevel;
+    text: string;
+  };
+  progress: {
+    scale: number;
+    state: ProgressState;
+  };
 }
 
 @State<StatusStateModel>({
   name: 'status',
   defaults: {
     alarm: false,
-    msgLevel: 'info',
-    msgText: ''
+    message: {
+      level: 'info',
+      text: ''
+    },
+    progress: {
+      scale: 0,
+      state: 'completed'
+    }
   }
 }) export class StatusState {
 
@@ -36,11 +54,21 @@ export interface StatusStateModel {
     patchState({ alarm });
   }
 
-  @Action(StatusMessage)
+  @Action(Message)
   statusMessage({ patchState }: StateContext<StatusStateModel>,
-                { payload }: StatusMessage) {
-    const { msgLevel, msgText } = payload;
-    patchState({ alarm: msgLevel === 'warn', msgLevel, msgText });
+                { payload }: Message) {
+    const { level, text } = payload;
+    patchState({ alarm: level === 'warn',
+                 message: { level: level? level : 'info', text } });
+  }
+
+  @Action(Progress)
+  progress({ patchState }: StateContext<StatusStateModel>,
+           { payload }: Progress) {
+    const { path, scale, state } = payload;
+    patchState({ progress: { scale: scale? scale : 0, state: state? state : 'scaled' } });
+    if (path)
+      patchState({  message: { level: 'info', text: path } });
   }
 
 }

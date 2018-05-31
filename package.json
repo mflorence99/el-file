@@ -50,6 +50,7 @@
     "moment": "2",
     "ngx-contextmenu": "5",
     "ngx-electron": "1",
+    "node-dir": "^0.1.17",
     "numeral": "2",
     "roboto-fontface": "^0.9.0",
     "rxjs": "6",

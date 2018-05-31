@@ -269,7 +269,7 @@
   <ng-template
     contextMenuItem
     (execute)="onExecute($event, 'clear')"
-    [enabled]="isPasteable.bind(this)">
+    [enabled]="isClipboardPopulated.bind(this)">
     <div>Clear clipboard</div>
   </ng-template>
 

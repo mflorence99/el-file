@@ -1,17 +1,23 @@
 <section>
 
   <div
-    [ngClass]="status.msgLevel"
-    [ngStyle]="{visibility: status.msgText? 'visible' : 'hidden'}">
+    [ngClass]="status.message.level"
+    [ngStyle]="{visibility: status.message.text? 'visible' : 'hidden'}">
 
     <fa-icon
       [fixedWidth]="true"
-      [icon]="['fas', (status.msgLevel === 'warn')? 'exclamation-triangle' : 'info-circle']">
+      [icon]="['fas', (status.message.level === 'warn')? 'exclamation-triangle' : 'info-circle']">
     </fa-icon>
 
-    {{ status.msgText }}
+    {{ status.message.text }}
 
   </div>
+
+  <mat-progress-bar
+    [mode]="(status.progress.state === 'running')? 'indeterminate' : 'determinate'"
+    [value]="status.progress.scale"
+    *ngIf="status.progress.state !== 'completed'">
+  </mat-progress-bar>
 
 </section>
 

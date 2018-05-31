@@ -10,8 +10,15 @@ section {
   display: grid;
   font-size: 0.66rem;
   grid-gap: 16px;
-  grid-template-columns: auto;
+  grid-template-columns: 1fr auto;
   height: 100%;
+
+  .info,
+  .warn {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   .info {
     color: var(--mat-grey-400);
@@ -19,6 +26,11 @@ section {
 
   .warn {
     color: var(--warn-color);
+  }
+
+  .mat-progress-bar {
+    height: 100%;
+    width: 140px;
   }
 
 }

@@ -1,7 +1,7 @@
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { nextTick, pluralize } from 'ellib';
 
-import { StatusMessage } from './status';
+import { Message } from './status';
 
 /** NOTE: actions must come first because of AST */
 
@@ -98,16 +98,16 @@ export interface SelectionStateModel {
   selectionUpdated({ dispatch }: StateContext<SelectionStateModel>,
                    { payload }: SelectionUpdated) {
     const { paths } = payload;
-    let msgText = '';
+    let text = '';
     if (paths.length === 1)
-      msgText = `${paths[0]} selected`;
+      text = `${paths[0]} selected`;
     else if (paths.length > 1) {
       const others = pluralize(paths.length, {
         '=1': 'one other', 'other': '# others'
       });
-      msgText = `${paths[0]} and ${others} selected`;
+      text = `${paths[0]} and ${others} selected`;
     }
-    dispatch(new StatusMessage({ msgLevel: 'info', msgText }));
+    dispatch(new Message({ text }));
   }
 
   @Action(TogglePathInSelection)

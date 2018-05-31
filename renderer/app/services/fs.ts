@@ -1,10 +1,12 @@
 import * as fs from 'fs';
 
+import { Message, Progress } from '../state/status';
+
 import { ElectronService } from 'ngx-electron';
 import { Injectable } from '@angular/core';
 import { LogOperation } from '../state/fslog';
-import { StatusMessage } from '../state/status';
 import { Store } from '@ngxs/store';
+import async from 'async-es';
 
 const MAX_STACK = 100;
 
@@ -77,10 +79,11 @@ export interface OperationResult {
 @Injectable()
 export class FSService {
 
-  private fs: any;
-  private fsExtra: any;
-  private os: any;
-  private path: any;
+  private dir_: any;
+  private fs_: any;
+  private fsExtra_: any;
+  private os_: any;
+  private path_: any;
   private touch_: any;
   private trash_: any;
 
@@ -90,17 +93,18 @@ export class FSService {
   /** ctor */
   constructor(private electron: ElectronService,
               private store: Store) {
-    this.fs = this.electron.remote.require('fs');
-    this.fsExtra = this.electron.remote.require('fs-extra');
-    this.os = this.electron.remote.require('os');
-    this.path = this.electron.remote.require('path');
+    this.dir_ = this.electron.remote.require('node-dir');
+    this.fs_ = this.electron.remote.require('fs');
+    this.fsExtra_ = this.electron.remote.require('fs-extra');
+    this.os_ = this.electron.remote.require('os');
+    this.path_ = this.electron.remote.require('path');
     this.touch_ = this.electron.remote.require('touch');
     this.trash_ = this.electron.remote.require('trash');
   }
 
   /** Extract base name from path */
   basename(path: string): string {
-    return this.path.basename(path);
+    return this.path_.basename(path);
   }
 
   /** Can we redo? */
@@ -125,43 +129,99 @@ export class FSService {
 
   /** Extract directory name from path */
   dirname(path: string): string {
-    return this.path.dirname(path);
+    return this.path_.dirname(path);
+  }
+
+  /** Does this path exist already? */
+  exists(path: string): boolean {
+    try {
+      this.fs_.accessSync(path);
+      return true;
+    }
+    catch (err) {
+      return false;
+    }
   }
 
   /** Extract extension from file name */
   extname(base: string): string {
-    return this.path.extname(base);
+    return this.path_.extname(base);
   }
 
   /** Handle an operation error */
   handleError(err: string): void {
-    this.store.dispatch(new StatusMessage({ msgLevel: 'warn', msgText: err }));
+    this.store.dispatch(new Message({ level: 'warn', text: err }));
   }
 
   /** Handle an operation success */
   handleSuccess(msg: string): void {
-    this.store.dispatch(new StatusMessage({ msgLevel: 'info', msgText: msg }));
+    this.store.dispatch(new Message({ text: msg }));
   }
 
   /** Get the user's home directory */
   homedir(): string {
-    return this.os.homedir();
+    return this.os_.homedir();
+  }
+
+  /** Is this path readable? */
+  isReadable(path: string): boolean {
+    try {
+      this.fs_.accessSync(path, this.fs_.constants.R_OK);
+      return true;
+    }
+    catch (err) {
+      return false;
+    }
+  }
+
+  /** Is this path writable? */
+  isWritable(path: string): boolean {
+    try {
+      this.fs_.accessSync(path, this.fs_.constants.W_OK);
+      return true;
+    }
+    catch (err) {
+      return false;
+    }
+  }
+
+  /** Convert directory names to file names */
+  itemize(froms: string[],
+          tos: string[]): { ifroms: string[], itos: string[] } {
+    let ifroms = [];
+    let itos = [];
+    froms.forEach((from, ix) => {
+      let xfroms, xtos;
+      const to = tos[ix];
+      const stat = this.lstat(from);
+      if (stat.isDirectory()) {
+        xfroms = this.dir_.files(from, { sync: true });
+        xtos = xfroms.map(path => this.path_.join(to, path.substring(from.length)));
+        ifroms = ifroms.concat(xfroms);
+        itos = itos.concat(xtos);
+      }
+      else {
+        ifroms.push(from);
+        itos.push(to);
+      }
+    });
+    return { ifroms, itos };
   }
 
   /** Join names to form path */
   join(...paths: string[]): string {
-    return this.path.join(...paths);
+    return this.path_.join(...paths);
   }
 
   /** Perform lstat */
   lstat(path: string): fs.Stats {
-    return this.fs.lstatSync(path);
+    return this.fs_.lstatSync(path);
   }
 
   /** Perform lstat */
   lstats(paths: string[]): fs.Stats[] {
     return paths.reduce((acc, path) => {
-      acc.push(this.fs.lstatSync(path));
+      acc.push(this.fs_.lstatSync(path));
       return acc;
     }, [] as fs.Stats[]);
   }
@@ -210,7 +270,7 @@ export class FSService {
 
   /** Resolve names to form path */
   resolve(...paths: string[]): string {
-    return this.path.resolve(...paths);
+    return this.path_.resolve(...paths);
   }
 
   /** Execute operation */
@@ -232,12 +292,31 @@ export class FSService {
     }
   }
 
+  /** Make paths unique */
+  uniquify(paths: string[]): string[] {
+    const uniques = [];
+    paths.forEach(path => {
+      let unique = path;
+      for (let ix = 0; this.exists(unique); ix++) {
+        const dir = this.dirname(path);
+        const base = this.basename(path);
+        const ext = this.extname(base);
+        const iy = base.lastIndexOf('.');
+        if (iy === -1)
+          unique = this.join(dir, base) + String(ix);
+        else unique = this.join(dir, base.substring(0, iy)) + String(ix) + ext;
+      }
+      uniques.push(unique);
+    });
+    return uniques;
+  }
+
   // operations
 
   chmod(path: string,
         mode: number): OperationResult {
     try {
-      this.fs.chmodSync(path, mode);
+      this.fs_.chmodSync(path, mode);
       return null;
     }
     catch (err) {
@@ -250,31 +329,26 @@ export class FSService {
        doMove = false,
        opts?: any): OperationResult {
     opts = opts || { errorOnExist: true, overwrite: false, preserveTimestamps: true };
-    const partial = [];
-    froms.forEach((from, ix) => {
-      let to = tos[ix];
-      const dir = this.dirname(to);
-      const base = this.basename(to);
-      const ext = this.extname(base);
-      let iy = 0, iz = 0;
-      while (true) {
-        try {
-          if (doMove)
-            this.fsExtra.moveSync(from, to, opts);
-          else this.fsExtra.copySync(from, to, opts);
-          break;
-        }
-        catch (err) {
-          iz = base.lastIndexOf('.');
-          if (iz === -1)
-            to = this.join(dir, base) + String(iy);
-          else to = this.join(dir, base.substring(0, iz)) + String(iy) + ext;
-          iy += 1;
-        }
-      }
-      partial.push(to);
-    });
-    return { partial };
+    tos = this.uniquify(tos);
+    const { ifroms, itos } = this.itemize(froms, tos);
+    async.forEachOfSeries(ifroms, (from, ix, cb) => {
+      const to = itos[ix];
+      const scale = Math.round(((ix + 1) / ifroms.length) * 100);
+      this.store.dispatch(new Progress({ path: from, scale }));
+      if (doMove)
+        this.fsExtra_.move(from, to, opts).then(() => cb());
+      else this.fsExtra_.copy(from, to, opts).then(() => cb());
+    }, () => this.copyCompleted(froms, doMove));
+    return { partial: tos };
+  }
+
+  copyCompleted(froms: string[],
+                doMove: boolean): void {
+    this.store.dispatch(new Progress({ state: 'completed' }));
+    // NOTE: because we itemized all the files inside their directories
+    // we must manually remove the now-empty directories
+    if (doMove)
+      this.remove(froms);
   }
 
   move(froms: string[],
@@ -284,12 +358,12 @@ export class FSService {
 
   newDir(path: string): OperationResult {
     try {
-      this.fs.accessSync(path);
+      this.fs_.accessSync(path);
       return { err: `${path} already exists` };
     }
     catch (e1) {
       try {
-        this.fs.mkdirSync(path);
+        this.fs_.mkdirSync(path);
         return null;
       }
       catch (e2) {
@@ -300,7 +374,7 @@ export class FSService {
 
   newFile(path: string): OperationResult {
     try {
-      this.fs.accessSync(path);
+      this.fs_.accessSync(path);
       return { err: `${path} already exists` };
     }
     catch (e1) {
@@ -315,8 +389,8 @@ export class FSService {
   }
 
   remove(paths: string[]): OperationResult {
-    paths.forEach(path => {
-      this.fsExtra.removeSync(path);
+    async.forEachSeries(paths, (path, cb) => {
+      this.fsExtra_.remove(path).then(() => cb());
     });
     return null;
   }
@@ -324,11 +398,11 @@ export class FSService {
   rename(from: string,
          to: string): OperationResult {
     try {
-      this.fs.accessSync(to);
+      this.fs_.accessSync(to);
       return { err: `${to} already exists` };
     }
     catch (err) {
-      this.fs.renameSync(from, to);
+      this.fs_.renameSync(from, to);
       return null;
     }
   }
@@ -351,8 +425,12 @@ export class FSService {
   }
 
   trash(paths: string[]): OperationResult {
+    this.store.dispatch(new Progress({ state: 'running' }));
+    async.forEachSeries(paths, (path, cb) => {
+      this.store.dispatch(new Message({ text: path }));
+      this.trash_(path).then(() => cb());
+    }, () => this.store.dispatch(new Progress({ state: 'completed' })));
     // NOTE: trash has no error semantics
-    this.trash_(paths).then(() => console.log(`${paths} trashed`));
     return null;
   }
 

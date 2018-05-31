@@ -5,8 +5,8 @@ import { Action, NgxsOnInit, Select, State, StateContext } from '@ngxs/store';
 import { FSColorState, FSColorStateModel, SetColor } from './fscolor';
 
 import { ElectronService } from 'ngx-electron';
+import { Message } from './status';
 import { Observable } from 'rxjs';
-import { StatusMessage } from './status';
 import { Store } from '@ngxs/store';
 import async from 'async-es';
 import { nextTick } from 'ellib';
@@ -104,7 +104,7 @@ export interface FSStateModel {
     const { paths } = payload;
     paths.forEach(path => {
       if (force || !getState()[path]) {
-        dispatch(new StatusMessage({ msgLevel: 'info', msgText: `Loading ${path} ...` }));
+        dispatch(new Message({ text: `Loading ${path} ...` }));
         this.fs.readdir(path, (err, names) => {
           if (err)
             dispatch(new UnloadDirs({ paths: [path] }));
@@ -113,7 +113,8 @@ export interface FSStateModel {
             async.map(children, this.fs.lstat, (err, stats) => {
               const descs: Descriptor[] = names.reduce((acc, name, ix) => {
                 const stat = stats[ix];
-                if (stat.isDirectory() || stat.isFile() || stat.isSymbolicLink()) {
+                if (stat
+                && (stat.isDirectory() || stat.isFile() || stat.isSymbolicLink())) {
                   const desc = this.makeDescriptor(name, path, stat);
                   if (desc.isReadable)
                     acc.push(desc);
@@ -126,7 +127,7 @@ export interface FSStateModel {
               // sync model
               nextTick(() => {
                 dispatch(new DirLoaded({ path, descs }));
-                dispatch(new StatusMessage({ msgLevel: 'info', msgText: `${path} loaded` }));
+                dispatch(new Message({ text: `${path} loaded` }));
               });
             });
           }
