@@ -80,9 +80,11 @@ export interface OperationResult {
 export class FSService {
 
   private dir_: any;
+  private exec_: any;
   private fs_: any;
   private fsExtra_: any;
   private mkdirp_: any;
+  private opener_: any;
   private os_: any;
   private path_: any;
   private touch_: any;
@@ -98,9 +100,11 @@ export class FSService {
               private electron: ElectronService,
               private store: Store) {
     this.dir_ = this.electron.remote.require('node-dir');
+    this.exec_ = this.electron.remote.require('child_process').exec;
     this.fs_ = this.electron.remote.require('fs');
     this.fsExtra_ = this.electron.remote.require('fs-extra');
     this.mkdirp_ = this.electron.remote.require('mkdirp');
+    this.opener_ = this.electron.remote.require('opener');
     this.os_ = this.electron.remote.require('os');
     this.path_ = this.electron.remote.require('path');
     this.touch_ = this.electron.remote.require('touch');
@@ -209,6 +213,16 @@ export class FSService {
       acc.push(this.fs_.lstatSync(path));
       return acc;
     }, [] as fs.Stats[]);
+  }
+
+  /** Open file using default app */
+  open(path: string): void {
+    this.opener_(path);
+  }
+
+  /** Open file in Atom */
+  openInAtom(path: string): void {
+    this.exec_(`atom -a "${path}"`);
   }
 
   /** Peek at the topmost redo action */

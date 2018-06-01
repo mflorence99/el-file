@@ -211,6 +211,9 @@ export class TreeComponent extends LifecycleComponent
         if (this.isDirectory(desc))
           this.store.dispatch(new AddPathToTab({ path: desc.path, tab: this.tab }));
         break;
+      case 'open-atom':
+        this.fsSvc.openInAtom(desc.path);
+        break;
       case 'open-new':
         this.store.dispatch(new NewTab({ splitID: this.splitID, path: desc.path }));
         break;

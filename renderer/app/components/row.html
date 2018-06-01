@@ -6,6 +6,7 @@
   <div
     (click)="onSelect($event, desc.path)"
     (contextmenu)="onContextMenu($event, desc)"
+    (dblclick)="onOpen($event, desc.path)"
     [contextMenu]="contextMenu"
     [contextMenuSubject]="desc"
     [dragDirective]="desc"

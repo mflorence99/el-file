@@ -85,6 +85,12 @@ export class RowComponent {
     event.stopPropagation();
   }
 
+  onOpen(event: MouseEvent,
+         path: string): void {
+    event.stopPropagation();
+    this.fsSvc.open(path);
+  }
+
   onSelect(event: MouseEvent,
            path: string): void {
     const actions = [];

@@ -74,6 +74,13 @@
 
   <ng-template
     contextMenuItem
+    (execute)="onExecute($event, 'open-atom')"
+    [enabled]="isFile.bind(this)">
+    <div>Open file in Atom</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
     divider="true">
   </ng-template>
 
