@@ -8,6 +8,7 @@
     [descriptorsByPath]="descriptorsByPath"
     [dictionary]="dictionary"
     [fs]="fs"
+    [isOpRunning]="isOpRunning"
     [level]="0"
     [path]="tab.paths[0]"
     [prefs]="prefs"
@@ -74,6 +75,12 @@
   <ng-template
     contextMenuItem
     divider="true">
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
+    (execute)="onExecute($event, 'rootdir')">
+    <div>Go to /</div>
   </ng-template>
 
   <ng-template

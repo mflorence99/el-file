@@ -227,6 +227,10 @@ export class TreeComponent extends LifecycleComponent
         const renameOp = RenameOperation.makeInstance(desc.path, this.newName, this.fsSvc);
         this.fsSvc.run(renameOp);
         break;
+      case 'rootdir':
+        this.store.dispatch(new ReplacePathsInTab({ paths: ['/'], tab: this.tab }));
+        this.store.dispatch(new UpdateTab({ tab: { ...this.tab, icon: 'fas laptop', label: 'Root' } }));
+        break;
       // these commands affect the entire selection
       case 'clear':
         this.store.dispatch(new ClearClipboard());

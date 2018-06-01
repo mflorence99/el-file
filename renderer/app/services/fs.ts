@@ -316,7 +316,9 @@ export class FSService {
         const scale = Math.round(((ix + 1) / ifroms.length) * 100);
         this.store.dispatch(new Progress({ path: from, scale }));
         // NOTE: we implement move as a copy+remove so it can be canceled
-        this.fsExtra_.copy(from, to, opts).then(() => cb());
+        this.fsExtra_.copy(from, to, opts)
+          .then(() => cb())
+          .catch(err => cb(err));
       }
     }, err => this.copyCompleted(froms, tos, doMove, err));
     return { partial: tos };

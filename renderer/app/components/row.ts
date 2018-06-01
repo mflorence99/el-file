@@ -2,11 +2,14 @@ import { AddPathToSelection, ClearSelection, ReplacePathsInSelection, SelectionS
 import { AddPathToTab, RemovePathFromTab, Tab } from '../state/layout';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
+import { Alarm } from '../state/status';
 import { ClipboardStateModel } from '../state/clipboard';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
+import { FSService } from '../services/fs';
 import { FSStateModel } from '../state/fs';
+import { MoveOperation } from '../services/move';
 import { PrefsStateModel } from '../state/prefs';
 import { Store } from '@ngxs/store';
 import { TreeComponent } from './tree';
@@ -29,6 +32,7 @@ export class RowComponent {
   @Input() desc: Descriptor;
   @Input() dictionary: Dictionary[] = [];
   @Input() fs = { } as FSStateModel;
+  @Input() isOpRunning: boolean;
   @Input() level = 0;
   @Input() path: string;
   @Input() prefs = { } as PrefsStateModel;
@@ -36,7 +40,8 @@ export class RowComponent {
   @Input() tab = { } as Tab;
 
   /** ctor */
-  constructor(public tree: TreeComponent,
+  constructor(private fsSvc: FSService,
+              public tree: TreeComponent,
               private store: Store) { }
 
   // event handlers
@@ -50,6 +55,24 @@ export class RowComponent {
         new ClearSelection(),
         new AddPathToSelection({ path: desc.path })
       ]);
+    }
+  }
+
+  onDrop(desc: Descriptor): void {
+    if (desc.path !== this.desc.path) {
+      if (this.isOpRunning)
+        this.store.dispatch(new Alarm({ alarm: true }));
+      else {
+        // NOTE: if the supplied descriptor is not in the selection,
+        // that just means it is about to become the selection
+        let paths = this.selection.paths;
+        if (!paths.includes(desc.path))
+          paths = [desc.path];
+        const moveOp = MoveOperation.makeInstance(paths, this.desc.path, this.fsSvc);
+        console.log(moveOp);
+        this.fsSvc.run(moveOp);
+        console.error(`DROPPED ${paths[0]} on ${this.desc.path}`);
+      }
     }
   }
 

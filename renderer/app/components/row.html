@@ -1,37 +1,45 @@
 <div
-  (click)="onSelect($event, desc.path)"
-  (contextmenu)="onContextMenu($event, desc)"
-  [contextMenu]="contextMenu"
-  [contextMenuSubject]="desc"
-  [ngClass]="{cut: tree.isCut(desc),
-              gridlines: prefs.showGridLines,
-              selected: selection.paths.includes(desc.path)}"
-  class="row">
+  (dropEvent)="onDrop($event)"
+  [dropHighlight]="'drop-target'"
+  dropDirective>
 
   <div
-    [ngClass]="{expander: (ix === 0), gridlines: prefs.showGridLines}"
-    [ngStyle]="{'padding-left.px': (ix === 0)? level * 16 : 8,
-                'width.%': entry.width? entry.width : (100 / dictionary.length)}"
-    *ngFor="let entry of dictionary; let ix = index"
-    class="cell">
+    (click)="onSelect($event, desc.path)"
+    (contextmenu)="onContextMenu($event, desc)"
+    [contextMenu]="contextMenu"
+    [contextMenuSubject]="desc"
+    [dragDirective]="desc"
+    [ngClass]="{cut: tree.isCut(desc),
+                gridlines: prefs.showGridLines,
+                selected: selection.paths.includes(desc.path)}"
+    class="row">
 
-    <fa-icon
-      (click)="onExpand($event, desc.path)"
-      [fixedWidth]="true"
-      [icon]="tree.isExpanded(desc)? ['fas', 'angle-down'] :
-             (tree.isExpanding(desc)? ['far', 'clock'] : ['fas', 'angle-right'])"
-      [ngStyle]="{visibility: desc.isDirectory && !tree.isEmpty(desc)? 'visible' : 'hidden'}"
-      [pulse]="tree.isExpanding(desc)"
-      *ngIf="ix === 0"
-      size="xs">
-    </fa-icon>
+    <div
+      [ngClass]="{expander: (ix === 0), gridlines: prefs.showGridLines}"
+      [ngStyle]="{'padding-left.px': (ix === 0)? level * 16 : 8,
+                  'width.%': entry.width? entry.width : (100 / dictionary.length)}"
+      *ngFor="let entry of dictionary; let ix = index"
+      class="cell">
 
-    <elfile-cell
-      [clipboard]="clipboard"
-      [desc]="desc"
-      [entry]="entry"
-      [prefs]="prefs">
-    </elfile-cell>
+      <fa-icon
+        (click)="onExpand($event, desc.path)"
+        [fixedWidth]="true"
+        [icon]="tree.isExpanded(desc)? ['fas', 'angle-down'] :
+               (tree.isExpanding(desc)? ['far', 'clock'] : ['fas', 'angle-right'])"
+        [ngStyle]="{visibility: desc.isDirectory && !tree.isEmpty(desc)? 'visible' : 'hidden'}"
+        [pulse]="tree.isExpanding(desc)"
+        *ngIf="ix === 0"
+        size="xs">
+      </fa-icon>
+
+      <elfile-cell
+        [clipboard]="clipboard"
+        [desc]="desc"
+        [entry]="entry"
+        [prefs]="prefs">
+      </elfile-cell>
+
+    </div>
 
   </div>
 

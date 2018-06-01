@@ -3,7 +3,7 @@
   height: 100%;
 }
 
-.column {
+.column:not(:first-child) {
   border-left: 1px dotted var(--mat-grey-700);
 }
 

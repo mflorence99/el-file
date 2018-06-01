@@ -2,6 +2,10 @@
   display: block;
 }
 
+div.drop-target {
+  outline: 1px solid var(--text-color);
+}
+
 .cell {
   padding: 2px 8px;
 
@@ -24,7 +28,7 @@
 
   }
 
-  &.gridlines {
+  &.gridlines:not(:first-child) {
     border-left: 1px dotted var(--mat-grey-700);
   }
 

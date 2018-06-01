@@ -29,6 +29,7 @@ export class BranchComponent implements OnInit {
   @Input() descriptorsByPath: { [path: string]: Descriptor[] } = { };
   @Input() dictionary: Dictionary[] = [];
   @Input() fs = { } as FSStateModel;
+  @Input() isOpRunning: boolean;
   @Input() level = 0;
   @Input() path: string;
   @Input() prefs = { } as PrefsStateModel;
