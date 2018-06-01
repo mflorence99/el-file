@@ -23,6 +23,7 @@ import { SelectionStateModel } from '../state/selection';
 import { Subscription } from 'rxjs';
 import { TouchOperation } from '../services/touch';
 import { TrashOperation } from '../services/trash';
+import { config } from '../config';
 
 /**
  * Tree component
@@ -175,7 +176,7 @@ export class TreeComponent extends LifecycleComponent
           ctrl.select();
         else ctrl.setSelectionRange(0, ix);
         ctrl.focus();
-      }, 100);
+      }, config.prepareNewNameDelay);
     }
     return this.newName;
   }
@@ -289,7 +290,7 @@ export class TreeComponent extends LifecycleComponent
               return false;
           }
         }),
-        debounceTime(100),
+        debounceTime(config.treeRefreshDelay),
       ).subscribe(() => {
         this.dictionary = this.dictSvc.dictionaryForView(this.view);
         this.tab.paths.forEach(path => {

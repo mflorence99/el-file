@@ -9,6 +9,7 @@ import { Message } from './status';
 import { Observable } from 'rxjs';
 import { Store } from '@ngxs/store';
 import async from 'async-es';
+import { config } from '../config';
 import { nextTick } from 'ellib';
 
 /** NOTE: actions must come first because of AST */
@@ -87,7 +88,8 @@ export interface FSStateModel {
               private store: Store) {
     this.fs = this.electron.remote.require('fs');
     this.path = this.electron.remote.require('path');
-    this.watcher = this.electron.remote.require('filewatcher')();
+    this.watcher = this.electron.remote.require('filewatcher')
+      ({ debounce: config.fileWatcherDelay });
     this.userInfo = this.electron.remote.require('os').userInfo();
   }
 

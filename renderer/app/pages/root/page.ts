@@ -16,6 +16,7 @@ import { StatusState } from '../../state/status';
 import { Store } from '@ngxs/store';
 import { Tab } from '../../state/layout';
 import { View } from '../../state/views';
+import { config } from '../../config';
 
 /**
  * EL-file Root
@@ -49,7 +50,7 @@ export class RootPageComponent {
               private store: Store) {
     this.electron.ipcRenderer.on('bounds', debounce((event, bounds) => {
       this.store.dispatch(new SetBounds(bounds));
-    }, 250));
+    }, config.setBoundsDelay));
   }
 
   // event handlers

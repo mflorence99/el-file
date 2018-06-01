@@ -6,9 +6,9 @@ import { Canceled, Message, Progress } from '../state/status';
 import { ElectronService } from 'ngx-electron';
 import { Injectable } from '@angular/core';
 import { LogOperation } from '../state/fslog';
+import { ReplacePathsInSelection } from '../state/selection';
 import async from 'async-es';
-
-const MAX_STACK = 100;
+import { config } from '../config';
 
 /**
  * Model a file system operation
@@ -243,14 +243,14 @@ export class FSService {
 
   /** Push an operation onto the redo stack */
   pushRedo(op: Operation): void {
-    if (this.redoStack.length > MAX_STACK)
+    if (this.redoStack.length > config.maxRedoStackSize)
       this.redoStack.splice(0, 1);
     this.redoStack.push(op);
   }
 
   /** Push an operation onto the undo stack */
   pushUndo(op: Operation): void {
-    if (this.undoStack.length > MAX_STACK)
+    if (this.undoStack.length > config.maxUndoStackSize)
       this.undoStack.splice(0, 1);
     this.undoStack.push(op);
   }
@@ -318,7 +318,7 @@ export class FSService {
         // NOTE: we implement move as a copy+remove so it can be canceled
         this.fsExtra_.copy(from, to, opts).then(() => cb());
       }
-    }, err => this.copyCompleted(err, froms, doMove));
+    }, err => this.copyCompleted(froms, tos, doMove, err));
     return { partial: tos };
   }
 
@@ -407,10 +407,12 @@ export class FSService {
 
   // private methods
 
-  private copyCompleted(err: any,
-                        froms: string[],
-                        doMove: boolean): void {
+  private copyCompleted(froms: string[],
+                        tos: string[],
+                        doMove: boolean,
+                        err: any): void {
     this.store.dispatch(new Progress({ state: 'completed' }));
+    this.store.dispatch(new ReplacePathsInSelection({ paths: tos }));
     // NOTE: we implement move as a copy+remove so it can be canceled
     // NOTE: we can't undo a canceled move as it wasn't complete
     if (doMove) {

@@ -4,11 +4,9 @@ import { InitView, RemoveView, ViewUpdated } from './views';
 
 import { ClearSelection } from '../state/selection';
 import { UUID } from 'angular2-uuid';
+import { config } from '../config';
 import { nextTick } from 'ellib';
 import { timer } from 'rxjs';
-
-const PURGE_INTERVAL = 60 * 1000;
-const PURGE_PERIOD = 15 * 60 * 1000;
 
 /** NOTE: actions must come first because of AST */
 
@@ -518,7 +516,7 @@ export interface LayoutStateModel {
       });
     // wake up to purge unused paths
     // NOTE: don't purge anything in a selected tab, nor the root path
-    timer(PURGE_INTERVAL, PURGE_INTERVAL)
+    timer(config.dirPurgeInterval, config.dirPurgeInterval)
       .subscribe( () => {
         const layout = getState();
         LayoutState.visitTabs(layout, (tab: Tab) => {
@@ -526,7 +524,7 @@ export interface LayoutStateModel {
             tab.paths.forEach((path, ix) => {
               if (ix > 0) {
                 const lru = tab.lru[path];
-                if (lru < (Date.now() - PURGE_PERIOD))
+                if (lru < (Date.now() - config.dirPurgeAge))
                   dispatch(new RemovePathFromTab({ path, tab }));
               }
             });

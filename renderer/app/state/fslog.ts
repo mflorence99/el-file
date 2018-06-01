@@ -1,8 +1,7 @@
 import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
 
 import { Operation } from '../services/fs';
-
-const MAX_STACK = 500;
+import { config } from '../config';
 
 /** NOTE: actions must come first because of AST */
 
@@ -32,7 +31,7 @@ export interface FSLogStateModel {
                { payload }: LogOperation) {
     const { op } = payload;
     const updated = { ...getState() };
-    if (updated.entries.length > MAX_STACK)
+    if (updated.entries.length > config.maxFSLogEntries)
       updated.entries.splice(0, 1);
     updated.entries.push({ op: op.toString(), ts: new Date() });
     setState(updated);
