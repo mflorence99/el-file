@@ -51,15 +51,16 @@ export interface SelectionStateModel {
   }
 
   @Action(AddPathToSelection)
-  addPathToSelection({ dispatch, getState, setState }: StateContext<SelectionStateModel>,
+  addPathToSelection({ dispatch, getState, patchState }: StateContext<SelectionStateModel>,
                      { payload }: AddPathToSelection) {
     const { path } = payload;
-    const updated = { ...getState() };
-    if (!updated.paths.includes(path)) {
-      updated.paths.push(path);
-      setState(updated);
+    const state = getState();
+    if (!state.paths.includes(path)) {
+      const paths = state.paths.slice(0);
+      paths.push(path);
+      patchState({ paths });
       // sync model
-      nextTick(() => dispatch(new SelectionUpdated({ paths: updated.paths })));
+      nextTick(() => dispatch(new SelectionUpdated({ paths })));
     }
   }
 
@@ -67,21 +68,22 @@ export interface SelectionStateModel {
   clearSelection({ dispatch, patchState }: StateContext<SelectionStateModel>,
                  { payload }: ClearSelection) {
     patchState({ paths: [] });
-      // sync model
-      nextTick(() => dispatch(new SelectionUpdated({ paths: [] })));
+    // sync model
+    nextTick(() => dispatch(new SelectionUpdated({ paths: [] })));
   }
 
   @Action(RemovePathFromSelection)
-  removePathFromSelection({ dispatch, getState, setState }: StateContext<SelectionStateModel>,
+  removePathFromSelection({ dispatch, getState, patchState }: StateContext<SelectionStateModel>,
                           { payload }: RemovePathFromSelection) {
     const { path } = payload;
-    const updated = { ...getState() };
-    if (updated.paths.includes(path)) {
-      const ix = updated.paths.indexOf(path);
-      updated.paths.splice(ix, 1);
-      setState(updated);
+    const state = getState();
+    if (state.paths.includes(path)) {
+      const paths = state.paths.slice(0);
+      const ix = paths.indexOf(path);
+      paths.splice(ix, 1);
+      patchState({ paths });
       // sync model
-      nextTick(() => dispatch(new SelectionUpdated({ paths: updated.paths })));
+      nextTick(() => dispatch(new SelectionUpdated({ paths })));
     }
   }
 
@@ -90,8 +92,8 @@ export interface SelectionStateModel {
                           { payload }: ReplacePathsInSelection) {
     const { paths } = payload;
     patchState({ paths });
-      // sync model
-      nextTick(() => dispatch(new SelectionUpdated({ paths })));
+    // sync model
+    nextTick(() => dispatch(new SelectionUpdated({ paths })));
   }
 
   @Action(SelectionUpdated)
@@ -111,18 +113,18 @@ export interface SelectionStateModel {
   }
 
   @Action(TogglePathInSelection)
-  togglePathInSelection({ dispatch, getState, setState }: StateContext<SelectionStateModel>,
+  togglePathInSelection({ dispatch, getState, patchState }: StateContext<SelectionStateModel>,
                         { payload }: TogglePathInSelection) {
     const { path } = payload;
-    const updated = { ...getState() };
-    if (updated.paths.includes(path)) {
-      const ix = updated.paths.indexOf(path);
-      updated.paths.splice(ix, 1);
-    }
-    else updated.paths.push(path);
-    setState(updated);
+    const state = getState();
+    const paths = state.paths.slice(0);
+    const ix = paths.indexOf(path);
+    if (ix !== -1)
+      paths.splice(ix, 1);
+    else paths.push(path);
+    patchState({ paths });
     // sync model
-    nextTick(() => dispatch(new SelectionUpdated({ paths: updated.paths })));
+    nextTick(() => dispatch(new SelectionUpdated({ paths })));
   }
 
 }

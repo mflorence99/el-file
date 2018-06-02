@@ -90,75 +90,76 @@ export interface ViewsStateModel {
   initView({ dispatch, getState, patchState }: StateContext<ViewsStateModel>,
            { payload }: InitView) {
     const { viewID } = payload;
-    const current = getState();
-    if (!current[viewID]) {
-      const view = { ...current['0'] };
+    const state = getState();
+    if (!state[viewID]) {
+      const view = { ...state['0'] };
       patchState({ [viewID]: view } );
       // sync model
       nextTick(() => dispatch(new ViewUpdated({ viewID, view })));
-  }
+    }
   }
 
   @Action(RemoveView)
   removeView({ getState, setState }: StateContext<ViewsStateModel>,
              { payload }: RemoveView) {
     const { viewID } = payload;
-    const updated = { ...getState() };
-    delete updated[viewID];
-    setState(updated);
+    const state = getState();
+    const { [viewID]: removed, ...others } = state;
+    setState(others);
   }
 
   @Action(UpdateView)
   updateView({ dispatch, patchState }: StateContext<ViewsStateModel>,
              { payload }: UpdateView) {
     const { viewID, view } = payload;
-    patchState({ [viewID]: { ... view } });
+    const updated = { ... view };
+    patchState({ [viewID]: updated });
     // sync model
-    nextTick(() => dispatch(new ViewUpdated({ viewID, view })));
+    nextTick(() => dispatch(new ViewUpdated({ viewID, view: updated })));
   }
 
   @Action(UpdateViewSort)
   updateViewSort({ dispatch, getState, patchState }: StateContext<ViewsStateModel>,
                  { payload }: UpdateViewSort) {
     const { viewID, sortColumn, sortDir } = payload;
-    const current = getState()[viewID];
-    const view = { ...current, sortColumn, sortDir };
-    patchState({ [viewID]: view });
+    const view = getState()[viewID];
+    const updated = { ...view, sortColumn, sortDir };
+    patchState({ [viewID]: updated });
     // sync model
-    nextTick(() => dispatch(new ViewUpdated({ viewID, view })));
+    nextTick(() => dispatch(new ViewUpdated({ viewID, view: updated })));
   }
 
   @Action(UpdateViewVisibility)
   updateViewVisibility({ dispatch, getState, patchState }: StateContext<ViewsStateModel>,
                        { payload }: UpdateViewVisibility) {
     const { viewID, visibility, allTheSame } = payload;
-    const current = getState()[viewID];
+    const view = getState()[viewID];
     // NOTE: if the visibility flags haven't changed, then we don't need
     // to zero out the widths
-    const view = this.isSame(visibility, current.visibility)?
-      { ...current, visibility } : { ...current, visibility, widths: { } };
-    patchState({ [viewID]: view });
+    const updated = this.isSame(visibility, view.visibility)?
+      { ...view, visibility } : { ...view, visibility, widths: { } };
+    patchState({ [viewID]: updated });
     // make all the same?
     if (allTheSame) {
       Object.keys(getState())
         .filter(key => key !== viewID)
         .forEach(viewID => {
-          dispatch(new UpdateView({ viewID, view }));
+          dispatch(new UpdateView({ viewID, view: updated }));
         });
     }
     // sync model
-    nextTick(() => dispatch(new ViewUpdated({ viewID, view })));
+    nextTick(() => dispatch(new ViewUpdated({ viewID, view: updated })));
   }
 
   @Action(UpdateViewWidths)
   updateViewWidths({ dispatch, getState, patchState }: StateContext<ViewsStateModel>,
                    { payload }: UpdateViewWidths) {
     const { viewID, widths } = payload;
-    const current = getState()[viewID];
-    const view = { ...current, widths };
-    patchState({ [viewID]: view });
+    const state = getState()[viewID];
+    const updated = { ...state, widths };
+    patchState({ [viewID]: updated });
     // sync model
-    nextTick(() => dispatch(new ViewUpdated({ viewID, view })));
+    nextTick(() => dispatch(new ViewUpdated({ viewID, view: updated })));
   }
 
   // private methods

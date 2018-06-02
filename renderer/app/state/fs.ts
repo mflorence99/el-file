@@ -89,7 +89,7 @@ export interface FSStateModel {
     this.fs = this.electron.remote.require('fs');
     this.path = this.electron.remote.require('path');
     this.watcher = this.electron.remote.require('filewatcher')
-      ({ debounce: config.fileWatcherDelay });
+      ({ debounce: config.fileWatcherThrottle });
     this.userInfo = this.electron.remote.require('os').userInfo();
   }
 
@@ -142,10 +142,10 @@ export interface FSStateModel {
   unloaddirs({ dispatch, getState, setState }: StateContext<FSStateModel>,
              { payload }: UnloadDirs) {
     const { paths } = payload;
-    const updated = { ...getState() };
+    const state = getState();
     paths.forEach(path => {
-      delete updated[path];
-      setState(updated);
+      const { [path]: removed, ...others } = state;
+      setState(others);
       // stop watching this directory
       this.watcher.remove(path);
       // sync model

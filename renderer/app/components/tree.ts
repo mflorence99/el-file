@@ -1,11 +1,10 @@
 import { Actions, Store, ofAction } from '@ngxs/store';
-import { AddPathToTab, NewTab, ReplacePathsInTab, Tab, TabUpdated, TabsUpdated, UpdateTab } from '../state/layout';
+import { AddPathToTab, NewTab, ReplacePathsInTab, Tab, TabUpdated, UpdateTab } from '../state/layout';
 import { AutoUnsubscribe, LifecycleComponent } from 'ellib';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ClearClipboard, ClipboardStateModel, CopyToClipboard, CutToClipboard } from '../state/clipboard';
 import { Dictionary, DictionaryService } from '../services/dictionary';
 import { DirLoaded, DirUnloaded, FSStateModel } from '../state/fs';
-import { PrefsStateModel, PrefsUpdated } from '../state/prefs';
 import { View, ViewUpdated } from '../state/views';
 import { debounceTime, filter } from 'rxjs/operators';
 
@@ -16,6 +15,7 @@ import { FSService } from '../services/fs';
 import { MoveOperation } from '../services/move';
 import { NewDirOperation } from '../services/new-dir';
 import { NewFileOperation } from '../services/new-file';
+import { PrefsStateModel } from '../state/prefs';
 import { Progress } from '../state/status';
 import { RenameOperation } from '../services/rename';
 import { RootPageComponent } from '../pages/root/page';
@@ -278,26 +278,33 @@ export class TreeComponent extends LifecycleComponent
     this.store.dispatch(new Progress({ state: 'running' }));
     this.subToActions = this.actions$
       .pipe(
-        ofAction(DirLoaded, DirUnloaded, PrefsUpdated, TabsUpdated, TabUpdated, ViewUpdated),
+        ofAction(DirLoaded, DirUnloaded, TabUpdated, ViewUpdated),
         filter(action => {
+          let delta, path;
           switch (action.constructor) {
             case DirLoaded:
-              return this.tab.paths.includes((<DirLoaded>action).payload.path);
+              path = (<DirLoaded>action).payload.path;
+              delta = this.tab.paths.includes(path);
+              this.fs[path] = (<DirLoaded>action).payload.descs;
+              return delta;
             case DirUnloaded:
-              return this.tab.paths.includes((<DirUnloaded>action).payload.path);
-            case PrefsUpdated:
-              return true;
-            case TabsUpdated:
-              return (<TabsUpdated>action).payload.splitID === this.splitID;
+              path = (<DirUnloaded>action).payload.path;
+              delta = this.tab.paths.includes(path);
+              delete this.fs[path];
+              return delta;
             case TabUpdated:
-              return (<TabUpdated>action).payload.tab.id === this.tab.id;
+              delta = (<TabUpdated>action).payload.tab.id === this.tab.id;
+              if (delta)
+                this.tab = (<TabUpdated>action).payload.tab;
+              return delta;
             case ViewUpdated:
-              return (<ViewUpdated>action).payload.viewID === this.tab.id;
-            default:
-              return false;
+              delta = (<ViewUpdated>action).payload.viewID === this.tab.id;
+              if (delta)
+                this.view = (<ViewUpdated>action).payload.view;
+              return delta;
           }
         }),
-        debounceTime(config.treeRefreshDelay),
+        debounceTime(config.treeRefreshThrottle),
       ).subscribe(() => {
         this.dictionary = this.dictSvc.dictionaryForView(this.view);
         this.tab.paths.forEach(path => {

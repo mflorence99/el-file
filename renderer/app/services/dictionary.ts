@@ -45,9 +45,10 @@ export class DictionaryService {
     return this.dictionary()
       .filter(entry => view.visibility && view.visibility[entry.name])
       .map(entry => {
+        let width = 0;
         if (view.widths && view.widths[entry.name])
-          entry.width = view.widths[entry.name];
-        return entry;
+          width = view.widths[entry.name];
+        return { ...entry, width };
       });
   }
 

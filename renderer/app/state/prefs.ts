@@ -1,4 +1,4 @@
-import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
+import { Action, State, StateContext } from '@ngxs/store';
 
 import { nextTick } from 'ellib';
 
@@ -41,21 +41,15 @@ export interface PrefsStateModel {
     sortDirectories: 'first',
     timeFormat: 'none'
   }
-}) export class PrefsState implements NgxsOnInit {
+}) export class PrefsState {
 
   @Action(UpdatePrefs)
   updatePrefs({ dispatch, patchState }: StateContext<PrefsStateModel>,
               { prefs }: UpdatePrefs) {
-    patchState({ ...prefs });
+    const updated = {...prefs };
+    patchState(updated);
     // sync model
-    nextTick(() => dispatch(new PrefsUpdated(prefs)));
-  }
-
-  // lifecycle methods
-
-  ngxsOnInit({ dispatch, getState }: StateContext<PrefsStateModel>) {
-    // sync model
-    nextTick(() => dispatch(new PrefsUpdated(getState())));
+    nextTick(() => dispatch(new PrefsUpdated(updated)));
   }
 
 }

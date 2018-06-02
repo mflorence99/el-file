@@ -27,25 +27,26 @@ export interface FSLogStateModel {
 }) export class FSLogState implements NgxsOnInit {
 
   @Action(LogOperation)
-  logOperation({ getState, setState }: StateContext<FSLogStateModel>,
+  logOperation({ getState, patchState }: StateContext<FSLogStateModel>,
                { payload }: LogOperation) {
     const { op } = payload;
-    const updated = { ...getState() };
-    if (updated.entries.length > config.maxFSLogEntries)
-      updated.entries.splice(0, 1);
-    updated.entries.push({ op: op.toString(), ts: new Date() });
-    setState(updated);
+    const state = getState();
+    const entries = state.entries.slice(0);
+    if (entries.length > config.maxFSLogEntries)
+      entries.splice(0, 1);
+    entries.push({ op: op.toString(), ts: new Date() });
+    patchState({ entries });
   }
 
   // lifecycle methods
 
-  ngxsOnInit({ getState, setState }: StateContext<FSLogStateModel>) {
-    const current = { ...getState() };
+  ngxsOnInit({ getState, patchState }: StateContext<FSLogStateModel>) {
+    const state = getState();
     // NOTE: timestamps get serialized as strings
-    current.entries.forEach((entry: FSLogEntry) => {
-      entry.ts = new Date(entry.ts.toString());
+    const entries = state.entries.map((entry: FSLogEntry) => {
+      return { op: entry.op, ts: new Date(entry.ts.toString()) };
     });
-    setState(current);
+    patchState({ entries });
   }
 
 }

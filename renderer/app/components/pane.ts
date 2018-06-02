@@ -35,14 +35,11 @@ export class PaneComponent extends LifecycleComponent {
   tabIndex: number;
   view = { } as View;
 
-  // NOTE: TreeComponent is a more natural spot for these methods
-  // but I needed to break a circular dependency
-
   // bind OnChange handlers
 
   @OnChange('tabs', 'views') onTabs(): void {
     if (this.tabs) {
-      this.tab = this.tabs.find(tab => tab.selected);
+      this.tab = { ...this.tabs.find(tab => tab.selected) };
       this.tabIndex = this.tabs.findIndex(tab => tab.selected);
     }
     if (this.tab && this.views)

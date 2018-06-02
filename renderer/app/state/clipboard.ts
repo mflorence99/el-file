@@ -77,8 +77,8 @@ export interface ClipboardStateModel {
                   { payload }: CopyToClipboard) {
     const { paths } = payload;
     patchState({ op: 'copy', paths });
-      // sync model
-      nextTick(() => dispatch(new ClipboardUpdated({ op: 'copy', paths })));
+    // sync model
+    nextTick(() => dispatch(new ClipboardUpdated({ op: 'copy', paths })));
   }
 
   @Action(CutToClipboard)
