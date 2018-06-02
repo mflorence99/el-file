@@ -1,16 +1,14 @@
 import * as Mode from 'stat-mode';
 import * as fs from 'fs';
 
-import { Action, NgxsOnInit, Select, State, StateContext } from '@ngxs/store';
+import { Action, NgxsOnInit, Select, State, StateContext, Store } from '@ngxs/store';
 import { FSColorState, FSColorStateModel, SetColor } from './fscolor';
 
 import { ElectronService } from 'ngx-electron';
 import { Message } from './status';
 import { Observable } from 'rxjs';
-import { Store } from '@ngxs/store';
 import async from 'async-es';
 import { config } from '../config';
-import { nextTick } from 'ellib';
 
 /** NOTE: actions must come first because of AST */
 
@@ -127,10 +125,8 @@ export interface FSStateModel {
               // start watching this directory
               this.watcher.add(path);
               // sync model
-              nextTick(() => {
-                dispatch(new DirLoaded({ path, descs }));
-                dispatch(new Message({ text: `${path} loaded` }));
-              });
+              dispatch(new DirLoaded({ path, descs }));
+              dispatch(new Message({ text: `${path} loaded` }));
             });
           }
         });
@@ -149,7 +145,7 @@ export interface FSStateModel {
       // stop watching this directory
       this.watcher.remove(path);
       // sync model
-      nextTick(() => dispatch(new DirUnloaded({ path })));
+      dispatch(new DirUnloaded({ path }));
     });
   }
 
@@ -423,6 +419,7 @@ const ICON_BY_EXT = {
   'xlsx': 'far file-excel',
   'xml': 'far file-code',
   'xsd': 'far file-code',
+  'xz': 'far file-archive',
   'yaml': 'far file-code',
   'yml': 'far file-code',
   'z': 'far file-archive',

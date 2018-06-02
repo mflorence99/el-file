@@ -262,10 +262,8 @@ export class TreeComponent extends LifecycleComponent
     }
     // if event is missing, that means we were invoked programatically
     // so we need to close the menu ourselves
-    if (!event.event) {
+    if (!event.event)
       window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-    }
   }
 
   onNewName(name: string): void {

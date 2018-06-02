@@ -87,7 +87,6 @@ export class RowComponent {
 
   onOpen(event: MouseEvent,
          path: string): void {
-    event.stopPropagation();
     this.fsSvc.open(path);
   }
 
@@ -130,7 +129,6 @@ export class RowComponent {
     }
     if (actions.length > 0)
       this.store.dispatch(actions);
-    event.stopPropagation();
   }
 
 }

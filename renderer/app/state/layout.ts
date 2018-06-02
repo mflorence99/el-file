@@ -5,7 +5,6 @@ import { InitView, RemoveView } from './views';
 import { ClearSelection } from '../state/selection';
 import { UUID } from 'angular2-uuid';
 import { config } from '../config';
-import { nextTick } from 'ellib';
 import { timer } from 'rxjs';
 
 /** NOTE: actions must come first because of AST */
@@ -58,11 +57,6 @@ export class ReplacePathsInTab {
 export class SelectTab {
   static readonly type = '[Layout] select tab';
   constructor(public readonly payload: { tab: Tab }) { }
-}
-
-export class TabsUpdated {
-  static readonly type = '[Layout] tabs updated';
-  constructor(public readonly payload: { splitID: string, tabs: Tab[] }) { }
 }
 
 export class TabUpdated {
@@ -233,10 +227,8 @@ export interface LayoutStateModel {
         tx.tabs[tx.ix] = { ...tab, paths };
         setState({ ...state });
         // sync model
-        nextTick(() => {
-          dispatch(new LoadDirs({ paths: [path] }));
-          dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] }));
-        });
+        dispatch(new LoadDirs({ paths: [path] }));
+        dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] }));
       }
     }
   }
@@ -311,11 +303,8 @@ export interface LayoutStateModel {
         dispatch(new InitView({ viewID: tab.id }));
         tab.paths.forEach(path => paths[path] = true);
       });
-      dispatch(new LoadDirs({ paths: Object.keys(paths) }));
       // sync model
-      nextTick(() => {
-        dispatch(new TabsUpdated({ splitID: newSplit.id, tabs: newSplit.tabs }));
-      });
+      dispatch(new LoadDirs({ paths: Object.keys(paths) }));
     }
   }
 
@@ -338,12 +327,6 @@ export interface LayoutStateModel {
         }
         split.tabs.splice(ix, 0, tab);
         setState({ ...state });
-        // sync model
-        nextTick(() => {
-          dispatch(new TabsUpdated({ splitID, tabs: split.tabs }));
-          if (tx.splitID !== splitID)
-            dispatch(new TabsUpdated({ splitID: tx.splitID, tabs: tx.tabs }));
-        });
       }
     }
   }
@@ -371,10 +354,7 @@ export interface LayoutStateModel {
       dispatch(new LoadDirs({ paths: [path] }));
       dispatch(new SelectTab({ tab }));
       // sync model
-      nextTick(() => {
-        dispatch(new TabUpdated({ tab }));
-        // NOTE: SelectTab will issue its own TabsUpdated
-      });
+      dispatch(new TabUpdated({ tab }));
     }
   }
 
@@ -393,7 +373,7 @@ export interface LayoutStateModel {
         tx.tabs[tx.ix] = { ...tab, lru, paths };
         setState({ ...state });
         // sync model
-        nextTick(() => dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] })));
+        dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] }));
       }
     }
   }
@@ -412,7 +392,6 @@ export interface LayoutStateModel {
       dispatch(new RemoveView({ viewID: tab.id }));
       if (tab.selected)
         dispatch(new SelectTab({ tab: tx.tabs[0] }));
-      nextTick(() => dispatch(new TabsUpdated({ splitID: tx.splitID, tabs: tx.tabs })));
     }
   }
 
@@ -440,7 +419,7 @@ export interface LayoutStateModel {
       // sync model
       dispatch(new LoadDirs({ paths: paths }));
       // sync model
-      nextTick(() => dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] })));
+      dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] }));
     }
   }
 
@@ -457,8 +436,6 @@ export interface LayoutStateModel {
         setState({ ...state });
         // sync model
         dispatch(new ClearSelection());
-        // sync model
-        nextTick(() => dispatch(new TabsUpdated({ splitID: tx.splitID, tabs: tx.tabs })));
       }
     }
   }
@@ -501,7 +478,7 @@ export interface LayoutStateModel {
       tx.tabs[tx.ix] = { ...tab };
       setState({ ...state });
       // sync model
-      nextTick(() => dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] })));
+      dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] }));
     }
   }
 
@@ -538,11 +515,6 @@ export interface LayoutStateModel {
       });
     // load initial paths and set initial prefs
     const layout = getState();
-    LayoutState.visitSplits(layout, (split: LayoutStateModel) => {
-      if (split.tabs)
-        nextTick(() => dispatch(new TabsUpdated({ splitID: split.id, tabs: split.tabs })));
-    });
-    // make paths unique
     const paths = { };
     LayoutState.visitTabs(layout, (tab: Tab) => {
       tab.paths.forEach(path => paths[path] = true);
@@ -550,8 +522,6 @@ export interface LayoutStateModel {
     dispatch(new LoadDirs({ paths: Object.keys(paths) }));
     LayoutState.visitTabs(layout, (tab: Tab) => {
       dispatch(new InitView({ viewID: tab.id }));
-      // sync model
-      // nextTick(() => dispatch(new ViewUpdated({ viewID: tab.id, view: null })));
     });
   }
 

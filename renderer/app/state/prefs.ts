@@ -1,13 +1,6 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { nextTick } from 'ellib';
-
 /** NOTE: actions must come first because of AST */
-
-export class PrefsUpdated {
-  static readonly type = '[Prefs] prefs updated';
-  constructor(public readonly prefs: PrefsStateModel) { }
-}
 
 export class UpdatePrefs {
   static readonly type = '[Prefs] update prefs';
@@ -46,10 +39,7 @@ export interface PrefsStateModel {
   @Action(UpdatePrefs)
   updatePrefs({ dispatch, patchState }: StateContext<PrefsStateModel>,
               { prefs }: UpdatePrefs) {
-    const updated = {...prefs };
-    patchState(updated);
-    // sync model
-    nextTick(() => dispatch(new PrefsUpdated(updated)));
+    patchState({ ...prefs });
   }
 
 }

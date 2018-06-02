@@ -1,7 +1,7 @@
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { nextTick, pluralize } from 'ellib';
 
 import { Message } from './status';
+import { pluralize } from 'ellib';
 
 /** NOTE: actions must come first because of AST */
 
@@ -53,7 +53,7 @@ export interface ClipboardStateModel {
                  { payload }: ClearClipboard) {
     patchState({ op: 'clear', paths: [] });
     // sync model
-    nextTick(() => dispatch(new ClipboardUpdated({ op: 'clear', paths: [] })));
+    dispatch(new ClipboardUpdated({ op: 'clear', paths: [] }));
   }
 
   @Action(ClipboardUpdated)
@@ -78,7 +78,7 @@ export interface ClipboardStateModel {
     const { paths } = payload;
     patchState({ op: 'copy', paths });
     // sync model
-    nextTick(() => dispatch(new ClipboardUpdated({ op: 'copy', paths })));
+    dispatch(new ClipboardUpdated({ op: 'copy', paths }));
   }
 
   @Action(CutToClipboard)
@@ -87,7 +87,7 @@ export interface ClipboardStateModel {
     const { paths } = payload;
     patchState({ op: 'cut', paths });
     // sync model
-    nextTick(() => dispatch(new ClipboardUpdated({ op: 'cut', paths })));
+    dispatch(new ClipboardUpdated({ op: 'cut', paths }));
   }
 
 }

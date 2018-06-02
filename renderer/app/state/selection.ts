@@ -1,7 +1,7 @@
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { nextTick, pluralize } from 'ellib';
 
 import { Message } from './status';
+import { pluralize } from 'ellib';
 
 /** NOTE: actions must come first because of AST */
 
@@ -60,7 +60,7 @@ export interface SelectionStateModel {
       paths.push(path);
       patchState({ paths });
       // sync model
-      nextTick(() => dispatch(new SelectionUpdated({ paths })));
+      dispatch(new SelectionUpdated({ paths }));
     }
   }
 
@@ -69,7 +69,7 @@ export interface SelectionStateModel {
                  { payload }: ClearSelection) {
     patchState({ paths: [] });
     // sync model
-    nextTick(() => dispatch(new SelectionUpdated({ paths: [] })));
+    dispatch(new SelectionUpdated({ paths: [] }));
   }
 
   @Action(RemovePathFromSelection)
@@ -83,7 +83,7 @@ export interface SelectionStateModel {
       paths.splice(ix, 1);
       patchState({ paths });
       // sync model
-      nextTick(() => dispatch(new SelectionUpdated({ paths })));
+      dispatch(new SelectionUpdated({ paths }));
     }
   }
 
@@ -93,7 +93,7 @@ export interface SelectionStateModel {
     const { paths } = payload;
     patchState({ paths });
     // sync model
-    nextTick(() => dispatch(new SelectionUpdated({ paths })));
+    dispatch(new SelectionUpdated({ paths }));
   }
 
   @Action(SelectionUpdated)
@@ -124,7 +124,7 @@ export interface SelectionStateModel {
     else paths.push(path);
     patchState({ paths });
     // sync model
-    nextTick(() => dispatch(new SelectionUpdated({ paths })));
+    dispatch(new SelectionUpdated({ paths }));
   }
 
 }

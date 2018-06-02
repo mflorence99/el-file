@@ -1,7 +1,5 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { nextTick } from 'ellib';
-
 /** NOTE: actions must come first because of AST */
 
 export class InitView {
@@ -95,7 +93,7 @@ export interface ViewsStateModel {
       const view = { ...state['0'] };
       patchState({ [viewID]: view } );
       // sync model
-      nextTick(() => dispatch(new ViewUpdated({ viewID, view })));
+      dispatch(new ViewUpdated({ viewID, view }));
     }
   }
 
@@ -115,7 +113,7 @@ export interface ViewsStateModel {
     const updated = { ... view };
     patchState({ [viewID]: updated });
     // sync model
-    nextTick(() => dispatch(new ViewUpdated({ viewID, view: updated })));
+    dispatch(new ViewUpdated({ viewID, view: updated }));
   }
 
   @Action(UpdateViewSort)
@@ -126,7 +124,7 @@ export interface ViewsStateModel {
     const updated = { ...view, sortColumn, sortDir };
     patchState({ [viewID]: updated });
     // sync model
-    nextTick(() => dispatch(new ViewUpdated({ viewID, view: updated })));
+    dispatch(new ViewUpdated({ viewID, view: updated }));
   }
 
   @Action(UpdateViewVisibility)
@@ -148,7 +146,7 @@ export interface ViewsStateModel {
         });
     }
     // sync model
-    nextTick(() => dispatch(new ViewUpdated({ viewID, view: updated })));
+    dispatch(new ViewUpdated({ viewID, view: updated }));
   }
 
   @Action(UpdateViewWidths)
@@ -159,7 +157,7 @@ export interface ViewsStateModel {
     const updated = { ...state, widths };
     patchState({ [viewID]: updated });
     // sync model
-    nextTick(() => dispatch(new ViewUpdated({ viewID, view: updated })));
+    dispatch(new ViewUpdated({ viewID, view: updated }));
   }
 
   // private methods
