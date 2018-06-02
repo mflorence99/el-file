@@ -52,7 +52,6 @@ export interface ClipboardStateModel {
   clearClipboard({ dispatch, patchState }: StateContext<ClipboardStateModel>,
                  { payload }: ClearClipboard) {
     patchState({ op: 'clear', paths: [] });
-    // sync model
     dispatch(new ClipboardUpdated({ op: 'clear', paths: [] }));
   }
 
@@ -77,7 +76,6 @@ export interface ClipboardStateModel {
                   { payload }: CopyToClipboard) {
     const { paths } = payload;
     patchState({ op: 'copy', paths });
-    // sync model
     dispatch(new ClipboardUpdated({ op: 'copy', paths }));
   }
 
@@ -86,7 +84,6 @@ export interface ClipboardStateModel {
                  { payload }: CutToClipboard) {
     const { paths } = payload;
     patchState({ op: 'cut', paths });
-    // sync model
     dispatch(new ClipboardUpdated({ op: 'cut', paths }));
   }
 

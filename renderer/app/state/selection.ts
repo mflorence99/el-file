@@ -59,7 +59,6 @@ export interface SelectionStateModel {
       const paths = state.paths.slice(0);
       paths.push(path);
       patchState({ paths });
-      // sync model
       dispatch(new SelectionUpdated({ paths }));
     }
   }
@@ -68,7 +67,6 @@ export interface SelectionStateModel {
   clearSelection({ dispatch, patchState }: StateContext<SelectionStateModel>,
                  { payload }: ClearSelection) {
     patchState({ paths: [] });
-    // sync model
     dispatch(new SelectionUpdated({ paths: [] }));
   }
 
@@ -82,7 +80,6 @@ export interface SelectionStateModel {
       const ix = paths.indexOf(path);
       paths.splice(ix, 1);
       patchState({ paths });
-      // sync model
       dispatch(new SelectionUpdated({ paths }));
     }
   }
@@ -92,7 +89,6 @@ export interface SelectionStateModel {
                           { payload }: ReplacePathsInSelection) {
     const { paths } = payload;
     patchState({ paths });
-    // sync model
     dispatch(new SelectionUpdated({ paths }));
   }
 
@@ -123,7 +119,6 @@ export interface SelectionStateModel {
       paths.splice(ix, 1);
     else paths.push(path);
     patchState({ paths });
-    // sync model
     dispatch(new SelectionUpdated({ paths }));
   }
 

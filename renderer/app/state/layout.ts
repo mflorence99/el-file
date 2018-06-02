@@ -226,7 +226,6 @@ export interface LayoutStateModel {
       if (tx.ix !== -1) {
         tx.tabs[tx.ix] = { ...tab, paths };
         setState({ ...state });
-        // sync model
         dispatch(new LoadDirs({ paths: [path] }));
         dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] }));
       }
@@ -303,7 +302,6 @@ export interface LayoutStateModel {
         dispatch(new InitView({ viewID: tab.id }));
         tab.paths.forEach(path => paths[path] = true);
       });
-      // sync model
       dispatch(new LoadDirs({ paths: Object.keys(paths) }));
     }
   }
@@ -349,11 +347,9 @@ export interface LayoutStateModel {
       };
       split.tabs.push(tab);
       setState({ ...state });
-      // sync model
       dispatch(new InitView({ viewID: tab.id }));
       dispatch(new LoadDirs({ paths: [path] }));
       dispatch(new SelectTab({ tab }));
-      // sync model
       dispatch(new TabUpdated({ tab }));
     }
   }
@@ -372,7 +368,6 @@ export interface LayoutStateModel {
       if (tx.ix !== -1) {
         tx.tabs[tx.ix] = { ...tab, lru, paths };
         setState({ ...state });
-        // sync model
         dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] }));
       }
     }
@@ -388,7 +383,6 @@ export interface LayoutStateModel {
       const tab = tx.tabs[tx.ix];
       tx.tabs.splice(tx.ix, 1);
       setState({ ...state });
-      // sync model
       dispatch(new RemoveView({ viewID: tab.id }));
       if (tab.selected)
         dispatch(new SelectTab({ tab: tx.tabs[0] }));
@@ -416,9 +410,7 @@ export interface LayoutStateModel {
     if (tx.ix !== -1) {
       tx.tabs[tx.ix] = { ...tab, lru: { }, paths };
       setState({ ...state });
-      // sync model
       dispatch(new LoadDirs({ paths: paths }));
-      // sync model
       dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] }));
     }
   }
@@ -434,7 +426,6 @@ export interface LayoutStateModel {
       if (split) {
         split.tabs = tx.tabs.map((tab, iy) => ({ ...tab, selected: (tx.ix === iy) }));
         setState({ ...state });
-        // sync model
         dispatch(new ClearSelection());
       }
     }
@@ -477,7 +468,6 @@ export interface LayoutStateModel {
     if (tx.ix !== -1) {
       tx.tabs[tx.ix] = { ...tab };
       setState({ ...state });
-      // sync model
       dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] }));
     }
   }

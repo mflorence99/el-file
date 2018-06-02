@@ -92,7 +92,6 @@ export interface ViewsStateModel {
     if (!state[viewID]) {
       const view = { ...state['0'] };
       patchState({ [viewID]: view } );
-      // sync model
       dispatch(new ViewUpdated({ viewID, view }));
     }
   }
@@ -112,7 +111,6 @@ export interface ViewsStateModel {
     const { viewID, view } = payload;
     const updated = { ... view };
     patchState({ [viewID]: updated });
-    // sync model
     dispatch(new ViewUpdated({ viewID, view: updated }));
   }
 
@@ -123,7 +121,6 @@ export interface ViewsStateModel {
     const view = getState()[viewID];
     const updated = { ...view, sortColumn, sortDir };
     patchState({ [viewID]: updated });
-    // sync model
     dispatch(new ViewUpdated({ viewID, view: updated }));
   }
 
@@ -145,7 +142,6 @@ export interface ViewsStateModel {
           dispatch(new UpdateView({ viewID, view: updated }));
         });
     }
-    // sync model
     dispatch(new ViewUpdated({ viewID, view: updated }));
   }
 
@@ -156,7 +152,6 @@ export interface ViewsStateModel {
     const state = getState()[viewID];
     const updated = { ...state, widths };
     patchState({ [viewID]: updated });
-    // sync model
     dispatch(new ViewUpdated({ viewID, view: updated }));
   }
 

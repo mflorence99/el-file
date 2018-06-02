@@ -5,6 +5,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, V
 import { ClearClipboard, ClipboardStateModel, CopyToClipboard, CutToClipboard } from '../state/clipboard';
 import { Dictionary, DictionaryService } from '../services/dictionary';
 import { DirLoaded, DirUnloaded, FSStateModel } from '../state/fs';
+import { PrefsStateModel, PrefsUpdated } from '../state/prefs';
 import { View, ViewUpdated } from '../state/views';
 import { debounceTime, filter } from 'rxjs/operators';
 
@@ -15,7 +16,6 @@ import { FSService } from '../services/fs';
 import { MoveOperation } from '../services/move';
 import { NewDirOperation } from '../services/new-dir';
 import { NewFileOperation } from '../services/new-file';
-import { PrefsStateModel } from '../state/prefs';
 import { Progress } from '../state/status';
 import { RenameOperation } from '../services/rename';
 import { RootPageComponent } from '../pages/root/page';
@@ -276,7 +276,7 @@ export class TreeComponent extends LifecycleComponent
     this.store.dispatch(new Progress({ state: 'running' }));
     this.subToActions = this.actions$
       .pipe(
-        ofAction(DirLoaded, DirUnloaded, TabUpdated, ViewUpdated),
+        ofAction(DirLoaded, DirUnloaded, PrefsUpdated, TabUpdated, ViewUpdated),
         filter(action => {
           let delta, path;
           switch (action.constructor) {
@@ -290,6 +290,9 @@ export class TreeComponent extends LifecycleComponent
               delta = this.tab.paths.includes(path);
               delete this.fs[path];
               return delta;
+            case PrefsUpdated:
+              this.prefs = (<PrefsUpdated>action).prefs;
+              return true;
             case TabUpdated:
               delta = (<TabUpdated>action).payload.tab.id === this.tab.id;
               if (delta)

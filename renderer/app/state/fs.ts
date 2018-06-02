@@ -103,7 +103,8 @@ export interface FSStateModel {
            force = false) {
     const { paths } = payload;
     paths.forEach(path => {
-      if (force || !getState()[path]) {
+      const descs = getState()[path];
+      if (force || !descs) {
         dispatch(new Message({ text: `Loading ${path} ...` }));
         this.fs.readdir(path, (err, names) => {
           if (err)
@@ -124,7 +125,6 @@ export interface FSStateModel {
               patchState({ [path]: descs });
               // start watching this directory
               this.watcher.add(path);
-              // sync model
               dispatch(new DirLoaded({ path, descs }));
               dispatch(new Message({ text: `${path} loaded` }));
             });
@@ -144,7 +144,6 @@ export interface FSStateModel {
       setState(others);
       // stop watching this directory
       this.watcher.remove(path);
-      // sync model
       dispatch(new DirUnloaded({ path }));
     });
   }
