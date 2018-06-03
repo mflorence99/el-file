@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { DrawerPanelComponent, LifecycleComponent, OnChange } from 'ellib';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -24,8 +26,9 @@ export class PropsComponent extends LifecycleComponent {
   @Input() desc = { } as Descriptor;
   @Input() prefs = { } as PrefsStateModel;
 
-  fs: any;
   propsForm: FormGroup;
+
+  private fs_: typeof fs;
 
   /** ctor */
   constructor(public dictSvc: DictionaryService,
@@ -33,7 +36,7 @@ export class PropsComponent extends LifecycleComponent {
               private electron: ElectronService,
               private formBuilder: FormBuilder) {
     super();
-    this.fs = this.electron.remote.require('fs');
+    this.fs_ = this.electron.remote.require('fs');
     // create prefs form controls
     this.propsForm = this.formBuilder.group({
       flags: this.formBuilder.group({
@@ -59,7 +62,7 @@ export class PropsComponent extends LifecycleComponent {
           return entries
             .filter(entry => !!entry[1])
             .reduce((acc, entry) => {
-              acc |= this.fs.constants[entry[0]];
+              acc |= this.fs_.constants[entry[0]];
               return acc;
             }, 0);
         })

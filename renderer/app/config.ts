@@ -11,7 +11,7 @@ export class Config {
   maxUndoStackSize = 100;
   prepareNewNameDelay = 100;
   setBoundsDelay = 250;
-  treeRefreshThrottle = 10;
+  treeRefreshThrottle = 100;
 }
 
 export const config = new Config();

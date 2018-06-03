@@ -1,4 +1,11 @@
+import * as child_process from 'child_process';
+import * as dir from 'node-dir';
 import * as fs from 'fs';
+import * as fsExtra from 'fs-extra';
+import * as mkdirp from 'mkdirp';
+import * as os from 'os';
+import * as path from 'path';
+import * as touch from 'touch';
 
 import { Actions, Store, ofAction } from '@ngxs/store';
 import { Canceled, Message, Progress } from '../state/status';
@@ -79,16 +86,16 @@ export interface OperationResult {
 @Injectable()
 export class FSService {
 
-  private dir_: any;
-  private exec_: any;
-  private fs_: any;
-  private fsExtra_: any;
-  private mkdirp_: any;
-  private opener_: any;
-  private os_: any;
-  private path_: any;
-  private touch_: any;
-  private trash_: any;
+  private child_process_: typeof child_process;
+  private dir_: typeof dir;
+  private fs_: typeof fs;
+  private fsExtra_: typeof fsExtra;
+  private mkdirp_: typeof mkdirp;
+  private opener_: Function;
+  private os_: typeof os;
+  private path_: typeof path;
+  private touch_: typeof touch;
+  private trash_: Function;
 
   private canceled: boolean;
 
@@ -99,8 +106,8 @@ export class FSService {
   constructor(private actions$: Actions,
               private electron: ElectronService,
               private store: Store) {
+    this.child_process_ = this.electron.remote.require('child_process');
     this.dir_ = this.electron.remote.require('node-dir');
-    this.exec_ = this.electron.remote.require('child_process').exec;
     this.fs_ = this.electron.remote.require('fs');
     this.fsExtra_ = this.electron.remote.require('fs-extra');
     this.mkdirp_ = this.electron.remote.require('mkdirp');
@@ -222,7 +229,7 @@ export class FSService {
 
   /** Open file in Atom */
   openInAtom(path: string): void {
-    this.exec_(`atom -a "${path}"`);
+    this.child_process_.exec(`atom -a "${path}"`);
   }
 
   /** Peek at the topmost redo action */
@@ -452,7 +459,7 @@ export class FSService {
         // create the target directory(s)
         this.mkdirp_.sync(to);
         try {
-          xfroms = this.dir_.files(from, { sync: true });
+          xfroms = this.dir_.files(from, <any>{ sync: true });
           xtos = xfroms.map(path => this.path_.join(to, path.substring(from.length)));
           ifroms = ifroms.concat(xfroms);
           itos = itos.concat(xtos);

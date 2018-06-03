@@ -300,6 +300,7 @@ export interface LayoutStateModel {
       const paths = { };
       newSplit.tabs.forEach((tab: Tab) => {
         dispatch(new InitView({ viewID: tab.id }));
+        dispatch(new TabUpdated({ tab }));
         tab.paths.forEach(path => paths[path] = true);
       });
       dispatch(new LoadDirs({ paths: Object.keys(paths) }));

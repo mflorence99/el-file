@@ -1,5 +1,6 @@
 import * as Mode from 'stat-mode';
 import * as fs from 'fs';
+import * as path from 'path';
 
 import { Action, NgxsOnInit, Select, State, StateContext, Store } from '@ngxs/store';
 import { FSColorState, FSColorStateModel, SetColor } from './fscolor';
@@ -70,25 +71,23 @@ export interface FSStateModel {
   defaults: { }
 }) export class FSState implements NgxsOnInit {
 
+  @Select(FSColorState) fscolor$: Observable<FSColorStateModel>;
+
   fscolor = { } as FSColorStateModel;
 
-  fs: any;
-  path: any;
-  watcher: any;
-
-  userInfo: { gid: number, uid: number, username: string };
-
-
-  @Select(FSColorState) fscolor$: Observable<FSColorStateModel>;
+  private fs_: typeof fs;
+  private path_: typeof path;
+  private userInfo_: { gid: number, uid: number, username: string };
+  private watcher_: { add: Function, remove: Function, on: Function };
 
   /** ctor */
   constructor(private electron: ElectronService,
               private store: Store) {
-    this.fs = this.electron.remote.require('fs');
-    this.path = this.electron.remote.require('path');
-    this.watcher = this.electron.remote.require('filewatcher')
+    this.fs_ = this.electron.remote.require('fs');
+    this.path_ = this.electron.remote.require('path');
+    this.watcher_ = this.electron.remote.require('filewatcher')
       ({ debounce: config.fileWatcherThrottle });
-    this.userInfo = this.electron.remote.require('os').userInfo();
+    this.userInfo_ = this.electron.remote.require('os').userInfo();
   }
 
   @Action(ForceLoadDirs)
@@ -106,12 +105,12 @@ export interface FSStateModel {
       const descs = getState()[path];
       if (force || !descs) {
         dispatch(new Message({ text: `Loading ${path} ...` }));
-        this.fs.readdir(path, (err, names) => {
+        this.fs_.readdir(path, (err, names) => {
           if (err)
             dispatch(new UnloadDirs({ paths: [path] }));
           else {
-            const children = names.map(name => this.path.join(path, name));
-            async.map(children, this.fs.lstat, (err, stats) => {
+            const children = names.map(name => this.path_.join(path, name));
+            async.map(children, this.fs_.lstat, (err, stats) => {
               const descs: Descriptor[] = names.reduce((acc, name, ix) => {
                 const stat = stats[ix];
                 if (stat
@@ -124,7 +123,7 @@ export interface FSStateModel {
               }, []);
               patchState({ [path]: descs });
               // start watching this directory
-              this.watcher.add(path);
+              this.watcher_.add(path);
               dispatch(new DirLoaded({ path, descs }));
               dispatch(new Message({ text: `${path} loaded` }));
             });
@@ -143,7 +142,7 @@ export interface FSStateModel {
       const { [path]: removed, ...others } = state;
       setState(others);
       // stop watching this directory
-      this.watcher.remove(path);
+      this.watcher_.remove(path);
       dispatch(new DirUnloaded({ path }));
     });
   }
@@ -153,11 +152,11 @@ export interface FSStateModel {
   ngxsOnInit({ dispatch }: StateContext<FSStateModel>) {
     this.fscolor$.subscribe((fscolor: FSColorStateModel) => this.fscolor = fscolor);
     // watch for changes
-    this.watcher.on('change', (path, stat) => {
+    this.watcher_.on('change', (path, stat) => {
       dispatch(stat? new ForceLoadDirs({ paths: [path] }) : new DirUnloaded({ path }));
     });
     // watch out for fallback
-    this.watcher.on('fallback', function(limit) {
+    this.watcher_.on('fallback', function(limit) {
       console.log(`Ran out of file handles after watching ${limit} files`);
       console.log('Falling back to polling which uses more CPU');
       console.log('Run ulimit -n 10000 to increase the limit for open files');
@@ -172,24 +171,24 @@ export interface FSStateModel {
                        uid: number,
                        gid: number): boolean {
     return (mode.others.execute
-        || ((this.userInfo.uid === uid) && mode.owner.read)
-        || ((this.userInfo.gid === gid) && mode.group.read));
+        || ((this.userInfo_.uid === uid) && mode.owner.read)
+        || ((this.userInfo_.gid === gid) && mode.group.read));
   }
 
   private isReadable(mode: Mode,
                      uid: number,
                      gid: number): boolean {
     return (mode.others.read
-        || ((this.userInfo.uid === uid) && mode.owner.read)
-        || ((this.userInfo.gid === gid) && mode.group.read));
+        || ((this.userInfo_.uid === uid) && mode.owner.read)
+        || ((this.userInfo_.gid === gid) && mode.group.read));
   }
 
   private isWritable(mode: Mode,
                      uid: number,
                      gid: number): boolean {
     return (mode.others.write
-        || ((this.userInfo.uid === uid) && mode.owner.write)
-        || ((this.userInfo.gid === gid) && mode.group.write));
+        || ((this.userInfo_.uid === uid) && mode.owner.write)
+        || ((this.userInfo_.gid === gid) && mode.group.write));
   }
 
   private makeColor(name: string,
@@ -233,7 +232,7 @@ export interface FSStateModel {
       mode: mode.toString(),
       mtime: stat.mtime,
       name: name,
-      path: this.path.join(path, name),
+      path: this.path_.join(path, name),
       size: stat.isFile()? stat.size : 0,
       user: String(stat.uid)
     } as Descriptor;
