@@ -122,7 +122,7 @@ export interface LayoutStateModel {
       size: 100,
       tabs: [{
         color: 'var(--mat-grey-100)',
-        icon: 'fab linux',
+        icon: 'fas laptop',
         id: UUID.UUID(),
         label: 'Root',
         lru: { },

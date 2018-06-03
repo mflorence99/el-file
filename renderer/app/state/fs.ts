@@ -7,6 +7,7 @@ import { FSColorState, FSColorStateModel, SetColor } from './fscolor';
 
 import { ElectronService } from 'ngx-electron';
 import { Message } from './status';
+import { NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
 import async from 'async-es';
 import { config } from '../config';
@@ -82,7 +83,8 @@ export interface FSStateModel {
 
   /** ctor */
   constructor(private electron: ElectronService,
-              private store: Store) {
+              private store: Store,
+              private zone: NgZone) {
     this.fs_ = this.electron.remote.require('fs');
     this.path_ = this.electron.remote.require('path');
     this.watcher_ = this.electron.remote.require('filewatcher')
@@ -124,8 +126,10 @@ export interface FSStateModel {
               patchState({ [path]: descs });
               // start watching this directory
               this.watcher_.add(path);
-              dispatch(new DirLoaded({ path, descs }));
-              dispatch(new Message({ text: `${path} loaded` }));
+              this.zone.run(() => {
+                dispatch(new DirLoaded({ path, descs }));
+                dispatch(new Message({ text: `${path} loaded` }));
+              });
             });
           }
         });
@@ -143,7 +147,9 @@ export interface FSStateModel {
       setState(others);
       // stop watching this directory
       this.watcher_.remove(path);
-      dispatch(new DirUnloaded({ path }));
+      this.zone.run(() => {
+        dispatch(new DirUnloaded({ path }));
+      });
     });
   }
 
@@ -153,14 +159,18 @@ export interface FSStateModel {
     this.fscolor$.subscribe((fscolor: FSColorStateModel) => this.fscolor = fscolor);
     // watch for changes
     this.watcher_.on('change', (path, stat) => {
-      dispatch(stat? new ForceLoadDirs({ paths: [path] }) : new DirUnloaded({ path }));
+      this.zone.run(() => {
+        dispatch(stat? new ForceLoadDirs({ paths: [path] }) : new DirUnloaded({ path }));
+      });
     });
     // watch out for fallback
     this.watcher_.on('fallback', function(limit) {
-      console.log(`Ran out of file handles after watching ${limit} files`);
-      console.log('Falling back to polling which uses more CPU');
-      console.log('Run ulimit -n 10000 to increase the limit for open files');
-      dispatch(new UlimitExceeded({ limit }));
+      this.zone.run(() => {
+        console.log(`Ran out of file handles after watching ${limit} files`);
+        console.log('Falling back to polling which uses more CPU');
+        console.log('Run ulimit -n 10000 to increase the limit for open files');
+        dispatch(new UlimitExceeded({ limit }));
+      });
     });
 
   }
