@@ -32,11 +32,6 @@ export class UpdateViewWidths {
   constructor(public readonly payload: { viewID: string, widths: ViewWidths }) { }
 }
 
-export class ViewUpdated {
-  static readonly type = '[Views] view updated';
-  constructor(public readonly payload: { viewID: string, view: View }) { }
-}
-
 export interface View {
   sortColumn?: string;
   sortDir?: number;
@@ -89,11 +84,8 @@ export interface ViewsStateModel {
            { payload }: InitView) {
     const { viewID } = payload;
     const state = getState();
-    if (!state[viewID]) {
-      const view = { ...state['0'] };
-      patchState({ [viewID]: view } );
-      dispatch(new ViewUpdated({ viewID, view }));
-    }
+    if (!state[viewID])
+      patchState({ [viewID]: { ...state['0'] } } );
   }
 
   @Action(RemoveView)
@@ -109,9 +101,7 @@ export interface ViewsStateModel {
   updateView({ dispatch, patchState }: StateContext<ViewsStateModel>,
              { payload }: UpdateView) {
     const { viewID, view } = payload;
-    const updated = { ... view };
-    patchState({ [viewID]: updated });
-    dispatch(new ViewUpdated({ viewID, view: updated }));
+    patchState({ [viewID]: { ... view } });
   }
 
   @Action(UpdateViewSort)
@@ -119,9 +109,7 @@ export interface ViewsStateModel {
                  { payload }: UpdateViewSort) {
     const { viewID, sortColumn, sortDir } = payload;
     const view = getState()[viewID];
-    const updated = { ...view, sortColumn, sortDir };
-    patchState({ [viewID]: updated });
-    dispatch(new ViewUpdated({ viewID, view: updated }));
+    patchState({ [viewID]: { ...view, sortColumn, sortDir } });
   }
 
   @Action(UpdateViewVisibility)
@@ -142,7 +130,6 @@ export interface ViewsStateModel {
           dispatch(new UpdateView({ viewID, view: updated }));
         });
     }
-    dispatch(new ViewUpdated({ viewID, view: updated }));
   }
 
   @Action(UpdateViewWidths)
@@ -150,9 +137,7 @@ export interface ViewsStateModel {
                    { payload }: UpdateViewWidths) {
     const { viewID, widths } = payload;
     const state = getState()[viewID];
-    const updated = { ...state, widths };
-    patchState({ [viewID]: updated });
-    dispatch(new ViewUpdated({ viewID, view: updated }));
+    patchState({ [viewID]: { ...state, widths } });
   }
 
   // private methods

@@ -1,28 +1,27 @@
-import { Actions, Store, ofAction } from '@ngxs/store';
-import { AddPathToTab, NewTab, ReplacePathsInTab, Tab, TabUpdated, UpdateTab } from '../state/layout';
-import { AutoUnsubscribe, LifecycleComponent } from 'ellib';
+import { AddPathToTab, NewTab, ReplacePathsInTab, Tab, UpdateTab } from '../state/layout';
+import { AutoUnsubscribe, LifecycleComponent, OnChange, debounce } from 'ellib';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ClearClipboard, ClipboardStateModel, CopyToClipboard, CutToClipboard } from '../state/clipboard';
 import { Dictionary, DictionaryService } from '../services/dictionary';
-import { DirLoaded, DirUnloaded, FSStateModel } from '../state/fs';
-import { PrefsStateModel, PrefsUpdated } from '../state/prefs';
-import { View, ViewUpdated } from '../state/views';
-import { debounceTime, filter } from 'rxjs/operators';
 
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { CopyOperation } from '../services/copy';
 import { Descriptor } from '../state/fs';
 import { FSService } from '../services/fs';
+import { FSStateModel } from '../state/fs';
 import { MoveOperation } from '../services/move';
 import { NewDirOperation } from '../services/new-dir';
 import { NewFileOperation } from '../services/new-file';
+import { PrefsStateModel } from '../state/prefs';
 import { Progress } from '../state/status';
 import { RenameOperation } from '../services/rename';
 import { RootPageComponent } from '../pages/root/page';
 import { SelectionStateModel } from '../state/selection';
+import { Store } from '@ngxs/store';
 import { Subscription } from 'rxjs';
 import { TouchOperation } from '../services/touch';
 import { TrashOperation } from '../services/trash';
+import { View } from '../state/views';
 import { config } from '../config';
 
 /**
@@ -59,14 +58,16 @@ export class TreeComponent extends LifecycleComponent
 
   subToActions: Subscription;
 
+  private updateDescriptors: Function;
+
   /** ctor */
-  constructor(private actions$: Actions,
-              private cdf: ChangeDetectorRef,
+  constructor(private cdf: ChangeDetectorRef,
               private dictSvc: DictionaryService,
               private fsSvc: FSService,
               private root: RootPageComponent,
               private store: Store) {
     super();
+    this.updateDescriptors = debounce(this._updateDescriptors, config.treeRefreshThrottle);
   }
 
   /** Is new name allowed? */
@@ -147,8 +148,11 @@ export class TreeComponent extends LifecycleComponent
 
   /** Is there anything inside this view? */
   isViewPopulated(): boolean {
-    const descs = this.descriptorsByPath[this.tab.paths[0]];
-    return descs && (descs.length > 0);
+    if (this.tab.paths && this.tab.paths.length) {
+      const descs = this.descriptorsByPath[this.tab.paths[0]];
+      return descs && (descs.length > 0);
+    }
+    else return false;
   }
 
   /** Is context menu bound to a writable directory? */
@@ -193,8 +197,7 @@ export class TreeComponent extends LifecycleComponent
       // these commands are singular
       case 'homedir':
         path = this.fsSvc.homedir();
-        this.store.dispatch(new ReplacePathsInTab({ paths: [path], tab: this.tab }));
-        this.store.dispatch(new UpdateTab({ tab: { ...this.tab, icon: 'fas home', label: 'Home' } }));
+        this.store.dispatch(new UpdateTab({ tab: { ...this.tab, icon: 'fas home', label: 'Home', paths: [path] } }));
         break;
       case 'new-dir':
       case 'new-file':
@@ -231,8 +234,7 @@ export class TreeComponent extends LifecycleComponent
         this.fsSvc.run(renameOp);
         break;
       case 'rootdir':
-        this.store.dispatch(new ReplacePathsInTab({ paths: ['/'], tab: this.tab }));
-        this.store.dispatch(new UpdateTab({ tab: { ...this.tab, icon: 'fas laptop', label: 'Root' } }));
+        this.store.dispatch(new UpdateTab({ tab: { ...this.tab, icon: 'fas laptop', label: 'Root', paths: ['/'] } }));
         break;
       // these commands affect the entire selection
       case 'clear':
@@ -270,53 +272,31 @@ export class TreeComponent extends LifecycleComponent
     this.newName = name;
   }
 
+  // bind OnChange handlers
+
+  @OnChange('fs', 'prefs', 'tab', 'view') onChange(): void {
+    if (this.fs && this.prefs && this.tab && this.view)
+      this.updateDescriptors();
+  }
+
   // lifecycle methods
 
   ngOnInit(): void {
     this.store.dispatch(new Progress({ state: 'running' }));
-    this.subToActions = this.actions$
-      .pipe(
-        ofAction(DirLoaded, DirUnloaded, PrefsUpdated, TabUpdated, ViewUpdated),
-        filter(action => {
-          let delta, path;
-          switch (action.constructor) {
-            case DirLoaded:
-              path = (<DirLoaded>action).payload.path;
-              delta = this.tab.paths.includes(path);
-              this.fs[path] = (<DirLoaded>action).payload.descs;
-              return delta;
-            case DirUnloaded:
-              path = (<DirUnloaded>action).payload.path;
-              delta = this.tab.paths.includes(path);
-              delete this.fs[path];
-              return delta;
-            case PrefsUpdated:
-              this.prefs = (<PrefsUpdated>action).prefs;
-              return true;
-            case TabUpdated:
-              delta = (<TabUpdated>action).payload.tab.id === this.tab.id;
-              if (delta)
-                this.tab = (<TabUpdated>action).payload.tab;
-              return delta;
-            case ViewUpdated:
-              delta = (<ViewUpdated>action).payload.viewID === this.tab.id;
-              if (delta)
-                this.view = (<ViewUpdated>action).payload.view;
-              return delta;
-          }
-        }),
-        debounceTime(config.treeRefreshThrottle),
-      ).subscribe(() => {
-        this.dictionary = this.dictSvc.dictionaryForView(this.view);
-        this.tab.paths.forEach(path => {
-          this.descriptorsByPath[path] =
-            this.dictSvc.descriptorsForView(path, this.fs, this.dictionary, this.prefs, this.view);
-        });
-        if (!this.loaded)
-          this.store.dispatch(new Progress({ state: 'completed' }));
-        this.loaded = true;
-        this.cdf.detectChanges();
-      });
+  }
+
+  // private methods
+
+  private _updateDescriptors(): void {
+    this.dictionary = this.dictSvc.dictionaryForView(this.view);
+    this.tab.paths.forEach(path => {
+      this.descriptorsByPath[path] =
+        this.dictSvc.descriptorsForView(path, this.fs, this.dictionary, this.prefs, this.view);
+    });
+    if (!this.loaded)
+      this.store.dispatch(new Progress({ state: 'completed' }));
+    this.loaded = true;
+    this.cdf.detectChanges();
   }
 
 }

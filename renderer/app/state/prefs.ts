@@ -7,11 +7,6 @@ export class UpdatePrefs {
   constructor(public readonly prefs: PrefsStateModel) { }
 }
 
-export class PrefsUpdated {
-  static readonly type = '[Prefs] prefs updated';
-  constructor(public readonly prefs: PrefsStateModel) { }
-}
-
 export type DateFmt = 'ago' | 'shortDate' | 'mediumDate' | 'longDate' | 'fullDate';
 export type QuantityFmt = 'abbrev' | 'bytes' | 'number';
 export type SortOrder = 'alpha' | 'first' | 'last';
@@ -33,7 +28,7 @@ export interface PrefsStateModel {
   defaults: {
     dateFormat: 'mediumDate',
     quantityFormat: 'bytes',
-    showGridLines: false,
+    showGridLines: true,
     showHiddenFiles: false,
     showOnlyWritableFiles: false,
     sortDirectories: 'first',
@@ -44,9 +39,7 @@ export interface PrefsStateModel {
   @Action(UpdatePrefs)
   updatePrefs({ dispatch, patchState }: StateContext<PrefsStateModel>,
               { prefs }: UpdatePrefs) {
-    const updated = { ...prefs };
-    patchState(prefs);
-    dispatch(new PrefsUpdated(updated));
+    patchState({ ...prefs });
   }
 
 }

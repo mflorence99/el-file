@@ -59,11 +59,6 @@ export class SelectTab {
   constructor(public readonly payload: { tab: Tab }) { }
 }
 
-export class TabUpdated {
-  static readonly type = '[Layout] tab updated';
-  constructor(public readonly payload: { tab: Tab }) { }
-}
-
 export class UpdatePathLRU {
   static readonly type = '[Layout] update path LRU';
   constructor(public readonly payload: { path: string, tab: Tab }) { }
@@ -171,20 +166,20 @@ export interface LayoutStateModel {
 
   /** Deep find a tab by its ID */
   static findTabIndexByID(layout: LayoutStateModel,
-                          tabID: string): { splitID: string, tabs: Tab[], ix: number } {
+                          tabID: string): { split: LayoutStateModel, ix: number } {
     if (layout.tabs && layout.tabs.length) {
       const ix = layout.tabs.findIndex(tab => tab.id === tabID);
       if (ix !== -1)
-        return { splitID: layout.id, tabs: layout.tabs, ix };
+        return { split: layout, ix };
     }
     if (layout.splits && layout.splits.length) {
       for (const inner of layout.splits) {
         const tx = LayoutState.findTabIndexByID(inner, tabID);
         if (tx.ix !== -1)
-          return { splitID: tx.splitID, tabs: tx.tabs, ix: tx.ix };
+          return { split: inner, ix: tx.ix };
       }
     }
-    return { splitID: layout.id, tabs: layout.tabs, ix: -1 };
+    return { split: layout, ix: -1 };
   }
 
   /** Visit each split in a layout */
@@ -224,10 +219,10 @@ export interface LayoutStateModel {
       const state = getState();
       const tx = LayoutState.findTabIndexByID(state, tab.id);
       if (tx.ix !== -1) {
-        tx.tabs[tx.ix] = { ...tab, paths };
+        tx.split.tabs = tx.split.tabs.slice(0);
+        tx.split.tabs[tx.ix] = { ...tab, paths };
         setState({ ...state });
         dispatch(new LoadDirs({ paths: [path] }));
-        dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] }));
       }
     }
   }
@@ -300,7 +295,6 @@ export interface LayoutStateModel {
       const paths = { };
       newSplit.tabs.forEach((tab: Tab) => {
         dispatch(new InitView({ viewID: tab.id }));
-        dispatch(new TabUpdated({ tab }));
         tab.paths.forEach(path => paths[path] = true);
       });
       dispatch(new LoadDirs({ paths: Object.keys(paths) }));
@@ -314,16 +308,20 @@ export interface LayoutStateModel {
     const state = getState();
     const split = LayoutState.findSplitByID(state, splitID);
     if (split) {
+      // NOTE: "split" is the target split
       const tx = LayoutState.findTabIndexByID(state, tab.id);
       if (tx.ix !== -1) {
-        tx.tabs.splice(tx.ix, 1);
+        // NOTE "tx" references the source
+        tx.split.tabs = tx.split.tabs.slice(0);
+        tx.split.tabs.splice(tx.ix, 1);
         // NOTE: we can only be left with zero tabs if we moved a tab from
         // another split
-        if (tx.tabs.length === 0) {
-          const sx = LayoutState.findSplitIndexByID(state, tx.splitID);
+        if (tx.split.tabs.length === 0) {
+          const sx = LayoutState.findSplitIndexByID(state, tx.split.id);
           if (sx.ix !== -1)
-            dispatch(new CloseSplit({ splitID: tx.splitID, ix: sx.ix }));
+            dispatch(new CloseSplit({ splitID: sx.splitID, ix: sx.ix }));
         }
+        split.tabs = split.tabs.slice(0);
         split.tabs.splice(ix, 0, tab);
         setState({ ...state });
       }
@@ -351,7 +349,6 @@ export interface LayoutStateModel {
       dispatch(new InitView({ viewID: tab.id }));
       dispatch(new LoadDirs({ paths: [path] }));
       dispatch(new SelectTab({ tab }));
-      dispatch(new TabUpdated({ tab }));
     }
   }
 
@@ -367,9 +364,9 @@ export interface LayoutStateModel {
       const state = getState();
       const tx = LayoutState.findTabIndexByID(state, tab.id);
       if (tx.ix !== -1) {
-        tx.tabs[tx.ix] = { ...tab, lru, paths };
+        tx.split.tabs = tx.split.tabs.slice(0);
+        tx.split.tabs[tx.ix] = { ...tab, lru, paths };
         setState({ ...state });
-        dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] }));
       }
     }
   }
@@ -380,13 +377,14 @@ export interface LayoutStateModel {
     const { tab } = payload;
     const state = getState();
     const tx = LayoutState.findTabIndexByID(state, tab.id);
-    if ((tx.tabs.length > 1) && (tx.ix !== -1)) {
-      const tab = tx.tabs[tx.ix];
-      tx.tabs.splice(tx.ix, 1);
+    if ((tx.split.tabs.length > 1) && (tx.ix !== -1)) {
+      const tab = tx.split.tabs[tx.ix];
+      tx.split.tabs = tx.split.tabs.slice(0);
+      tx.split.tabs.splice(tx.ix, 1);
       setState({ ...state });
       dispatch(new RemoveView({ viewID: tab.id }));
       if (tab.selected)
-        dispatch(new SelectTab({ tab: tx.tabs[0] }));
+        dispatch(new SelectTab({ tab: tx.split.tabs[0] }));
     }
   }
 
@@ -409,10 +407,10 @@ export interface LayoutStateModel {
     const state = getState();
     const tx = LayoutState.findTabIndexByID(state, tab.id);
     if (tx.ix !== -1) {
-      tx.tabs[tx.ix] = { ...tab, lru: { }, paths };
+      tx.split.tabs = tx.split.tabs.slice(0);
+      tx.split.tabs[tx.ix] = { ...tab, lru: { }, paths };
       setState({ ...state });
       dispatch(new LoadDirs({ paths: paths }));
-      dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] }));
     }
   }
 
@@ -423,12 +421,9 @@ export interface LayoutStateModel {
     const state = getState();
     const tx = LayoutState.findTabIndexByID(state, tab.id);
     if (tx.ix !== -1) {
-      const split = LayoutState.findSplitByID(state, tx.splitID);
-      if (split) {
-        split.tabs = tx.tabs.map((tab, iy) => ({ ...tab, selected: (tx.ix === iy) }));
-        setState({ ...state });
-        dispatch(new ClearSelection());
-      }
+      tx.split.tabs = tx.split.tabs.map((tab, iy) => ({ ...tab, selected: (tx.ix === iy) }));
+      setState({ ...state });
+      dispatch(new ClearSelection());
     }
   }
 
@@ -440,11 +435,10 @@ export interface LayoutStateModel {
     const state = getState();
     const tx = LayoutState.findTabIndexByID(state, tab.id);
     if (tx.ix !== -1) {
-      const split = LayoutState.findSplitByID(state, tx.splitID);
-      if (split) {
-        split.tabs[tx.ix] = { ...tab, lru };
-        setState({ ...state });
-      }
+      // NOTE: no need to trigger change here
+      // tx.split.tabs = tx.split.tabs.slice(0);
+      tx.split.tabs[tx.ix] = { ...tab, lru };
+      setState({ ...state });
     }
   }
 
@@ -467,9 +461,10 @@ export interface LayoutStateModel {
     const state = getState();
     const tx = LayoutState.findTabIndexByID(state, tab.id);
     if (tx.ix !== -1) {
-      tx.tabs[tx.ix] = { ...tab };
+      tx.split.tabs = tx.split.tabs.slice(0);
+      tx.split.tabs[tx.ix] = { ...tab };
       setState({ ...state });
-      dispatch(new TabUpdated({ tab: tx.tabs[tx.ix] }));
+      dispatch(new LoadDirs({ paths: tab.paths }));
     }
   }
 

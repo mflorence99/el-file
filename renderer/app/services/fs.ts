@@ -86,6 +86,8 @@ export interface OperationResult {
 @Injectable()
 export class FSService {
 
+  private canceled: boolean;
+
   private child_process_: typeof child_process;
   private dir_: typeof dir;
   private fs_: typeof fs;
@@ -96,8 +98,6 @@ export class FSService {
   private path_: typeof path;
   private touch_: typeof touch;
   private trash_: Function;
-
-  private canceled: boolean;
 
   private redoStack: Operation[] = [];
   private undoStack: Operation[] = [];
