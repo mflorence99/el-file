@@ -1,3 +1,4 @@
+import { AlertComponent } from './alert';
 import { BarrelModule } from '../barrel';
 import { BranchComponent } from './branch';
 import { CellComponent } from './cell';
@@ -23,6 +24,7 @@ import { ViewComponent } from './view';
  */
 
 const COMPONENTS = [
+AlertComponent,
   BranchComponent,
   CellComponent,
   ClipboardComponent,

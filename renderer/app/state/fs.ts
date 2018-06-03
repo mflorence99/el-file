@@ -166,10 +166,8 @@ export interface FSStateModel {
     // watch out for fallback
     this.watcher_.on('fallback', function(limit) {
       this.zone.run(() => {
-        console.log(`Ran out of file handles after watching ${limit} files`);
-        console.log('Falling back to polling which uses more CPU');
-        console.log('Run ulimit -n 10000 to increase the limit for open files');
-        dispatch(new UlimitExceeded({ limit }));
+        const explanation = `Ran out of file handles after watching ${limit} files. Falling back to polling which uses more CPU. Run ulimit -n 10000 to increase the limit for open files`;
+        dispatch(new Message({ explanation, level: 'error', text: 'ulimit exceeded' }));
       });
     });
 

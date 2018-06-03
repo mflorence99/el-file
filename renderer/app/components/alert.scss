@@ -1,0 +1,19 @@
+:host {
+  background-color: var(--background-color);
+  color: var(--error-color);
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: auto auto;
+  padding: 16px;
+  width: 400px;
+}
+
+.explanation {
+  color: var(--text-color);
+  font-size: 0.8rem;
+  grid-column-start: 2;
+}
+
+fa-icon {
+  grid-row-end: span 2;
+}

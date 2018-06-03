@@ -14,7 +14,7 @@ export class Canceled {
 
 export class Message {
   static readonly type = '[Status] message';
-  constructor(public readonly payload: { level?: MessageLevel, text: string }) { }
+  constructor(public readonly payload: { explanation?: string, level?: MessageLevel, text: string }) { }
 }
 
 export class Progress {
@@ -22,12 +22,13 @@ export class Progress {
   constructor(public readonly payload: { path?: string, scale?: number, state?: ProgressState }) { }
 }
 
-export type MessageLevel = 'info' | 'warn';
+export type MessageLevel = 'info' | 'warning' | 'error';
 export type ProgressState = 'completed' | 'running' | 'scaled';
 
 export interface StatusStateModel {
   alarm: boolean;
   message: {
+    explanation?: string;
     level: MessageLevel;
     text: string;
   };
@@ -42,6 +43,7 @@ export interface StatusStateModel {
   defaults: {
     alarm: false,
     message: {
+      explanation: '',
       level: 'info',
       text: ''
     },
@@ -66,9 +68,9 @@ export interface StatusStateModel {
   @Action(Message)
   statusMessage({ patchState }: StateContext<StatusStateModel>,
                 { payload }: Message) {
-    const { level, text } = payload;
-    patchState({ alarm: level === 'warn',
-                 message: { level: level? level : 'info', text } });
+    const { explanation, level, text } = payload;
+    patchState({ alarm: ((level === 'warning') || (level === 'error')),
+                 message: { explanation: explanation || '', level: level || 'info', text } });
   }
 
   @Action(Progress)

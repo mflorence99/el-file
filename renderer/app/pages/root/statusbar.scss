@@ -18,19 +18,24 @@ section {
     cursor: pointer;
   }
 
+  .error,
   .info,
-  .warn {
+  .warning {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .info {
-    color: var(--mat-grey-400);
+  .error {
+    color: var(--error-color);
   }
 
-  .warn {
-    color: var(--warn-color);
+  .info {
+    color: var(--info-color);
+  }
+
+  .warning {
+    color: var(--warning-color);
   }
 
   .mat-progress-bar {

@@ -169,7 +169,7 @@ export class FSService {
 
   /** Handle an operation error */
   handleError(err: string): void {
-    this.store.dispatch(new Message({ level: 'warn', text: err }));
+    this.store.dispatch(new Message({ level: 'warning', text: err }));
   }
 
   /** Handle an operation success */

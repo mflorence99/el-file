@@ -96,6 +96,17 @@
 
   </lib-drawer-panel>
 
+  <lib-drawer-panel
+    #alertDrawer
+    position="bottom">
+
+    <elfile-alert
+      [status]="ctrl.status$ | async"
+      #alert>
+    </elfile-alert>
+
+  </lib-drawer-panel>
+
 </lib-drawer-container>
 
 <elfile-root-ctrl

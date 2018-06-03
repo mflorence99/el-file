@@ -6,10 +6,12 @@
 
     <fa-icon
       [fixedWidth]="true"
-      [icon]="['fas', (status.message.level === 'warn')? 'exclamation-triangle' : 'info-circle']">
+      [icon]="['fas', (status.message.level !== 'info')? 'exclamation-triangle' : 'info-circle']">
     </fa-icon>
 
-    {{ status.message.text }}
+    <span class="message">
+      {{ status.message.text }}
+    </span>
 
   </div>
 
