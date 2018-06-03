@@ -43,6 +43,7 @@
     "angular4-drag-drop": "1",
     "async-es": "2",
     "core-js": "2",
+    "deep-freeze-strict": "^1.1.1",
     "ellib": "latest",
     "filewatcher": "3",
     "fs-extra": "^6.0.1",
