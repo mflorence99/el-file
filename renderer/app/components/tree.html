@@ -74,9 +74,10 @@
 
   <ng-template
     contextMenuItem
-    (execute)="onExecute($event, 'open-atom')"
-    [enabled]="isFile.bind(this)">
-    <div>Open file in Atom</div>
+    (execute)="onExecute($event, 'open-editor')"
+    [enabled]="isFile.bind(this)"
+    *ngIf="prefs.codeEditor">
+    <div>Open file in {{ prefs.codeEditor }}</div>
   </ng-template>
 
   <ng-template

@@ -13,6 +13,7 @@ export type SortOrder = 'alpha' | 'first' | 'last';
 export type TimeFmt = 'none' | 'shortTime' | 'mediumTime' | 'longTime' | 'fullTime';
 
 export interface PrefsStateModel {
+  codeEditor?: string;
   dateFormat?: DateFmt;
   quantityFormat?: QuantityFmt;
   showGridLines?: boolean;
@@ -35,6 +36,20 @@ export interface PrefsStateModel {
     timeFormat: 'none'
   }
 }) export class PrefsState {
+
+  private static codeEditors = {
+    'Atom': 'atom -a',
+    'VS Code': 'code -r'
+  };
+
+  static getCommandForEditor(editor: string,
+                             path: string): string {
+    return `${PrefsState.codeEditors[editor]} ${path}`;
+  }
+
+  static getCodeEditors(): string[] {
+    return Object.keys(PrefsState.codeEditors);
+  }
 
   @Action(UpdatePrefs)
   updatePrefs({ dispatch, patchState }: StateContext<PrefsStateModel>,

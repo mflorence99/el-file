@@ -151,6 +151,11 @@ export class FSService {
     return this.path_.dirname(path);
   }
 
+  /** Execute command */
+  exec(cmd: string): void {
+    this.child_process_.exec(cmd);
+  }
+
   /** Does this path exist already? */
   exists(path: string): boolean {
     try {
@@ -225,11 +230,6 @@ export class FSService {
   /** Open file using default app */
   open(path: string): void {
     this.opener_(path);
-  }
-
-  /** Open file in Atom */
-  openInAtom(path: string): void {
-    this.child_process_.exec(`atom -a "${path}"`);
   }
 
   /** Peek at the topmost redo action */

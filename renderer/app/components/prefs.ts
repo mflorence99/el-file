@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { DrawerPanelComponent, LifecycleComponent, OnChange } from 'ellib';
 import { FormBuilder, FormGroup } from '@angular/forms';
-
-import { PrefsStateModel } from '../state/prefs';
+import { PrefsState, PrefsStateModel } from '../state/prefs';
 
 /**
  * Prefs component
@@ -21,6 +20,8 @@ export class PrefsComponent extends LifecycleComponent {
 
   prefsForm: FormGroup;
 
+  editors = PrefsState.getCodeEditors();
+
   size = 259673;
   today = Date.now();
 
@@ -30,6 +31,7 @@ export class PrefsComponent extends LifecycleComponent {
     super();
     // create prefs form controls
     this.prefsForm = this.formBuilder.group({
+      codeEditor: '',
       dateFormat: '',
       quantityFormat: '',
       showGridLines: false,

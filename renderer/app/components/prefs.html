@@ -120,6 +120,22 @@
 
   </mat-radio-group>
 
+  <mat-form-field>
+    <mat-select
+      formControlName="codeEditor"
+      placeholder="Select Code Editor">
+      <mat-option
+        [value]="''">
+        None
+      </mat-option>
+      <mat-option
+        [value]="editor"
+        *ngFor="let editor of editors">
+        {{ editor }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
   <div class="okAndCancel">
 
     <a
