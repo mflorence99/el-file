@@ -3,7 +3,7 @@ import { ClipboardState, ClipboardStateModel } from '../../state/clipboard';
 import { FSLogState, FSLogStateModel } from '../../state/fslog';
 import { FSState, FSStateModel } from '../../state/fs';
 import { LayoutState, LayoutStateModel } from '../../state/layout';
-import { LifecycleComponent, OnChange } from 'ellib';
+import { LifecycleComponent, OnChange, nextTick } from 'ellib';
 import { PrefsState, PrefsStateModel, UpdatePrefs } from '../../state/prefs';
 import { Select, Store } from '@ngxs/store';
 import { SelectionState, SelectionStateModel } from '../../state/selection';
@@ -63,8 +63,14 @@ export class RootCtrlComponent extends LifecycleComponent {
   // bind OnChange handlers
 
   @OnChange('prefsForm') savePrefs(): void {
-    if (this.prefsForm && this.prefsForm.submitted)
-      this.store.dispatch(new UpdatePrefs(this.prefsForm));
+    if (this.prefsForm && this.prefsForm.submitted) {
+      // TODO: why do we need this in Electron? and only running live?
+      // at worst, running in NgZone shoukd work -- but otherwise a DOM
+      // event is necessary to force change detection
+      nextTick(() => {
+        this.store.dispatch(new UpdatePrefs(this.prefsForm));
+      });
+    }
   }
 
   @OnChange('propsForm') updateProps(): void {
@@ -78,10 +84,15 @@ export class RootCtrlComponent extends LifecycleComponent {
 
   @OnChange('viewForm') saveView(): void {
     if (this.viewForm && this.viewForm.submitted) {
-      const allTheSame = !!this.viewForm.allTheSame;
-      const viewID = this.viewForm.viewID;
-      const visibility: ViewVisibility = { ...this.viewForm.visibility };
-      this.store.dispatch(new UpdateViewVisibility({ viewID, visibility, allTheSame }));
+      // TODO: why do we need this in Electron? and only running live?
+      // at worst, running in NgZone shoukd work -- but otherwise a DOM
+      // event is necessary to force change detection
+      nextTick(() => {
+        const allTheSame = !!this.viewForm.allTheSame;
+        const viewID = this.viewForm.viewID;
+        const visibility: ViewVisibility = { ...this.viewForm.visibility };
+        this.store.dispatch(new UpdateViewVisibility({ viewID, visibility, allTheSame }));
+      });
     }
   }
 
