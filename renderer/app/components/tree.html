@@ -254,6 +254,13 @@
 
   <ng-template
     contextMenuItem
+    (execute)="onExecute($event, 'remove')"
+    [enabled]="isDescriptor.bind(this)">
+    <div>Permanently delete</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
     divider="true">
   </ng-template>
 

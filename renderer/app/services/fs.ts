@@ -339,7 +339,7 @@ export class FSService {
     let progress = 0;
     async.forEachOfSeries(ifroms, (from, ix, cb) => {
       if (this.canceled)
-        cb('canceled');
+        cb(`${doMove? 'Move' : 'Copy'} operation canceled`);
       else {
         const scale = Math.round(((ix + 1) / ifroms.length) * 100);
         if (scale > progress) {
@@ -393,9 +393,12 @@ export class FSService {
   }
 
   remove(paths: string[]): OperationResult {
+    // NOTE: we don't track the progress of remove in the UI
     async.forEachSeries(paths, (path, cb) => {
-      this.fsExtra_.remove(path).then(() => cb());
-    });
+      this.fsExtra_.remove(path)
+        .then(() => cb())
+        .catch(err => cb(err));
+    }, err => this.removeCompleted(err));
     return null;
   }
 
@@ -432,9 +435,10 @@ export class FSService {
     this.store.dispatch(new Progress({ state: 'running' }));
     async.forEachSeries(paths, (path, cb) => {
       this.store.dispatch(new Message({ text: path }));
-      this.trash_(path).then(() => cb());
-    }, () => this.store.dispatch(new Progress({ state: 'completed' })));
-    // NOTE: trash has no error semantics
+      this.trash_(path)
+        .then(() => cb())
+        .catch(err => cb(err));
+    }, err => this.trashCompleted(err));
     return null;
   }
 
@@ -449,8 +453,10 @@ export class FSService {
     // NOTE: we implement move as a copy+remove so it can be canceled
     // NOTE: we can't undo a canceled move as it wasn't complete
     if (doMove) {
-      if (err)
+      if (err) {
         this.popUndoStack();
+        this.store.dispatch(new Message({ level: 'error', text: err }));
+      }
       else this.remove(froms);
     }
   }
@@ -482,6 +488,18 @@ export class FSService {
       }
     });
     return { ifroms, itos };
+  }
+
+  private removeCompleted(err: any): void {
+    // NOTE: we don't track the progress of remove in the UI
+    if (err)
+      this.store.dispatch(new Message({ level: 'error', text: err }));
+  }
+
+  private trashCompleted(err: any): void {
+    this.store.dispatch(new Progress({ state: 'completed' }));
+    if (err)
+      this.store.dispatch(new Message({ level: 'error', text: err }));
   }
 
   /** Make paths unique */

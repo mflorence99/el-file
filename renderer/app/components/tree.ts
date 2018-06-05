@@ -7,6 +7,7 @@ import { PrefsState, PrefsStateModel } from '../state/prefs';
 
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { CopyOperation } from '../services/copy';
+import { DeleteOperation } from '../services/delete';
 import { Descriptor } from '../state/fs';
 import { FSService } from '../services/fs';
 import { FSStateModel } from '../state/fs';
@@ -252,6 +253,10 @@ export class TreeComponent extends LifecycleComponent
         break;
       case 'ctrl+x':
         this.store.dispatch(new CutToClipboard({ paths: this.selection.paths }));
+        break;
+      case 'remove':
+        const removeOp = DeleteOperation.makeInstance(this.selection.paths, this.fsSvc);
+        this.fsSvc.run(removeOp);
         break;
       case 'touch':
         const touchOp = TouchOperation.makeInstance(this.selection.paths, this.fsSvc);
