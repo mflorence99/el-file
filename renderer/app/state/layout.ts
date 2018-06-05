@@ -14,6 +14,11 @@ export class AddPathToTab {
   constructor(public readonly payload: { path: string, tab: Tab }) { }
 }
 
+export class AddPathsToTab {
+  static readonly type = '[Layout] add paths to tab';
+  constructor(public readonly payload: { paths: string[], tab: Tab }) { }
+}
+
 export class CloseSplit {
   static readonly type = '[Layout] close split';
   constructor(public readonly payload: { splitID: string, ix: number }) { }
@@ -224,6 +229,22 @@ export interface LayoutStateModel {
         setState({ ...state });
         dispatch(new LoadDirs({ paths: [path] }));
       }
+    }
+  }
+
+  @Action(AddPathsToTab)
+  addPathsToTab({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
+               { payload }: AddPathsToTab) {
+    const { paths, tab } = payload;
+    // NOTE: this mess keeps the root path and makes the rest unique
+    const updated = [tab.paths[0], ...Array.from(new Set(paths.concat(tab.paths.slice(1))))];
+    const state = getState();
+    const tx = LayoutState.findTabIndexByID(state, tab.id);
+    if (tx.ix !== -1) {
+      tx.split.tabs = tx.split.tabs.slice(0);
+      tx.split.tabs[tx.ix] = { ...tab, paths: updated };
+      setState({ ...state });
+      dispatch(new LoadDirs({ paths: updated }));
     }
   }
 

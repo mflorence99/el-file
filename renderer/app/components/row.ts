@@ -1,6 +1,6 @@
 import { AddPathToSelection, ClearSelection, ReplacePathsInSelection, SelectionStateModel, TogglePathInSelection } from '../state/selection';
-import { AddPathToTab, RemovePathFromTab, Tab } from '../state/layout';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { AddPathToTab, AddPathsToTab, RemovePathFromTab, Tab } from '../state/layout';
+import { ChangeDetectionStrategy, Component, Input, NgZone } from '@angular/core';
 import { PrefsState, PrefsStateModel } from '../state/prefs';
 
 import { Alarm } from '../state/status';
@@ -43,7 +43,8 @@ export class RowComponent {
   /** ctor */
   constructor(private fsSvc: FSService,
               public tree: TreeComponent,
-              private store: Store) { }
+              private store: Store,
+              private zone: NgZone) { }
 
   // event handlers
 
@@ -70,36 +71,44 @@ export class RowComponent {
         if (!paths.includes(desc.path))
           paths = [desc.path];
         const moveOp = MoveOperation.makeInstance(paths, this.desc.path, this.fsSvc);
-        console.log(moveOp);
         this.fsSvc.run(moveOp);
-        console.error(`DROPPED ${paths[0]} on ${this.desc.path}`);
       }
     }
   }
 
   onExpand(event: MouseEvent,
-           path: string): void {
-    const action = this.tab.paths.includes(path)?
-      new RemovePathFromTab({ path, tab: this.tab }) :
-      new AddPathToTab({ path, tab: this.tab });
-    this.store.dispatch(action);
+           desc: Descriptor): void {
+    if (this.tab.paths.includes(desc.path))
+      this.store.dispatch(new RemovePathFromTab({ path: desc.path, tab: this.tab }));
+    else if (event.ctrlKey && !desc.path.match(config.noDirExpansionFor)) {
+      this.fsSvc.subdirs(desc.path, (err, paths: string[]) => {
+        this.zone.run(() => {
+          // NOTE: we must include this path, but we can easily open too many
+          // directories, as in mode_modules for instance
+          paths = paths.slice(0, config.maxDirExpansion);
+          paths.push(desc.path);
+          this.store.dispatch(new AddPathsToTab({ paths, tab: this.tab }));
+        });
+      });
+    }
+    else this.store.dispatch(new AddPathToTab({ path: desc.path, tab: this.tab }));
     event.stopPropagation();
   }
 
   onOpen(event: MouseEvent,
-         path: string): void {
-    const ext = this.fsSvc.extname(this.fsSvc.basename(path));
+         desc: Descriptor): void {
+    const ext = this.fsSvc.extname(this.fsSvc.basename(desc.path));
     if (this.prefs.codeEditor && config.codeExts.includes(ext))
-      this.fsSvc.exec(PrefsState.getCommandForEditor(this.prefs.codeEditor, path));
-    else this.fsSvc.open(path);
+      this.fsSvc.exec(PrefsState.getCommandForEditor(this.prefs.codeEditor, desc.path));
+    else this.fsSvc.open(desc.path);
   }
 
   onSelect(event: MouseEvent,
-           path: string): void {
+           desc: Descriptor): void {
     const actions = [];
     if (event.shiftKey) {
       if (this.selection.paths.length === 0)
-        actions.push(new AddPathToSelection({ path }));
+        actions.push(new AddPathToSelection({ path: desc.path }));
       else {
         // get all visible paths, in order
         const paths = Array.from(document.querySelectorAll('elfile-row'))
@@ -109,7 +118,7 @@ export class RowComponent {
             return acc;
           }, []);
         // find indexes of newly-selected path, and current selection boundaries
-        const ix = paths.indexOf(path);
+        const ix = paths.indexOf(desc.path);
         let lo = Number.MAX_SAFE_INTEGER;
         let hi = Number.MIN_SAFE_INTEGER;
         this.selection.paths.forEach(path => {
@@ -126,10 +135,10 @@ export class RowComponent {
       }
     }
     else if (event.ctrlKey)
-      actions.push(new TogglePathInSelection({ path }));
+      actions.push(new TogglePathInSelection({ path: desc.path }));
     else {
       actions.push(new ClearSelection());
-      actions.push(new AddPathToSelection({ path }));
+      actions.push(new AddPathToSelection({ path: desc.path }));
     }
     if (actions.length > 0)
       this.store.dispatch(actions);

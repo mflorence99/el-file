@@ -300,6 +300,12 @@ export class FSService {
     });
   }
 
+  /** Find all the subdirectories of a directory */
+  subdirs(path: string,
+          cb: (err, subdirs: string[]) => void): void {
+    this.dir_.subdirs(path, cb);
+  }
+
   /** Perform undo operation */
   undo(): void {
     if (this.canUndo()) {
@@ -329,15 +335,19 @@ export class FSService {
     tos = this.uniquify(tos);
     const { ifroms, itos } = this.itemize(froms, tos);
     this.canceled = false;
+    // NOTE: we implement move as a copy+remove so it can be canceled
+    let progress = 0;
     async.forEachOfSeries(ifroms, (from, ix, cb) => {
       if (this.canceled)
         cb('canceled');
       else {
-        const to = itos[ix];
         const scale = Math.round(((ix + 1) / ifroms.length) * 100);
-        this.store.dispatch(new Progress({ path: from, scale }));
-        // NOTE: we implement move as a copy+remove so it can be canceled
-        this.fsExtra_.copy(from, to, opts)
+        if (scale > progress) {
+          // meter how often we update progress to minimize UI noise
+          this.store.dispatch(new Progress({ path: from, scale }));
+          progress = scale;
+        }
+        this.fsExtra_.copy(from, itos[ix], opts)
           .then(() => cb())
           .catch(err => cb(err));
       }

@@ -4,9 +4,9 @@
   dropDirective>
 
   <div
-    (click)="onSelect($event, desc.path)"
+    (click)="onSelect($event, desc)"
     (contextmenu)="onContextMenu($event, desc)"
-    (dblclick)="onOpen($event, desc.path)"
+    (dblclick)="onOpen($event, desc)"
     [contextMenu]="contextMenu"
     [contextMenuSubject]="desc"
     [dragDirective]="desc"
@@ -23,7 +23,7 @@
       class="cell">
 
       <fa-icon
-        (click)="onExpand($event, desc.path)"
+        (click)="onExpand($event, desc)"
         [fixedWidth]="true"
         [icon]="tree.isExpanded(desc)? ['fas', 'angle-down'] :
                (tree.isExpanding(desc)? ['far', 'clock'] : ['fas', 'angle-right'])"

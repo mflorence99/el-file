@@ -7,9 +7,11 @@ export class Config {
   dirPurgeAge = 15 * 60 * 1000;
   dirPurgeInterval = 60 * 1000;
   fileWatcherThrottle = 250;
+  maxDirExpansion = 5;
   maxFSLogEntries = 500;
   maxRedoStackSize = 100;
   maxUndoStackSize = 100;
+  noDirExpansionFor = new RegExp('.*/(bower_components|node_modules)$');
   prepareNewNameDelay = 100;
   setBoundsDelay = 250;
   treeRefreshThrottle = 25;
