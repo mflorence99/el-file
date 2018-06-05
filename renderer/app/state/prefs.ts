@@ -1,5 +1,7 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
+import { config } from '../config';
+
 /** NOTE: actions must come first because of AST */
 
 export class UpdatePrefs {
@@ -37,18 +39,13 @@ export interface PrefsStateModel {
   }
 }) export class PrefsState {
 
-  private static codeEditors = {
-    'Atom': 'atom -a',
-    'VS Code': 'code -r'
-  };
-
   static getCommandForEditor(editor: string,
                              path: string): string {
-    return `${PrefsState.codeEditors[editor]} ${path}`;
+    return `${config.codeEditors[editor]} ${path}`;
   }
 
   static getCodeEditors(): string[] {
-    return Object.keys(PrefsState.codeEditors);
+    return Object.keys(config.codeEditors);
   }
 
   @Action(UpdatePrefs)

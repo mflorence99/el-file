@@ -1,6 +1,7 @@
 import { AddPathToSelection, ClearSelection, ReplacePathsInSelection, SelectionStateModel, TogglePathInSelection } from '../state/selection';
 import { AddPathToTab, RemovePathFromTab, Tab } from '../state/layout';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { PrefsState, PrefsStateModel } from '../state/prefs';
 
 import { Alarm } from '../state/status';
 import { ClipboardStateModel } from '../state/clipboard';
@@ -10,9 +11,9 @@ import { Dictionary } from '../services/dictionary';
 import { FSService } from '../services/fs';
 import { FSStateModel } from '../state/fs';
 import { MoveOperation } from '../services/move';
-import { PrefsStateModel } from '../state/prefs';
 import { Store } from '@ngxs/store';
 import { TreeComponent } from './tree';
+import { config } from '../config';
 
 /**
  * Row component
@@ -87,7 +88,10 @@ export class RowComponent {
 
   onOpen(event: MouseEvent,
          path: string): void {
-    this.fsSvc.open(path);
+    const ext = this.fsSvc.extname(this.fsSvc.basename(path));
+    if (this.prefs.codeEditor && config.codeExts.includes(ext))
+      this.fsSvc.exec(PrefsState.getCommandForEditor(this.prefs.codeEditor, path));
+    else this.fsSvc.open(path);
   }
 
   onSelect(event: MouseEvent,
