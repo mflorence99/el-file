@@ -9,10 +9,6 @@ form {
   display: grid;
   grid-template-columns: 1fr;
 
-  .hidden {
-    display: none;
-  }
-
   .iconAndColor {
     display: grid;
     grid-gap: 16px;
