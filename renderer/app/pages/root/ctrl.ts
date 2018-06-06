@@ -65,7 +65,7 @@ export class RootCtrlComponent extends LifecycleComponent {
   @OnChange('prefsForm') savePrefs(): void {
     if (this.prefsForm && this.prefsForm.submitted) {
       // TODO: why do we need this in Electron? and only running live?
-      // at worst, running in NgZone shoukd work -- but otherwise a DOM
+      // at worst, running in NgZone should work -- but otherwise a DOM
       // event is necessary to force change detection
       nextTick(() => {
         this.store.dispatch(new UpdatePrefs(this.prefsForm));
