@@ -50,7 +50,7 @@ export class RootPageComponent {
               private store: Store) {
     this.electron.ipcRenderer.on('bounds', debounce((event, bounds) => {
       this.store.dispatch(new SetBounds(bounds));
-    }, config.setBoundsDelay));
+    }, config.setBoundsThrottle));
   }
 
   // event handlers

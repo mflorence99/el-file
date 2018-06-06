@@ -13,7 +13,7 @@ export class Config {
   maxUndoStackSize = 100;
   noDirExpansionFor = new RegExp('.*/(bower_components|node_modules)$');
   prepareNewNameDelay = 100;
-  setBoundsDelay = 250;
+  setBoundsThrottle = 250;
   treeRefreshThrottle = 25;
 
   codeEditors = {
