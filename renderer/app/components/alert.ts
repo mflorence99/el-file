@@ -20,6 +20,7 @@ export class AlertComponent extends LifecycleComponent {
 
   explanation: string;
   message: string;
+  
   /** ctor */
   constructor(private drawerPanel: DrawerPanelComponent) {
     super();
