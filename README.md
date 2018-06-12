@@ -22,7 +22,7 @@ Secondarily, I tried about a dozen Ubuntu file managers and all left me frustrat
 
 ## Technology Stack
 
-Elf was essentially made possible by [ngxs](https://ngxs.io). It is an amazing state management pattern and no Angular project should be started IMHO without at least considering it. The entire state of Elf -- from the clipboard through selection to the tab and view configuration is managed by `ngxs`. 
+Elf was essentially made possible by [ngxs](https://ngxs.io). It is an amazing state management pattern and no Angular project should be started IMHO without at least considering it. The entire state of Elf -- from the clipboard through selection to the tab and view configuration -- is managed by `ngxs`. 
 
 Best of all, so is the state of the file system. Elf sets file watchers for each open folder. Only the watchers mutate Elf's file system state. Actions like copy or move are not operations on a tree. Rather, they are operations on the underlying file system itself. The tree redraws itself in response to changes in its state.
 
