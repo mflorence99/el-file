@@ -85,6 +85,7 @@ npm run deb64-install
 ## Tips
 
 * Ctrl+click on a folder's arrow attempts to open all the folders in the sub-tree
+* Right click on a tab's icon to customize the tab or remove it
 
 ## Remaining Tasks
 
