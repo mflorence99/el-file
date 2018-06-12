@@ -92,4 +92,5 @@ Elf is still a work-in-progress and there are undoubtedly bugs lurking with. I a
 
 * Virtual scrolling: opening a large directory (eg: `mode_modules`) puts a strain on the UI. The idea will be to only render rows that are on-screen.
 * Auto expand: when expanding a directory, if the sub-tree is itself just another single directory, then that too should be expanded, and so on recursively.
+* Native drag and drop
 

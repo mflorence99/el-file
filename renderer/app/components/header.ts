@@ -35,11 +35,15 @@ export class HeaderComponent extends LifecycleComponent {
 
   onSplitSizeChange(event: {gutterNum: number,
                             sizes: number[]}): void {
-    const widths = this.dictionary.reduce((acc, entry, ix) => {
-      acc[entry.name] = event.sizes[ix];
-      return acc;
-    }, { } as ViewWidths);
-    this.store.dispatch(new UpdateViewWidths({ viewID: this.viewID, widths }));
+    // NOTE: sanity check -- we've seen fewer split sizes that there are splits
+    // @see https://github.com/mflorence99/el-file/issues/6
+    if (event.sizes.length === this.dictionary.length) {
+      const widths = this.dictionary.reduce((acc, entry, ix) => {
+        acc[entry.name] = event.sizes[ix];
+        return acc;
+      }, { } as ViewWidths);
+      this.store.dispatch(new UpdateViewWidths({ viewID: this.viewID, widths }));
+    }
   }
 
   // bind OnChange handlers
