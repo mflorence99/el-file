@@ -191,7 +191,7 @@ export class TreeComponent extends LifecycleComponent
   onExecute(event: {event?: MouseEvent,
                     item: Descriptor},
             command: string): void {
-    const desc = event.item;
+    const desc = event.item || <Descriptor>{ isDirectory: true, path: this.tab.paths[0] };
     // execute command
     let base, path;
     switch (command) {
