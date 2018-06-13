@@ -266,9 +266,9 @@ export interface FSStateModel {
   }
 
   private onWatcherChange(path: string,
-    stat: fs.Stats): void {
+                          stat: fs.Stats): void {
     this.zone.run(() => {
-      this.store.dispatch(stat ?
+      this.store.dispatch(stat?
         new ForceLoadDirs({ paths: [path] }) : new DirUnloaded({ path }));
     });
   }

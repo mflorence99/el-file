@@ -42,6 +42,7 @@
     "angular-split": "1.0.0-rc.3",
     "angular2-uuid": "1",
     "angular4-drag-drop": "1",
+    "async": "2",
     "async-es": "2",
     "core-js": "2",
     "ellib": "latest",
