@@ -1,6 +1,6 @@
 import { AddPathToTab, NewTab, ReplacePathsInTab, Tab, UpdateTab } from '../state/layout';
 import { AutoUnsubscribe, LifecycleComponent, OnChange, debounce } from 'ellib';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ClearClipboard, ClipboardStateModel, CopyToClipboard, CutToClipboard } from '../state/clipboard';
 import { Dictionary, DictionaryService } from '../services/dictionary';
 import { PrefsState, PrefsStateModel } from '../state/prefs';
@@ -11,6 +11,7 @@ import { DeleteOperation } from '../services/delete';
 import { Descriptor } from '../state/fs';
 import { FSService } from '../services/fs';
 import { FSStateModel } from '../state/fs';
+import { Hydrateable } from './hydrateable';
 import { MoveOperation } from '../services/move';
 import { NewDirOperation } from '../services/new-dir';
 import { NewFileOperation } from '../services/new-file';
@@ -54,16 +55,20 @@ export class TreeComponent extends LifecycleComponent
   descriptorsByPath: { [path: string]: Descriptor[] } = { };
   dictionary: Dictionary[] = [];
 
+  intersectionObserver: IntersectionObserver;
+
   loaded: boolean;
   newName: string;
 
   subToActions: Subscription;
 
+  private hydrateables: { [path: string]: Hydrateable } = { };
   private updateDescriptors: Function;
 
   /** ctor */
   constructor(private cdf: ChangeDetectorRef,
               private dictSvc: DictionaryService,
+              private element: ElementRef,
               private fsSvc: FSService,
               private root: RootPageComponent,
               private store: Store) {
@@ -186,6 +191,18 @@ export class TreeComponent extends LifecycleComponent
     return this.newName;
   }
 
+  /** Register hydrateable component */
+  registerHydrateable(hydrateable: Hydrateable): void {
+    this.hydrateables[hydrateable.path] = hydrateable;
+    this.intersectionObserver.observe(hydrateable.element.nativeElement);
+  }
+
+  /** Unregister hydrateable component */
+  unregisterHydrateable(hydrateable: Hydrateable): void {
+    this.intersectionObserver.unobserve(hydrateable.element.nativeElement);
+    delete this.hydrateables[hydrateable.path];
+  }
+
   // event handlers
 
   onExecute(event: {event?: MouseEvent,
@@ -288,9 +305,34 @@ export class TreeComponent extends LifecycleComponent
 
   ngOnInit(): void {
     this.store.dispatch(new Progress({ state: 'running' }));
+    // establish observer to support virtual scroll
+    this.intersectionObserver = new IntersectionObserver(this.intersectionCB.bind(this), {
+      root: this.element.nativeElement,
+      rootMargin: '320px',
+      threshold: [0]
+    });
   }
 
   // private methods
+
+  private intersectionCB(entries: IntersectionObserverEntry[],
+                         observer: IntersectionObserver): void {
+    entries.forEach(entry => {
+      const hydrateable = this.hydrateables[entry.target.getAttribute('path')];
+      if (hydrateable) {
+        const isNow = entry.isIntersecting;
+        const was = hydrateable.hydrated;
+        if (was !== isNow) {
+          const path = hydrateable.path;
+          if (isNow)
+            console.log(`%cHydrate %c${path}`, 'color: #1b5e20', 'color: grey');
+          else console.log(`%cDehydrate %c${path}`, 'color: #b71c1c', 'color: grey');
+          hydrateable.hydrated = isNow;
+          hydrateable.repaint();
+        }
+      }
+    });
+  }
 
   private _updateDescriptors(): void {
     this.dictionary = this.dictSvc.dictionaryForView(this.view);

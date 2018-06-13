@@ -1,6 +1,6 @@
 import { AddPathToSelection, ClearSelection, ReplacePathsInSelection, SelectionStateModel, TogglePathInSelection } from '../state/selection';
 import { AddPathToTab, AddPathsToTab, RemovePathFromTab, Tab } from '../state/layout';
-import { ChangeDetectionStrategy, Component, Input, NgZone } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { PrefsState, PrefsStateModel } from '../state/prefs';
 
 import { Alarm } from '../state/status';
@@ -10,6 +10,7 @@ import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
 import { FSService } from '../services/fs';
 import { FSStateModel } from '../state/fs';
+import { Hydrateable } from './hydrateable';
 import { MoveOperation } from '../services/move';
 import { Store } from '@ngxs/store';
 import { TreeComponent } from './tree';
@@ -26,28 +27,32 @@ import { config } from '../config';
   styleUrls: ['row.scss']
 })
 
-export class RowComponent {
+export class RowComponent implements Hydrateable, OnDestroy, OnInit {
 
   @Input() clipboard = { } as ClipboardStateModel;
   @Input() contextMenu: ContextMenuComponent;
   @Input() desc: Descriptor;
   @Input() dictionary: Dictionary[] = [];
   @Input() fs = { } as FSStateModel;
-  @Input() isOpRunning: boolean;
+  @Input() hydrated = false;
+  @Input() isOpRunning = false;
   @Input() level = 0;
+  @Input() path: string;
   @Input() prefs = { } as PrefsStateModel;
   @Input() selection = { } as SelectionStateModel;
   @Input() tab = { } as Tab;
 
   /** ctor */
-  constructor(private fsSvc: FSService,
+  constructor(private cdf: ChangeDetectorRef,
+              public element: ElementRef,
+              private fsSvc: FSService,
               public tree: TreeComponent,
               private store: Store,
               private zone: NgZone) { }
 
-  /** TODO: experimental */
-  isHydrated() {
-    return true; // !this.desc.path.includes('node_modules/');
+  /** @see Hydrateable */
+  repaint(): void {
+    this.cdf.detectChanges();
   }
 
   // event handlers
@@ -146,6 +151,17 @@ export class RowComponent {
     }
     if (actions.length > 0)
       this.store.dispatch(actions);
+  }
+
+  // lifecycle methods
+
+  ngOnDestroy(): void {
+    this.tree.unregisterHydrateable(this);
+  }
+
+  ngOnInit(): void {
+    this.element.nativeElement.setAttribute('path', this.path);
+    this.tree.registerHydrateable(this);
   }
 
 }
