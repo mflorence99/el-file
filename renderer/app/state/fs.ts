@@ -247,6 +247,9 @@ export interface FSStateModel {
       const stat = contents[name];
       // NOTE: this isn't a real stat as it has been piped over IPC as JSON
       // so with some help from the main process we must reify it 
+      stat.atime = new Date(stat.atime);
+      stat.birthtime = new Date(stat.birthtime);
+      stat.mtime = new Date(stat.mtime);
       stat.isDirectory = this._isDirectory.bind(null, stat);
       stat.isFile = this._isFile.bind(null, stat);
       stat.isSymbolicLink = this._isSymbolicLink.bind(null, stat);
