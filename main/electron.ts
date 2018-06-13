@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -5,7 +6,8 @@ import * as url from 'url';
  * Electron event dispatcher
  */
 
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
+const async = require('async');
 const isDev = process.env['DEV_MODE'] === '1';
 let theWindow = null;
 
@@ -55,4 +57,28 @@ app.on('ready', () => {
 
 app.on('window-all-closed', () => {
   app.quit();
+});
+
+ipcMain.on('readdir', (event: any,
+                       root: string) => {
+  fs.readdir(root, (err, names) => {
+    if (err)
+      theWindow.webContents.send('dirnotread', root);
+    else {
+      const children = names.map(name => path.join(root, name));
+      async.map(children, fs.lstat, (err, stats) => {
+        const contents = names.reduce((acc, name, ix) => {
+          const stat = stats[ix];
+          // NOTE: this won't be a real stat when it gets piped over
+          // IPC as JSON, so we have to help reify it on the other side
+          stat['_isDirectory'] = stat.isDirectory();
+          stat['_isFile'] = stat.isFile();
+          stat['_isSymbolicLink'] = stat.isSymbolicLink();
+          acc[name] = stat;
+          return acc;
+        }, { }); 
+        theWindow.webContents.send('dirread', root, contents);
+      });
+    }
+  });
 });

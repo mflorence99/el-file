@@ -9,7 +9,6 @@ import { ElectronService } from 'ngx-electron';
 import { Message } from './status';
 import { NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
-import async from 'async-es';
 import { config } from '../config';
 
 /** NOTE: actions must come first because of AST */
@@ -76,7 +75,6 @@ export interface FSStateModel {
 
   fscolor = { } as FSColorStateModel;
 
-  private fs_: typeof fs;
   private path_: typeof path;
   private userInfo_: { gid: number, uid: number, username: string };
   private watcher_: { add: Function, remove: Function, on: Function };
@@ -85,11 +83,17 @@ export interface FSStateModel {
   constructor(private electron: ElectronService,
               private store: Store,
               private zone: NgZone) {
-    this.fs_ = this.electron.remote.require('fs');
     this.path_ = this.electron.remote.require('path');
     this.watcher_ = this.electron.remote.require('filewatcher')
       ({ debounce: config.fileWatcherThrottle });
     this.userInfo_ = this.electron.remote.require('os').userInfo();
+  }
+
+  @Action(DirLoaded)
+  dirLoaded({ patchState }: StateContext<FSStateModel>,
+    { payload }: DirLoaded) {
+    const { path, descs } = payload;
+    patchState({ [path]: descs });
   }
 
   @Action(ForceLoadDirs)
@@ -107,32 +111,7 @@ export interface FSStateModel {
       const descs = getState()[path];
       if (force || !descs) {
         dispatch(new Message({ text: `Loading ${path} ...` }));
-        this.fs_.readdir(path, (err, names) => {
-          if (err)
-            dispatch(new UnloadDirs({ paths: [path] }));
-          else {
-            const children = names.map(name => this.path_.join(path, name));
-            async.map(children, this.fs_.lstat, (err, stats) => {
-              const descs: Descriptor[] = names.reduce((acc, name, ix) => {
-                const stat = stats[ix];
-                if (stat
-                && (stat.isDirectory() || stat.isFile() || stat.isSymbolicLink())) {
-                  const desc = this.makeDescriptor(name, path, stat);
-                  if (desc.isReadable)
-                    acc.push(desc);
-                }
-                return acc;
-              }, []);
-              patchState({ [path]: descs });
-              // start watching this directory
-              this.watcher_.add(path);
-              this.zone.run(() => {
-                dispatch(new DirLoaded({ path, descs }));
-                dispatch(new Message({ text: `${path} loaded` }));
-              });
-            });
-          }
-        });
+        this.electron.ipcRenderer.send('readdir', path);
       }
     });
   }
@@ -156,21 +135,11 @@ export interface FSStateModel {
   // lifecycle methods
 
   ngxsOnInit({ dispatch }: StateContext<FSStateModel>) {
+    this.electron.ipcRenderer.on('dirnotread', this.onDirNotRead.bind(this));
+    this.electron.ipcRenderer.on('dirread', this.onDirRead.bind(this));
     this.fscolor$.subscribe((fscolor: FSColorStateModel) => this.fscolor = fscolor);
-    // watch for changes
-    this.watcher_.on('change', (path, stat) => {
-      this.zone.run(() => {
-        dispatch(stat? new ForceLoadDirs({ paths: [path] }) : new DirUnloaded({ path }));
-      });
-    });
-    // watch out for fallback
-    this.watcher_.on('fallback', function(limit) {
-      this.zone.run(() => {
-        const explanation = `Ran out of file handles after watching ${limit} files. Falling back to polling which uses more CPU. Run ulimit -n 10000 to increase the limit for open files`;
-        dispatch(new Message({ explanation, level: 'error', text: 'ulimit exceeded' }));
-      });
-    });
-
+    this.watcher_.on('change', this.onWatcherChange.bind(this));
+    this.watcher_.on('fallback', this.onWatcherFallback.bind(this));
   }
 
   // private methods
@@ -264,6 +233,69 @@ export interface FSStateModel {
     else if (stat.isSymbolicLink())
       return 'fas external-link-alt';
     else return 'far file';
+  }
+
+  private onDirNotRead(event: any,
+                       path: string): void {
+    this.store.dispatch(new UnloadDirs({ paths: [path] }));
+  }
+
+  private onDirRead(event: any,
+                    path: string,
+                    contents: { [name: string]: fs.Stats }): void {
+    const descs: Descriptor[] = Object.keys(contents).reduce((acc, name) => {
+      const stat = contents[name];
+      // NOTE: this isn't a real stat as it has been piped over IPC as JSON
+      // so with some help from the main process we must reify it 
+      stat.isDirectory = this._isDirectory.bind(null, stat);
+      stat.isFile = this._isFile.bind(null, stat);
+      stat.isSymbolicLink = this._isSymbolicLink.bind(null, stat);
+      if (stat && (stat.isDirectory() || stat.isFile() || stat.isSymbolicLink())) {
+        const desc = this.makeDescriptor(name, path, stat);
+        if (desc.isReadable)
+          acc.push(desc);
+      }
+      return acc;
+    }, []);
+    // start watching this directory
+    this.watcher_.add(path);
+    this.zone.run(() => {
+      this.store.dispatch(new DirLoaded({ path, descs }));
+      this.store.dispatch(new Message({ text: `${path} loaded` }));
+    });
+  }
+
+  private onWatcherChange(path: string,
+    stat: fs.Stats): void {
+    this.zone.run(() => {
+      this.store.dispatch(stat ?
+        new ForceLoadDirs({ paths: [path] }) : new DirUnloaded({ path }));
+    });
+  }
+
+  private onWatcherFallback(limit: number): void {
+    this.zone.run(() => {
+      const explanation = `Ran out of file handles after watching ${limit} files. Falling back to polling which uses more CPU. Run ulimit -n 10000 to increase the limit for open files`;
+      this.store.dispatch(new Message({
+        explanation,
+        level: 'error',
+        text: 'ulimit exceeded'
+      }));
+    });
+  }
+
+  // proxied fs.Stats methods
+
+  private _isDirectory(stat: fs.Stats): boolean {
+    return stat['_isDirectory'];
+  }
+
+  private _isFile(stat: fs.Stats): boolean {
+    return stat['_isFile'];
+  }
+
+  private _isSymbolicLink(stat: fs.Stats): boolean {
+    return stat['_isSymbolicLink'];
   }
 
 }
