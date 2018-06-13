@@ -35,7 +35,6 @@ export class RowComponent {
   @Input() fs = { } as FSStateModel;
   @Input() isOpRunning: boolean;
   @Input() level = 0;
-  @Input() path: string;
   @Input() prefs = { } as PrefsStateModel;
   @Input() selection = { } as SelectionStateModel;
   @Input() tab = { } as Tab;
@@ -45,6 +44,11 @@ export class RowComponent {
               public tree: TreeComponent,
               private store: Store,
               private zone: NgZone) { }
+
+  /** TODO: experimental */
+  isHydrated() {
+    return true; // !this.desc.path.includes('node_modules/');
+  }
 
   // event handlers
 

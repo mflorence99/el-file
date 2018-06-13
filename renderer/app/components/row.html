@@ -1,6 +1,7 @@
 <div
   (dropEvent)="onDrop($event)"
   [dropHighlight]="'drop-target'"
+  *ngIf="isHydrated()"
   dropDirective>
 
   <div
