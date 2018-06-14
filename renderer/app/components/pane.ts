@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input } from '@angular/core';
 import { LifecycleComponent, OnChange } from 'ellib';
 import { View, ViewsStateModel } from '../state/views';
 
@@ -34,6 +34,11 @@ export class PaneComponent extends LifecycleComponent {
   tab = { } as Tab;
   tabIndex: number;
   view = { } as View;
+
+  /** ctor */
+  constructor(public element: ElementRef) {
+    super();
+   }
 
   // bind OnChange handlers
 

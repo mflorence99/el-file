@@ -46,8 +46,8 @@ export class RowComponent implements Hydrateable, OnDestroy, OnInit {
   constructor(private cdf: ChangeDetectorRef,
               public element: ElementRef,
               private fsSvc: FSService,
-              public tree: TreeComponent,
               private store: Store,
+              public tree: TreeComponent,
               private zone: NgZone) { }
 
   /** @see Hydrateable */

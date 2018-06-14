@@ -14,3 +14,11 @@
   }
 
 }
+
+.outliner {
+  background-color: var(--mat-grey-800);
+  display: none;
+  position: absolute;
+  width: 3px;
+  z-index: 65535;
+}

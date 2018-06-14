@@ -1,5 +1,7 @@
 <split
   (dragEnd)="onSplitSizeChange($event)"
+  (dragProgress)="onOutlinerShow($event)"
+  (gutterClick)="onOutlinerShow($event)"
   [ngClass]="{gridlines: prefs.showGridLines}"
   class="row"
   direction="horizontal"
@@ -21,3 +23,8 @@
   </split-area>
 
 </split>
+
+<div 
+  class="outliner" 
+  #outliner>
+</div>
