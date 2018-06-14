@@ -306,9 +306,10 @@ export class TreeComponent extends LifecycleComponent
   ngOnInit(): void {
     this.store.dispatch(new Progress({ state: 'running' }));
     // establish observer to support virtual scroll
+    // NOTE: rootMargin establishes a 'buffer' of about 5 rows above and below
     this.intersectionObserver = new IntersectionObserver(this.intersectionCB.bind(this), {
       root: this.element.nativeElement,
-      rootMargin: '320px',
+      rootMargin: '100px',
       threshold: [0]
     });
   }

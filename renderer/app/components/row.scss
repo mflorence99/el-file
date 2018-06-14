@@ -39,9 +39,14 @@ div.drop-target {
   cursor: default;
   display: flex;
   flex-direction: row;
+  height: 100%;
 
   &.cut {
     color: var(--disabled-color);
+  }
+
+  &.dehydrated {
+    
   }
 
   &.gridlines {
