@@ -4,6 +4,16 @@ I've been building a small suite (see [_El terminador_](https://github.com/mflor
 
 Secondarily, I tried about a dozen Ubuntu file managers and all left me frustrated. Even the simple capability of starting exactly where you left off last time was difficult to find. I sorely missed Cocoatech's excellent [Path Finder](https://cocoatech.com/#/) on my Mac.
 
+<!-- toc -->
+
+- [Highlights](#highlights)
+- [Elf in Action](#elf-in-action)
+- [Technology Stack](#technology-stack)
+- [How to Run in Development Mode](#how-to-run-in-development-mode)
+- [How to Run in Production Mode](#how-to-run-in-production-mode)
+- [Tips](#tips)
+- [Remaining Tasks](#remaining-tasks)
+
 <!-- tocstop -->
 
 ## Highlights
@@ -91,7 +101,7 @@ npm run deb64-install
 
 Elf is still a work-in-progress and there are undoubtedly bugs lurking with. I am currently working on:
 
-* Virtual scrolling: opening a large directory (eg: `mode_modules`) puts a strain on the UI. The idea will be to only render rows that are on-screen.
+* <s>Virtual scrolling: opening a large directory (eg: `mode_modules`) puts a strain on the UI. The idea will be to only render rows that are on-screen.</s>
 * Auto expand: when expanding a directory, if the sub-tree is itself just another single directory, then that too should be expanded, and so on recursively.
 * Native drag and drop
 
