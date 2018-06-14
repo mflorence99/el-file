@@ -160,7 +160,6 @@ export class RowComponent implements Hydrateable, OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    this.element.nativeElement.setAttribute('path', this.path);
     this.tree.registerHydrateable(this);
   }
 
