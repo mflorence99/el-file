@@ -1,4 +1,6 @@
-import { Action, State, StateContext } from '@ngxs/store';
+import { Action } from '@ngxs/store';
+import { State } from '@ngxs/store';
+import { StateContext } from '@ngxs/store';
 
 /** NOTE: actions must come first because of AST */
 

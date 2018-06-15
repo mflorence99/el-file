@@ -1,15 +1,18 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { Tab, UpdatePathLRU } from '../state/layout';
-
+import { ChangeDetectionStrategy } from '@angular/core';
 import { ClipboardStateModel } from '../state/clipboard';
+import { Component } from '@angular/core';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
 import { FSStateModel } from '../state/fs';
+import { Input } from '@angular/core';
+import { OnInit } from '@angular/core';
 import { PrefsStateModel } from '../state/prefs';
 import { SelectionStateModel } from '../state/selection';
 import { Store } from '@ngxs/store';
+import { Tab } from '../state/layout';
 import { TreeComponent } from './tree';
+import { UpdatePathLRU } from '../state/layout';
 
 /**
  * Branch component

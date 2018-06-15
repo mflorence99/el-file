@@ -1,4 +1,6 @@
-import { FSService, Operation, OperationResult } from './fs';
+import { FSService } from './fs';
+import { Operation } from './fs';
+import { OperationResult } from './fs';
 
 /**
  * New file

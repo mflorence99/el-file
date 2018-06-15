@@ -1,11 +1,20 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Dictionary, DictionaryService } from '../services/dictionary';
-import { LifecycleComponent, OnChange } from 'ellib';
-import { UpdateViewWidths, View, ViewWidths } from '../state/views';
-
+import { ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
+import { Dictionary } from '../services/dictionary';
+import { DictionaryService } from '../services/dictionary';
+import { ElementRef } from '@angular/core';
+import { Input } from '@angular/core';
+import { LifecycleComponent } from 'ellib';
+import { OnChange } from 'ellib';
+import { OnDestroy } from '@angular/core';
+import { OnInit } from '@angular/core';
 import { PaneComponent } from './pane';
 import { PrefsStateModel } from '../state/prefs';
 import { Store } from '@ngxs/store';
+import { UpdateViewWidths } from '../state/views';
+import { View } from '../state/views';
+import { ViewChild } from '@angular/core';
+import { ViewWidths } from '../state/views';
 
 /**
  * Header component

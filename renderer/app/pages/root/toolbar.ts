@@ -1,12 +1,18 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { CloseSplit, MakeSplit, Reorient } from '../../state/layout';
-import { ShowLog, WindowStateModel } from '../../state/window';
-
+import { ChangeDetectionStrategy } from '@angular/core';
+import { CloseSplit } from '../../state/layout';
+import { Component } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
+import { EventEmitter } from '@angular/core';
 import { FSService } from '../../services/fs';
+import { Input } from '@angular/core';
 import { LayoutStateModel } from '../../state/layout';
+import { MakeSplit } from '../../state/layout';
 import { MatButtonToggleChange } from '@angular/material';
+import { Output } from '@angular/core';
+import { Reorient } from '../../state/layout';
+import { ShowLog } from '../../state/window';
 import { Store } from '@ngxs/store';
+import { WindowStateModel } from '../../state/window';
 
 /**
  * Toolbar component

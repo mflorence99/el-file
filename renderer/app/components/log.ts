@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-
+import { ChangeDetectionStrategy } from '@angular/core';
 import { ClipboardStateModel } from '../state/clipboard';
+import { Component } from '@angular/core';
 import { FSLogStateModel } from '../state/fslog';
 import { FSService } from '../services/fs';
+import { Input } from '@angular/core';
 import { PrefsStateModel } from '../state/prefs';
 
 /**

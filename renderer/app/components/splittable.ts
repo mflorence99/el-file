@@ -1,14 +1,15 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-
+import { ChangeDetectionStrategy } from '@angular/core';
 import { ClipboardStateModel } from '../state/clipboard';
+import { Component } from '@angular/core';
+import { debounce } from 'ellib';
 import { FSStateModel } from '../state/fs';
+import { Input } from '@angular/core';
 import { LayoutStateModel } from '../state/layout';
 import { PrefsStateModel } from '../state/prefs';
 import { SelectionStateModel } from '../state/selection';
 import { Store } from '@ngxs/store';
 import { UpdateSplitSizes } from '../state/layout';
 import { ViewsStateModel } from '../state/views';
-import { debounce } from 'ellib';
 
 /**
  * Splittable component

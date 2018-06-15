@@ -1,20 +1,34 @@
-import { AddPathToSelection, ClearSelection, ReplacePathsInSelection, SelectionStateModel, TogglePathInSelection } from '../state/selection';
-import { AddPathToTab, AddPathsToTab, RemovePathFromTab, Tab } from '../state/layout';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { PrefsState, PrefsStateModel } from '../state/prefs';
-
+import { AddPathsToTab } from '../state/layout';
+import { AddPathToSelection } from '../state/selection';
+import { AddPathToTab } from '../state/layout';
 import { Alarm } from '../state/status';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
+import { ClearSelection } from '../state/selection';
 import { ClipboardStateModel } from '../state/clipboard';
+import { Component } from '@angular/core';
+import { config } from '../config';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
+import { ElementRef } from '@angular/core';
 import { FSService } from '../services/fs';
 import { FSStateModel } from '../state/fs';
 import { Hydrateable } from './hydrateable';
+import { Input } from '@angular/core';
 import { MoveOperation } from '../services/move';
+import { NgZone } from '@angular/core';
+import { OnDestroy } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { PrefsState } from '../state/prefs';
+import { PrefsStateModel } from '../state/prefs';
+import { RemovePathFromTab } from '../state/layout';
+import { ReplacePathsInSelection } from '../state/selection';
+import { SelectionStateModel } from '../state/selection';
 import { Store } from '@ngxs/store';
+import { Tab } from '../state/layout';
+import { TogglePathInSelection } from '../state/selection';
 import { TreeComponent } from './tree';
-import { config } from '../config';
 
 /**
  * Row component

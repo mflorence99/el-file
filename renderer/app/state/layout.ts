@@ -1,11 +1,17 @@
-import { Action, Actions, NgxsOnInit, State, StateContext, ofAction } from '@ngxs/store';
-import { DirUnloaded, LoadDirs } from './fs';
-import { InitView, RemoveView } from './views';
-
+import { Action } from '@ngxs/store';
+import { Actions } from '@ngxs/store';
 import { ClearSelection } from '../state/selection';
-import { UUID } from 'angular2-uuid';
 import { config } from '../config';
+import { DirUnloaded } from './fs';
+import { InitView } from './views';
+import { LoadDirs } from './fs';
+import { NgxsOnInit } from '@ngxs/store';
+import { ofAction } from '@ngxs/store';
+import { RemoveView } from './views';
+import { State } from '@ngxs/store';
+import { StateContext } from '@ngxs/store';
 import { timer } from 'rxjs';
+import { UUID } from 'angular2-uuid';
 
 /** NOTE: actions must come first because of AST */
 

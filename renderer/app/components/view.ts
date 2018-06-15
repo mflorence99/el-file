@@ -1,10 +1,15 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { DrawerPanelComponent, LifecycleComponent, OnChange } from 'ellib';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { DictionaryService } from '../services/dictionary';
-import { View } from '../state/views';
+import { DrawerPanelComponent } from 'ellib';
+import { FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { Input } from '@angular/core';
+import { LifecycleComponent } from 'ellib';
 import { map } from 'rxjs/operators';
+import { OnChange } from 'ellib';
+import { Validators } from '@angular/forms';
+import { View } from '../state/views';
 
 /**
  * View component

@@ -1,7 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { DrawerPanelComponent, LifecycleComponent, OnChange } from 'ellib';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { PrefsState, PrefsStateModel } from '../state/prefs';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
+import { DrawerPanelComponent } from 'ellib';
+import { FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { Input } from '@angular/core';
+import { LifecycleComponent } from 'ellib';
+import { OnChange } from 'ellib';
+import { PrefsState } from '../state/prefs';
+import { PrefsStateModel } from '../state/prefs';
 
 /**
  * Prefs component

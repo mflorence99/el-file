@@ -1,15 +1,21 @@
-import * as Mode from 'stat-mode';
 import * as fs from 'fs';
+import * as Mode from 'stat-mode';
 import * as path from 'path';
 
-import { Action, NgxsOnInit, Select, State, StateContext, Store } from '@ngxs/store';
-import { FSColorState, FSColorStateModel, SetColor } from './fscolor';
-
+import { Action } from '@ngxs/store';
+import { config } from '../config';
 import { ElectronService } from 'ngx-electron';
+import { FSColorState } from './fscolor';
+import { FSColorStateModel } from './fscolor';
 import { Message } from './status';
+import { NgxsOnInit } from '@ngxs/store';
 import { NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
-import { config } from '../config';
+import { Select } from '@ngxs/store';
+import { SetColor } from './fscolor';
+import { State } from '@ngxs/store';
+import { StateContext } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 
 /** NOTE: actions must come first because of AST */
 

@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-
+import { ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { FSLogStateModel } from '../state/fslog';
+import { Input } from '@angular/core';
 import { PrefsStateModel } from '../state/prefs';
 
 /**

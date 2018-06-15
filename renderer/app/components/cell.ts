@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-
+import { ChangeDetectionStrategy } from '@angular/core';
 import { ClipboardStateModel } from '../state/clipboard';
+import { Component } from '@angular/core';
 import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
+import { Input } from '@angular/core';
 import { PrefsStateModel } from '../state/prefs';
 import { TreeComponent } from './tree';
 

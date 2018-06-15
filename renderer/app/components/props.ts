@@ -1,14 +1,19 @@
 import * as fs from 'fs';
 
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { DrawerPanelComponent, LifecycleComponent, OnChange } from 'ellib';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { Descriptor } from '../state/fs';
 import { DictionaryService } from '../services/dictionary';
+import { DrawerPanelComponent } from 'ellib';
 import { ElectronService } from 'ngx-electron';
-import { PrefsStateModel } from '../state/prefs';
+import { FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { Input } from '@angular/core';
+import { LifecycleComponent } from 'ellib';
 import { map } from 'rxjs/operators';
+import { OnChange } from 'ellib';
+import { PrefsStateModel } from '../state/prefs';
+import { Validators } from '@angular/forms';
 
 /**
  * Props component

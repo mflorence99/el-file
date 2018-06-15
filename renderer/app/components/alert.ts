@@ -1,6 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { DrawerPanelComponent, LifecycleComponent, OnChange } from 'ellib';
-
+import { ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
+import { DrawerPanelComponent } from 'ellib';
+import { Input } from '@angular/core';
+import { LifecycleComponent } from 'ellib';
+import { OnChange } from 'ellib';
 import { StatusStateModel } from '../state/status';
 
 /**

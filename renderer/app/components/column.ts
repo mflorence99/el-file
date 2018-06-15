@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { UpdateViewSort, View } from '../state/views';
-
+import { ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { Dictionary } from '../services/dictionary';
+import { Input } from '@angular/core';
 import { Store } from '@ngxs/store';
+import { UpdateViewSort } from '../state/views';
+import { View } from '../state/views';
 
 /**
  * Column component

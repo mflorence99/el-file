@@ -1,11 +1,14 @@
-import { ClearClipboard, ClipboardState } from '../../state/clipboard';
-import { Component, ViewChild } from '@angular/core';
-import { CopyToClipboard, CutToClipboard } from '../../state/clipboard';
-import { DrawerPanelComponent, debounce } from 'ellib';
-
 import { Alarm } from '../../state/status';
+import { ClearClipboard } from '../../state/clipboard';
+import { ClipboardState } from '../../state/clipboard';
+import { Component } from '@angular/core';
+import { config } from '../../config';
 import { CopyOperation } from '../../services/copy';
+import { CopyToClipboard } from '../../state/clipboard';
+import { CutToClipboard } from '../../state/clipboard';
+import { debounce } from 'ellib';
 import { Descriptor } from '../../state/fs';
+import { DrawerPanelComponent } from 'ellib';
 import { ElectronService } from 'ngx-electron';
 import { FSService } from '../../services/fs';
 import { MoveOperation } from '../../services/move';
@@ -16,7 +19,7 @@ import { StatusState } from '../../state/status';
 import { Store } from '@ngxs/store';
 import { Tab } from '../../state/layout';
 import { View } from '../../state/views';
-import { config } from '../../config';
+import { ViewChild } from '@angular/core';
 
 /**
  * EL-file Root

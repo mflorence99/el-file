@@ -7,15 +7,19 @@ import * as os from 'os';
 import * as path from 'path';
 import * as touch from 'touch';
 
-import { Actions, Store, ofAction } from '@ngxs/store';
-import { Canceled, Message, Progress } from '../state/status';
-
+import { Actions } from '@ngxs/store';
+import { Canceled } from '../state/status';
+import { config } from '../config';
 import { ElectronService } from 'ngx-electron';
 import { Injectable } from '@angular/core';
 import { LogOperation } from '../state/fslog';
+import { Message } from '../state/status';
+import { ofAction } from '@ngxs/store';
+import { Progress } from '../state/status';
 import { ReplacePathsInSelection } from '../state/selection';
+import { Store } from '@ngxs/store';
+
 import async from 'async-es';
-import { config } from '../config';
 
 /**
  * Model a file system operation

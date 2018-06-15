@@ -1,5 +1,5 @@
-import { Descriptor, FSStateModel } from '../state/fs';
-
+import { Descriptor } from '../state/fs';
+import { FSStateModel } from '../state/fs';
 import { Injectable } from '@angular/core';
 import { PrefsStateModel } from '../state/prefs';
 import { View } from '../state/views';

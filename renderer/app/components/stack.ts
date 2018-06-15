@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { LifecycleComponent, OnChange } from 'ellib';
-
+import { ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
+import { Input } from '@angular/core';
+import { LifecycleComponent } from 'ellib';
+import { OnChange } from 'ellib';
 import { Operation } from '../services/fs';
 import { PrefsStateModel } from '../state/prefs';
 

@@ -1,30 +1,47 @@
-import { AddPathToTab, NewTab, ReplacePathsInTab, Tab, UpdateTab } from '../state/layout';
-import { AutoUnsubscribe, LifecycleComponent, OnChange, debounce } from 'ellib';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { ClearClipboard, ClipboardStateModel, CopyToClipboard, CutToClipboard } from '../state/clipboard';
-import { Dictionary, DictionaryService } from '../services/dictionary';
-import { PrefsState, PrefsStateModel } from '../state/prefs';
-
+import { AddPathToTab } from '../state/layout';
+import { AutoUnsubscribe } from 'ellib';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
+import { ClearClipboard } from '../state/clipboard';
+import { ClipboardStateModel } from '../state/clipboard';
+import { Component } from '@angular/core';
+import { config } from '../config';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { CopyOperation } from '../services/copy';
+import { CopyToClipboard } from '../state/clipboard';
+import { CutToClipboard } from '../state/clipboard';
+import { debounce } from 'ellib';
 import { DeleteOperation } from '../services/delete';
 import { Descriptor } from '../state/fs';
+import { Dictionary } from '../services/dictionary';
+import { DictionaryService } from '../services/dictionary';
+import { ElementRef } from '@angular/core';
 import { FSService } from '../services/fs';
 import { FSStateModel } from '../state/fs';
 import { Hydrateable } from './hydrateable';
+import { Input } from '@angular/core';
+import { LifecycleComponent } from 'ellib';
 import { MoveOperation } from '../services/move';
 import { NewDirOperation } from '../services/new-dir';
 import { NewFileOperation } from '../services/new-file';
+import { NewTab } from '../state/layout';
+import { OnChange } from 'ellib';
+import { OnInit } from '@angular/core';
+import { PrefsState } from '../state/prefs';
+import { PrefsStateModel } from '../state/prefs';
 import { Progress } from '../state/status';
 import { RenameOperation } from '../services/rename';
+import { ReplacePathsInTab } from '../state/layout';
 import { RootPageComponent } from '../pages/root/page';
 import { SelectionStateModel } from '../state/selection';
 import { Store } from '@ngxs/store';
 import { Subscription } from 'rxjs';
+import { Tab } from '../state/layout';
 import { TouchOperation } from '../services/touch';
 import { TrashOperation } from '../services/trash';
+import { UpdateTab } from '../state/layout';
 import { View } from '../state/views';
-import { config } from '../config';
+import { ViewChild } from '@angular/core';
 
 /**
  * Tree component

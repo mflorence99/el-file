@@ -1,9 +1,13 @@
-import { Alarm, StatusStateModel } from '../../state/status';
-import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
-import { LifecycleComponent, OnChange } from 'ellib';
-
+import { Alarm } from '../../state/status';
 import { Canceled } from '../../state/status';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
+import { Input } from '@angular/core';
+import { LifecycleComponent } from 'ellib';
+import { OnChange } from 'ellib';
+import { StatusStateModel } from '../../state/status';
 import { Store } from '@ngxs/store';
+import { ViewChild } from '@angular/core';
 
 /**
  * Status bar component

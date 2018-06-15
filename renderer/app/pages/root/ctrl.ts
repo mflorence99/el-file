@@ -1,22 +1,38 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { ClipboardState, ClipboardStateModel } from '../../state/clipboard';
-import { FSLogState, FSLogStateModel } from '../../state/fslog';
-import { FSState, FSStateModel } from '../../state/fs';
-import { LayoutState, LayoutStateModel } from '../../state/layout';
-import { LifecycleComponent, OnChange, nextTick } from 'ellib';
-import { PrefsState, PrefsStateModel, UpdatePrefs } from '../../state/prefs';
-import { Select, Store } from '@ngxs/store';
-import { SelectionState, SelectionStateModel } from '../../state/selection';
-import { StatusState, StatusStateModel } from '../../state/status';
-import { UpdateViewVisibility, ViewVisibility, ViewsState, ViewsStateModel } from '../../state/views';
-import { WindowState, WindowStateModel } from '../../state/window';
-
+import { ChangeDetectionStrategy } from '@angular/core';
 import { ChmodOperation } from '../../services/chmod';
+import { ClipboardState } from '../../state/clipboard';
+import { ClipboardStateModel } from '../../state/clipboard';
+import { Component } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
+import { FSLogState } from '../../state/fslog';
+import { FSLogStateModel } from '../../state/fslog';
 import { FSService } from '../../services/fs';
+import { FSState } from '../../state/fs';
+import { FSStateModel } from '../../state/fs';
+import { Input } from '@angular/core';
+import { LayoutState } from '../../state/layout';
+import { LayoutStateModel } from '../../state/layout';
+import { LifecycleComponent } from 'ellib';
+import { nextTick } from 'ellib';
 import { Observable } from 'rxjs';
+import { OnChange } from 'ellib';
+import { PrefsState } from '../../state/prefs';
+import { PrefsStateModel } from '../../state/prefs';
 import { RenameOperation } from '../../services/rename';
+import { Select } from '@ngxs/store';
+import { SelectionState } from '../../state/selection';
+import { SelectionStateModel } from '../../state/selection';
+import { StatusState } from '../../state/status';
+import { StatusStateModel } from '../../state/status';
+import { Store } from '@ngxs/store';
 import { take } from 'rxjs/operators';
+import { UpdatePrefs } from '../../state/prefs';
+import { UpdateViewVisibility } from '../../state/views';
+import { ViewsState } from '../../state/views';
+import { ViewsStateModel } from '../../state/views';
+import { ViewVisibility } from '../../state/views';
+import { WindowState } from '../../state/window';
+import { WindowStateModel } from '../../state/window';
 
 /**
  * Root controller

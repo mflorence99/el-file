@@ -1,12 +1,16 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input } from '@angular/core';
-import { LifecycleComponent, OnChange } from 'ellib';
-import { View, ViewsStateModel } from '../state/views';
-
+import { ChangeDetectionStrategy } from '@angular/core';
 import { ClipboardStateModel } from '../state/clipboard';
+import { Component } from '@angular/core';
+import { ElementRef } from '@angular/core';
 import { FSStateModel } from '../state/fs';
+import { Input } from '@angular/core';
+import { LifecycleComponent } from 'ellib';
+import { OnChange } from 'ellib';
 import { PrefsStateModel } from '../state/prefs';
 import { SelectionStateModel } from '../state/selection';
 import { Tab } from '../state/layout';
+import { View } from '../state/views';
+import { ViewsStateModel } from '../state/views';
 
 /**
  * Pane component
