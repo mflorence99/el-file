@@ -18,13 +18,13 @@
 
       <td class="op">
         <div *ngIf="stack[0]">
-          {{ stack[0].toString() }}
+          {{ stack[0].toString() | libBreakable }}
         </div>
       </td>
 
       <td class="op">
         <div *ngIf="stack[1]">
-          {{ stack[1].toString() }}
+          {{ stack[1].toString() | libBreakable }}
         </div>
       </td>
 
