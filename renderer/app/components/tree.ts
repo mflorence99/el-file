@@ -5,12 +5,10 @@ import { ChangeDetectorRef } from '@angular/core';
 import { ClearClipboard } from '../state/clipboard';
 import { ClipboardStateModel } from '../state/clipboard';
 import { Component } from '@angular/core';
-import { config } from '../config';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { CopyOperation } from '../services/copy';
 import { CopyToClipboard } from '../state/clipboard';
 import { CutToClipboard } from '../state/clipboard';
-import { debounce } from 'ellib';
 import { DeleteOperation } from '../services/delete';
 import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
@@ -42,6 +40,9 @@ import { TrashOperation } from '../services/trash';
 import { UpdateTab } from '../state/layout';
 import { View } from '../state/views';
 import { ViewChild } from '@angular/core';
+
+import { config } from '../config';
+import { debounce } from 'ellib';
 
 /**
  * Tree component

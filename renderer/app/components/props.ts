@@ -10,10 +10,11 @@ import { FormBuilder } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { Input } from '@angular/core';
 import { LifecycleComponent } from 'ellib';
-import { map } from 'rxjs/operators';
 import { OnChange } from 'ellib';
 import { PrefsStateModel } from '../state/prefs';
 import { Validators } from '@angular/forms';
+
+import { map } from 'rxjs/operators';
 
 /**
  * Props component

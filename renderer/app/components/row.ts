@@ -7,7 +7,6 @@ import { ChangeDetectorRef } from '@angular/core';
 import { ClearSelection } from '../state/selection';
 import { ClipboardStateModel } from '../state/clipboard';
 import { Component } from '@angular/core';
-import { config } from '../config';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
@@ -29,6 +28,8 @@ import { Store } from '@ngxs/store';
 import { Tab } from '../state/layout';
 import { TogglePathInSelection } from '../state/selection';
 import { TreeComponent } from './tree';
+
+import { config } from '../config';
 
 /**
  * Row component

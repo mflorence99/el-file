@@ -1,7 +1,8 @@
 import { Action } from '@ngxs/store';
-import { config } from '../config';
 import { State } from '@ngxs/store';
 import { StateContext } from '@ngxs/store';
+
+import { config } from '../config';
 
 /** NOTE: actions must come first because of AST */
 

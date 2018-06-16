@@ -3,7 +3,6 @@ import * as Mode from 'stat-mode';
 import * as path from 'path';
 
 import { Action } from '@ngxs/store';
-import { config } from '../config';
 import { ElectronService } from 'ngx-electron';
 import { FSColorState } from './fscolor';
 import { FSColorStateModel } from './fscolor';
@@ -16,6 +15,8 @@ import { SetColor } from './fscolor';
 import { State } from '@ngxs/store';
 import { StateContext } from '@ngxs/store';
 import { Store } from '@ngxs/store';
+
+import { config } from '../config';
 
 /** NOTE: actions must come first because of AST */
 

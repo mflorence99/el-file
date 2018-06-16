@@ -13,7 +13,6 @@ import { Input } from '@angular/core';
 import { LayoutState } from '../../state/layout';
 import { LayoutStateModel } from '../../state/layout';
 import { LifecycleComponent } from 'ellib';
-import { nextTick } from 'ellib';
 import { Observable } from 'rxjs';
 import { OnChange } from 'ellib';
 import { PrefsState } from '../../state/prefs';
@@ -25,7 +24,6 @@ import { SelectionStateModel } from '../../state/selection';
 import { StatusState } from '../../state/status';
 import { StatusStateModel } from '../../state/status';
 import { Store } from '@ngxs/store';
-import { take } from 'rxjs/operators';
 import { UpdatePrefs } from '../../state/prefs';
 import { UpdateViewVisibility } from '../../state/views';
 import { ViewsState } from '../../state/views';
@@ -33,6 +31,9 @@ import { ViewsStateModel } from '../../state/views';
 import { ViewVisibility } from '../../state/views';
 import { WindowState } from '../../state/window';
 import { WindowStateModel } from '../../state/window';
+
+import { nextTick } from 'ellib';
+import { take } from 'rxjs/operators';
 
 /**
  * Root controller

@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Input } from '@angular/core';
 import { MoveTab } from '../state/layout';
-import { nextTick } from 'ellib';
 import { RemoveTab } from '../state/layout';
 import { RootPageComponent } from '../pages/root/page';
 import { SelectTab } from '../state/layout';
@@ -11,6 +10,8 @@ import { Store } from '@ngxs/store';
 import { Tab } from '../state/layout';
 import { View } from '../state/views';
 import { ViewChild } from '@angular/core';
+
+import { nextTick } from 'ellib';
 
 /**
  * Tabs component

@@ -1,9 +1,10 @@
 import { Action } from '@ngxs/store';
-import { config } from '../config';
 import { NgxsOnInit } from '@ngxs/store';
 import { Operation } from '../services/fs';
 import { State } from '@ngxs/store';
 import { StateContext } from '@ngxs/store';
+
+import { config } from '../config';
 
 /** NOTE: actions must come first because of AST */
 

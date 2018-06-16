@@ -6,10 +6,11 @@ import { FormBuilder } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { Input } from '@angular/core';
 import { LifecycleComponent } from 'ellib';
-import { map } from 'rxjs/operators';
 import { OnChange } from 'ellib';
 import { Validators } from '@angular/forms';
 import { View } from '../state/views';
+
+import { map } from 'rxjs/operators';
 
 /**
  * View component
