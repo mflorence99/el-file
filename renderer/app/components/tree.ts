@@ -284,7 +284,6 @@ export class TreeComponent extends LifecycleComponent
           CopyOperation.makeInstance(this.clipboard.paths, desc.path, this.fsSvc) :
           MoveOperation.makeInstance(this.clipboard.paths, desc.path, this.fsSvc);
         this.fsSvc.run(pasteOp);
-        this.store.dispatch(new ClearClipboard());
         break;
       case 'ctrl+x':
         this.store.dispatch(new CutToClipboard({ paths: this.selection.paths }));

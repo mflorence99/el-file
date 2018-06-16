@@ -1,9 +1,15 @@
 import { Action } from '@ngxs/store';
+import { Actions } from '@ngxs/store';
+import { DirLoaded } from './fs';
+import { DirUnloaded } from './fs';
+import { FSService } from '../services/fs';
 import { Message } from './status';
+import { NgxsOnInit } from '@ngxs/store';
 import { Selector } from '@ngxs/store';
 import { State } from '@ngxs/store';
 import { StateContext } from '@ngxs/store';
 
+import { ofAction } from '@ngxs/store';
 import { pluralize } from 'ellib';
 
 /** NOTE: actions must come first because of AST */
@@ -28,6 +34,11 @@ export class CutToClipboard {
   constructor(public readonly payload: { paths: string[] }) { }
 }
 
+export class ValidateClipboard {
+  static readonly type = '[Clipboard] validate';
+  constructor(public readonly payload?: any) { }
+}
+
 export type ClipboardOp = 'clear' | 'copy' | 'cut';
 
 export interface ClipboardStateModel {
@@ -41,7 +52,7 @@ export interface ClipboardStateModel {
     op: 'clear',
     paths: [],
   }
-}) export class ClipboardState {
+}) export class ClipboardState implements NgxsOnInit {
 
   @Selector() static getOp(state: ClipboardStateModel): ClipboardOp {
     return state.op;
@@ -50,6 +61,10 @@ export interface ClipboardStateModel {
   @Selector() static getPaths(state: ClipboardStateModel): string[] {
     return state.paths;
   }
+
+  /** ctor */
+  constructor(private actions$: Actions,
+              private fsSvc: FSService) { }
 
   @Action(ClearClipboard)
   clearClipboard({ dispatch, patchState }: StateContext<ClipboardStateModel>,
@@ -88,6 +103,32 @@ export interface ClipboardStateModel {
     const { paths } = payload;
     patchState({ op: 'cut', paths });
     dispatch(new ClipboardUpdated({ op: 'cut', paths }));
+  }
+
+  @Action(ValidateClipboard)
+  validateClipboard({ dispatch, getState, patchState }: StateContext<ClipboardStateModel>,
+    { payload }: ValidateClipboard) {
+    const state = getState();
+    let delta = false;
+    const paths =  state.paths.reduce((acc, path) => {
+      if (this.fsSvc.exists(path))
+        acc.push(path);
+      else delta = true;
+      return acc;
+    }, []);
+    if (delta) {
+      const op = (paths.length > 0)? state.op : 'clear';
+      patchState({ op, paths });
+      dispatch(new ClipboardUpdated({ op, paths }));
+    }
+  }
+
+  // lifecycle methods
+
+  ngxsOnInit({ dispatch }: StateContext<ClipboardStateModel>) {
+    this.actions$
+      .pipe(ofAction(DirLoaded, DirUnloaded))
+      .subscribe(() => dispatch(new ValidateClipboard));
   }
 
 }

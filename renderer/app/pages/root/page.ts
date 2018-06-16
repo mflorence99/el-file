@@ -1,5 +1,4 @@
 import { Alarm } from '../../state/status';
-import { ClearClipboard } from '../../state/clipboard';
 import { ClipboardState } from '../../state/clipboard';
 import { Component } from '@angular/core';
 import { CopyOperation } from '../../services/copy';
@@ -95,10 +94,8 @@ export class RootPageComponent {
                 const pasteOp = (clipOp === 'copy')?
                   CopyOperation.makeInstance(clip, paths[0], this.fsSvc) :
                   MoveOperation.makeInstance(clip, paths[0], this.fsSvc);
-                if (pasteOp) {
+                if (pasteOp) 
                   this.fsSvc.run(pasteOp);
-                  this.store.dispatch(new ClearClipboard());
-                }
                 else alarm = true;
               }
               else alarm = true;
