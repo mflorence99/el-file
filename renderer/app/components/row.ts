@@ -3,22 +3,17 @@ import { AddPathToSelection } from '../state/selection';
 import { AddPathToTab } from '../state/layout';
 import { Alarm } from '../state/status';
 import { ChangeDetectionStrategy } from '@angular/core';
-import { ChangeDetectorRef } from '@angular/core';
 import { ClearSelection } from '../state/selection';
 import { ClipboardStateModel } from '../state/clipboard';
 import { Component } from '@angular/core';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
-import { ElementRef } from '@angular/core';
 import { FSService } from '../services/fs';
 import { FSStateModel } from '../state/fs';
-import { Hydrateable } from './hydrateable';
 import { Input } from '@angular/core';
 import { MoveOperation } from '../services/move';
 import { NgZone } from '@angular/core';
-import { OnDestroy } from '@angular/core';
-import { OnInit } from '@angular/core';
 import { PrefsState } from '../state/prefs';
 import { PrefsStateModel } from '../state/prefs';
 import { RemovePathFromTab } from '../state/layout';
@@ -42,7 +37,7 @@ import { config } from '../config';
   styleUrls: ['row.scss']
 })
 
-export class RowComponent implements Hydrateable, OnDestroy, OnInit {
+export class RowComponent {
 
   @Input() clipboard = { } as ClipboardStateModel;
   @Input() contextMenu: ContextMenuComponent;
@@ -58,17 +53,10 @@ export class RowComponent implements Hydrateable, OnDestroy, OnInit {
   @Input() tab = { } as Tab;
 
   /** ctor */
-  constructor(private cdf: ChangeDetectorRef,
-              public element: ElementRef,
-              private fsSvc: FSService,
+  constructor(private fsSvc: FSService,
               private store: Store,
               public tree: TreeComponent,
               private zone: NgZone) { }
-
-  /** @see Hydrateable */
-  repaint(): void {
-    this.cdf.detectChanges();
-  }
 
   // event handlers
 
@@ -166,16 +154,6 @@ export class RowComponent implements Hydrateable, OnDestroy, OnInit {
     }
     if (actions.length > 0)
       this.store.dispatch(actions);
-  }
-
-  // lifecycle methods
-
-  ngOnDestroy(): void {
-    this.tree.unregisterHydrateable(this);
-  }
-
-  ngOnInit(): void {
-    this.tree.registerHydrateable(this);
   }
 
 }

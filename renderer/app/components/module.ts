@@ -24,7 +24,7 @@ import { ViewComponent } from './view';
  */
 
 const COMPONENTS = [
-AlertComponent,
+  AlertComponent,
   BranchComponent,
   CellComponent,
   ClipboardComponent,
