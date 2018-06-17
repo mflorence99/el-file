@@ -2,6 +2,7 @@
   *ngFor="let desc of descriptorsByPath[path]">
 
   <elfile-row
+    (hydrated)="row.hydrated = $event"
     [attr.path]="desc.path"
     [clipboard]="clipboard"
     [contextMenu]="contextMenu"
@@ -14,7 +15,8 @@
     [path]="desc.path"
     [prefs]="prefs"
     [selection]="selection"
-    [tab]="tab">
+    [tab]="tab"
+    #row>
   </elfile-row>
 
   <elfile-branch
