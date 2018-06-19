@@ -44,7 +44,7 @@ export class RowComponent {
   @Input() desc: Descriptor;
   @Input() dictionary: Dictionary[] = [];
   @Input() fs = { } as FSStateModel;
-  @Input() hydrated = false;
+  @Input() hydrated = true;
   @Input() isOpRunning = false;
   @Input() level = 0;
   @Input() path: string;
