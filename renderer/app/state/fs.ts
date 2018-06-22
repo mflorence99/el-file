@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 import * as Mode from 'stat-mode';
-import * as path from 'path';
 
 import { Action } from '@ngxs/store';
 import { ElectronService } from 'ngx-electron';
 import { FSColorState } from './fscolor';
 import { FSColorStateModel } from './fscolor';
+import { FSService } from '../services/fs';
 import { Message } from './status';
 import { NgxsOnInit } from '@ngxs/store';
 import { NgZone } from '@angular/core';
@@ -82,15 +82,14 @@ export interface FSStateModel {
 
   fscolor = { } as FSColorStateModel;
 
-  private path_: typeof path;
   private userInfo_: { gid: number, uid: number, username: string };
   private watcher_: { add: Function, remove: Function, on: Function };
 
   /** ctor */
   constructor(private electron: ElectronService,
+              private fsSvc: FSService,
               private store: Store,
               private zone: NgZone) {
-    this.path_ = this.electron.remote.require('path');
     this.watcher_ = this.electron.remote.require('filewatcher')
       ({ debounce: config.fileWatcherThrottle });
     this.userInfo_ = this.electron.remote.require('os').userInfo();
@@ -98,7 +97,7 @@ export interface FSStateModel {
 
   @Action(DirLoaded)
   dirLoaded({ patchState }: StateContext<FSStateModel>,
-    { payload }: DirLoaded) {
+            { payload }: DirLoaded) {
     const { path, descs } = payload;
     patchState({ [path]: descs });
   }
@@ -216,7 +215,7 @@ export interface FSStateModel {
       mode: mode.toString(),
       mtime: stat.mtime,
       name: name,
-      path: this.path_.join(path, name),
+      path: this.fsSvc.join(path, name),
       size: stat.isFile()? stat.size : 0,
       user: String(stat.uid)
     } as Descriptor;

@@ -2,6 +2,8 @@ import { Action } from '@ngxs/store';
 import { State } from '@ngxs/store';
 import { StateContext } from '@ngxs/store';
 
+import { isObjectEqual } from 'ellib'; 
+
 /** NOTE: actions must come first because of AST */
 
 export class InitView {
@@ -121,7 +123,7 @@ export interface ViewsStateModel {
     const view = getState()[viewID];
     // NOTE: if the visibility flags haven't changed, then we don't need
     // to zero out the widths
-    const updated = this.isSame(visibility, view.visibility)?
+    const updated = isObjectEqual(visibility, view.visibility)?
       { ...view, visibility } : { ...view, visibility, widths: { } };
     patchState({ [viewID]: updated });
     // make all the same?
@@ -140,22 +142,6 @@ export interface ViewsStateModel {
     const { viewID, widths } = payload;
     const state = getState()[viewID];
     patchState({ [viewID]: { ...state, widths } });
-  }
-
-  // private methods
-
-  private isSame(a, b): boolean {
-    const a_keys = Object.keys(a).sort();
-    const b_keys = Object.keys(b).sort();
-    if ((a_keys.length !== b_keys.length))
-      return false;
-    for (let ix = 0; ix < a_keys.length; ix++) {
-      const a_key = a_keys[ix];
-      const b_key = b_keys[ix];
-      if ((a_key !== b_key) || (a[a_key] !== b[b_key]))
-        return false;
-    }
-    return true;
   }
 
 }
