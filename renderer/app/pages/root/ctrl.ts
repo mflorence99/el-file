@@ -102,7 +102,7 @@ export class RootCtrlComponent extends LifecycleComponent {
   @OnChange('viewForm') saveView(): void {
     if (this.viewForm && this.viewForm.submitted) {
       // TODO: why do we need this in Electron? and only running live?
-      // at worst, running in NgZone shoukd work -- but otherwise a DOM
+      // at worst, running in NgZone should work -- but otherwise a DOM
       // event is necessary to force change detection
       nextTick(() => {
         const allTheSame = !!this.viewForm.allTheSame;
