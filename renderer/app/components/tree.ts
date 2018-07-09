@@ -212,11 +212,14 @@ export class TreeComponent extends LifecycleComponent
     // execute command
     let base, path;
     switch (command) {
+
       // these commands are singular
+
       case 'homedir':
         path = this.fsSvc.homedir();
         this.store.dispatch(new UpdateTab({ tab: { ...this.tab, icon: 'fas home', label: 'Home', paths: [path] } }));
         break;
+
       case 'new-dir':
       case 'new-file':
         base = this.tab.paths[0];
@@ -232,52 +235,66 @@ export class TreeComponent extends LifecycleComponent
         if (this.isDirectory(desc))
           this.store.dispatch(new AddPathToTab({ path: desc.path, tab: this.tab }));
         break;
+
       case 'open-editor':
         this.fsSvc.exec(PrefsState.getCommandForEditor(this.prefs.codeEditor, desc.path));
         break;
+
       case 'open-new':
         this.store.dispatch(new NewTab({ splitID: this.splitID, path: desc.path }));
         break;
+
       case 'open-parent':
       case 'open-this':
         base = (command === 'open-parent')?
           this.fsSvc.resolve(this.fsSvc.dirname(desc.path), '..') : desc.path;
         this.store.dispatch(new ReplacePathsInTab({ paths: [base], tab: this.tab }));
         break;
+
       case 'properties':
         this.root.onEditProps(desc);
         break;
+
       case 'rename':
         const renameOp = RenameOperation.makeInstance(desc.path, this.newName, this.fsSvc);
         this.fsSvc.run(renameOp);
         break;
+
       case 'rootdir':
         this.store.dispatch(new UpdateTab({ tab: { ...this.tab, icon: 'fas laptop', label: 'Root', paths: ['/'] } }));
         break;
+
       // these commands affect the entire selection
+
       case 'clear':
         this.store.dispatch(new ClearClipboard());
         break;
+
       case 'ctrl+c':
         this.store.dispatch(new CopyToClipboard({ paths: this.selection.paths }));
         break;
+
       case 'ctrl+v':
         const pasteOp = (this.clipboard.op === 'copy')?
           CopyOperation.makeInstance(this.clipboard.paths, desc.path, this.fsSvc) :
           MoveOperation.makeInstance(this.clipboard.paths, desc.path, this.fsSvc);
         this.fsSvc.run(pasteOp);
         break;
+
       case 'ctrl+x':
         this.store.dispatch(new CutToClipboard({ paths: this.selection.paths }));
         break;
+
       case 'remove':
         const removeOp = DeleteOperation.makeInstance(this.selection.paths, this.fsSvc);
         this.fsSvc.run(removeOp);
         break;
+
       case 'touch':
         const touchOp = TouchOperation.makeInstance(this.selection.paths, this.fsSvc);
         this.fsSvc.run(touchOp);
         break;
+
       case 'trash':
         const trashOp = TrashOperation.makeInstance(this.selection.paths, this.fsSvc);
         this.fsSvc.run(trashOp);
