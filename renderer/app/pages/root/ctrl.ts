@@ -21,6 +21,7 @@ import { RenameOperation } from '../../services/rename';
 import { Select } from '@ngxs/store';
 import { SelectionState } from '../../state/selection';
 import { SelectionStateModel } from '../../state/selection';
+import { SetBounds } from '../../state/window';
 import { StatusState } from '../../state/status';
 import { StatusStateModel } from '../../state/status';
 import { Store } from '@ngxs/store';
@@ -32,6 +33,8 @@ import { ViewVisibility } from '../../state/views';
 import { WindowState } from '../../state/window';
 import { WindowStateModel } from '../../state/window';
 
+import { config } from '../../config';
+import { debounce } from 'ellib';
 import { nextTick } from 'ellib';
 import { take } from 'rxjs/operators';
 
@@ -75,6 +78,10 @@ export class RootCtrlComponent extends LifecycleComponent {
         if (window.bounds)
           win.setBounds(window.bounds);
       });
+    // record the bounds when they change
+    this.electron.ipcRenderer.on('bounds', debounce((event, bounds) => {
+      this.store.dispatch(new SetBounds(bounds));
+    }, config.setBoundsThrottle));
   }
 
   // bind OnChange handlers

@@ -6,20 +6,15 @@ import { CopyToClipboard } from '../../state/clipboard';
 import { CutToClipboard } from '../../state/clipboard';
 import { Descriptor } from '../../state/fs';
 import { DrawerPanelComponent } from 'ellib';
-import { ElectronService } from 'ngx-electron';
 import { FSService } from '../../services/fs';
 import { MoveOperation } from '../../services/move';
 import { SelectionState } from '../../state/selection';
-import { SetBounds } from '../../state/window';
 import { SplittableComponent } from '../../components/splittable';
 import { StatusState } from '../../state/status';
 import { Store } from '@ngxs/store';
 import { Tab } from '../../state/layout';
 import { View } from '../../state/views';
 import { ViewChild } from '@angular/core';
-
-import { config } from '../../config';
-import { debounce } from 'ellib';
 
 /**
  * EL-file Root
@@ -48,13 +43,8 @@ export class RootPageComponent {
   editViewID: string;
 
   /** ctor */
-  constructor(private electron: ElectronService,
-              private fsSvc: FSService,
-              private store: Store) {
-    this.electron.ipcRenderer.on('bounds', debounce((event, bounds) => {
-      this.store.dispatch(new SetBounds(bounds));
-    }, config.setBoundsThrottle));
-  }
+  constructor(private fsSvc: FSService,
+              private store: Store) { }
 
   // event handlers
 
@@ -79,6 +69,7 @@ export class RootPageComponent {
     if (event.ctrlKey) {
       let alarm = false;
       switch (event.key) {
+
         case 'c':
         case 'v':
         case 'x':
@@ -105,16 +96,19 @@ export class RootPageComponent {
           }
           else alarm = true;
           break;
+
         case 'z':
           if (this.fsSvc.canUndo())
             this.fsSvc.undo();
           else alarm = true;
           break;
+
         case 'y':
           if (this.fsSvc.canRedo())
             this.fsSvc.redo();
           else alarm = true;
           break;
+
       }
       if (alarm)
         this.store.dispatch(new Alarm({ alarm: true }));
