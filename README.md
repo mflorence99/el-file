@@ -1,6 +1,6 @@
 # Elf
 
-I've been building a small suite (see [_El terminador_](https://github.com/mflorence99/el-term) for instance) of Electron-based apps for Linux. The _Elf_ file manager is the latest. My motivation throughout has partly been that few Linux tools have the kind of rich UI you can build today with tools like Angular and Material Design. But they have also been adventures in immutable state management made joyous by the incredible [ngxs](https://ngxs.io) state management tooling. More on that later.
+I've been building a small suite (see [_El terminador_](https://github.com/mflorence99/el-term) for instance) of Electron-based apps. The _Elf_ file manager is the latest. My motivation throughout has partly been that few Linux tools have the kind of rich UI you can build today with tools like Angular and Material Design. But they have also been adventures in immutable state management made joyous by the incredible [ngxs](https://ngxs.io) state management tooling. More on that later.
 
 Secondarily, I tried about a dozen Ubuntu file managers and all left me frustrated. Even the simple capability of starting exactly where you left off last time was difficult to find. I sorely missed Cocoatech's excellent [Path Finder](https://cocoatech.com/#/) on my Mac.
 
@@ -10,7 +10,8 @@ Secondarily, I tried about a dozen Ubuntu file managers and all left me frustrat
 - [Elf in Action](#elf-in-action)
 - [Technology Stack](#technology-stack)
 - [How to Run in Development Mode](#how-to-run-in-development-mode)
-- [How to Run in Production Mode](#how-to-run-in-production-mode)
+- [How to Run in Production Mode (Linux)](#how-to-run-in-production-mode-linux)
+- [How to Run in Production Mode (Windows and Mac)](#how-to-run-in-production-mode-windows-and-mac)
 - [Tips](#tips)
 - [Remaining Tasks](#remaining-tasks)
 
@@ -47,14 +48,13 @@ As always, in addition to `ngxs`, I have relied heavily on one of the best tech 
 * [angular-split](https://bertrandg.github.io/angular-split/#/) handles all the details of the splits that Elf supports.
 * [angular4-drag-drop](https://bitbucket.org/IpponMattRitter/angular4-drag-drop) allows tabs to be reordered.
 
-
 ## How to Run in Development Mode
 
 One time only, you'll need to grab the code.
 
 ```sh
 git clone https://github.com/mflorence99/el-file.git
-cd el-term
+cd el-file
 npm install
 ```
 
@@ -70,7 +70,7 @@ Finally, in another session, start the Electron app itself.
 npm run test
 ```
 
-## How to Run in Production Mode
+## How to Run in Production Mode (Linux)
 
 > NOTE: this currently only works for Ubuntu / Debian.
 
@@ -80,7 +80,7 @@ One time only, you'll need to grab the code.
 
 ```sh
 git clone https://github.com/mflorence99/el-file.git
-cd el-term
+cd el-file
 npm install
 ```
 
@@ -90,6 +90,14 @@ Then package and install Elf.
 npm run package
 npm run deb64
 npm run deb64-install
+```
+
+## How to Run in Production Mode (Windows and Mac)
+
+Although there are currently no installation files except for Linux, you can still start ELf in production mode.
+
+```sh
+npm run live
 ```
 
 ## Tips
