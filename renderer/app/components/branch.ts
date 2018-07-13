@@ -6,6 +6,7 @@ import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
 import { FSStateModel } from '../state/fs';
 import { Input } from '@angular/core';
+import { LoadDirs } from '../state/fs';
 import { OnInit } from '@angular/core';
 import { PrefsStateModel } from '../state/prefs';
 import { SelectionStateModel } from '../state/selection';
@@ -46,7 +47,10 @@ export class BranchComponent implements OnInit {
   // lifecycle methods
 
   ngOnInit(): void {
-    this.store.dispatch(new UpdatePathLRU({ path: this.path, tab: this.tab}));
+    this.store.dispatch([
+      new LoadDirs({ paths: [this.path] }),
+      new UpdatePathLRU({ path: this.path, tab: this.tab})
+    ]);
   }
 
 }

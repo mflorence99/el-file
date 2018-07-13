@@ -71,17 +71,7 @@ export class RootCtrlComponent extends LifecycleComponent {
               private fsSvc: FSService,
               private store: Store) {
     super();
-    // set the initial bounds
-    this.window$.pipe(take(1))
-      .subscribe((window: WindowStateModel) => {
-        const win = this.electron.remote.getCurrentWindow();
-        if (window.bounds)
-          win.setBounds(window.bounds);
-      });
-    // record the bounds when they change
-    this.electron.ipcRenderer.on('bounds', debounce((event, bounds) => {
-      this.store.dispatch(new SetBounds(bounds));
-    }, config.setBoundsThrottle));
+    this.handleSetBounds();
   }
 
   // bind OnChange handlers
@@ -118,6 +108,22 @@ export class RootCtrlComponent extends LifecycleComponent {
         this.store.dispatch(new UpdateViewVisibility({ viewID, visibility, allTheSame }));
       });
     }
+  }
+
+  // private methods
+
+  private handleSetBounds(): void {
+    // set the initial bounds
+    this.window$.pipe(take(1))
+      .subscribe((window: WindowStateModel) => {
+        const win = this.electron.remote.getCurrentWindow();
+        if (window.bounds)
+          win.setBounds(window.bounds);
+      });
+    // record the bounds when they change
+    this.electron.ipcRenderer.on('bounds', debounce((event, bounds) => {
+      this.store.dispatch(new SetBounds(bounds));
+    }, config.setBoundsThrottle));
   }
 
 }

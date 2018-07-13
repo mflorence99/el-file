@@ -2,6 +2,7 @@ import { Action } from '@ngxs/store';
 import { Actions } from '@ngxs/store';
 import { ClearSelection } from '../state/selection';
 import { DirUnloaded } from './fs';
+import { FSService } from '../services/fs';
 import { InitView } from './views';
 import { LoadDirs } from './fs';
 import { NgxsOnInit } from '@ngxs/store';
@@ -219,7 +220,8 @@ export interface LayoutStateModel {
   }
 
   /** ctor */
-  constructor(private actions$: Actions) { }
+  constructor(private actions$: Actions,
+              private fsSvc: FSService) { }
 
   @Action(AddPathToTab)
   addPathToTab({ dispatch, getState, setState }: StateContext<LayoutStateModel>,
@@ -498,8 +500,16 @@ export interface LayoutStateModel {
 
   // lifecycle methods
 
-  ngxsOnInit({ dispatch, getState }: StateContext<LayoutStateModel>) {
-    // listen for directory removal
+  ngxsOnInit(ctx: StateContext<LayoutStateModel>) {
+    this.handleDirUnloaded(ctx);
+    this.handleLRUPurge(ctx);
+    this.loadInitialPaths(ctx);
+    this.initViews(ctx);
+  }
+
+  // private methods
+
+  private handleDirUnloaded({ dispatch, getState }: StateContext<LayoutStateModel>): void {
     this.actions$
       .pipe(ofAction(DirUnloaded))
       .subscribe(({ path }) => {
@@ -510,12 +520,14 @@ export interface LayoutStateModel {
             dispatch(new RemovePathFromTab({ path, tab }));
         });
       });
-    // wake up to purge unused paths
-    // NOTE: don't purge anything in a selected tab, nor the root path
+  }
+
+  private handleLRUPurge({ dispatch, getState }: StateContext<LayoutStateModel>): void {
     timer(config.dirPurgeInterval, config.dirPurgeInterval)
-      .subscribe( () => {
+      .subscribe(() => {
         const layout = getState();
         LayoutState.visitTabs(layout, (tab: Tab) => {
+          // NOTE: don't purge anything in a selected tab, nor the root path
           if (!tab.selected) {
             tab.paths.forEach((path, ix) => {
               if (ix > 0) {
@@ -527,19 +539,35 @@ export interface LayoutStateModel {
           }
         });
       });
-    // load initial paths and set initial prefs
+  }
+
+  private initViews({ dispatch, getState }: StateContext<LayoutStateModel>): void {
     const layout = getState();
-    const paths = { };
-    LayoutState.visitTabs(layout, (tab: Tab) => {
-      tab.paths.forEach(path => paths[path] = true);
-    });
-    dispatch(new LoadDirs({ paths: Object.keys(paths) }));
     LayoutState.visitTabs(layout, (tab: Tab) => {
       dispatch(new InitView({ viewID: tab.id }));
     });
   }
 
-  // private methods
+  private loadInitialPaths({ dispatch, getState }: StateContext<LayoutStateModel>): void {
+    const layout = getState();
+    const paths = { };
+    // make sure we only load a path once
+    LayoutState.visitTabs(layout, (tab: Tab) => {
+      tab.paths.forEach(path => paths[path] = true);
+    });
+    // only premptively load paths whose parent has been loaded
+    // NOTE: sorting guarantees that a parent is loaded before its children
+    const loaded = { };
+    Object.keys(paths)
+      .sort()
+      .forEach(path => {
+        const parent = this.fsSvc.dirname(path);
+        if ((path === '/') || loaded[parent]) {
+          loaded[path] = true;
+          dispatch(new LoadDirs({ paths: [path] }));
+        }
+      });
+  }
 
   private makeLabelFromPath(path: string): string {
     let label;
