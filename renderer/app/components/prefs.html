@@ -21,131 +21,204 @@
   [libRxfSubmit]="prefsForm"
   novalidate>
 
-  <mat-checkbox
-    formControlName="showHiddenFiles">
-    Show hidden files
-  </mat-checkbox>
+  <mat-accordion>
 
-  <mat-checkbox
-    formControlName="showOnlyWritableFiles">
-    Show only files writable by me
-  </mat-checkbox>
+    <mat-expansion-panel
+      [expanded]="true">
 
-  <mat-checkbox
-    formControlName="showGridLines">
-    Show grid lines
-  </mat-checkbox>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Content
+        </mat-panel-title>
+      </mat-expansion-panel-header>
 
-  <mat-radio-group
-    class="group"
-    formControlName="sortDirectories">
+      <div 
+        class="group">
 
-    <b>How to Sort Directories</b>
+        <mat-checkbox
+          formControlName="showHiddenFiles">
+          Show hidden files
+        </mat-checkbox>
 
-    <mat-radio-button value="alpha">
-      Alphabetically with files
-    </mat-radio-button>
-    <mat-radio-button value="first">
-      Before all files
-    </mat-radio-button>
-    <mat-radio-button value="last">
-      After all files
-    </mat-radio-button>
+        <mat-checkbox
+          formControlName="showOnlyWritableFiles">
+          Show only files writable by me
+        </mat-checkbox>
 
-  </mat-radio-group>
+      </div>
 
-  <mat-radio-group
-    class="group"
-    formControlName="quantityFormat">
+    </mat-expansion-panel>
 
-    <b>How to Show Size</b>
+    <mat-expansion-panel>
 
-    <mat-radio-button value="number">
-      {{ size | libNumeral:'0,0' }}
-    </mat-radio-button>
-    <mat-radio-button value="abbrev">
-      {{ size | libNumeral:'0a' }}
-    </mat-radio-button>
-    <mat-radio-button value="bytes">
-      {{ size | libNumeral:'0b' }}
-    </mat-radio-button>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Sort Options
+        </mat-panel-title>
+      </mat-expansion-panel-header>
 
-  </mat-radio-group>
+      <mat-radio-group
+        class="group"
+        formControlName="sortDirectories">
 
-  <mat-radio-group
-    class="group"
-    formControlName="dateFormat">
+        <div class="drawer-label">
+          How to Sort Directories
+        </div>
 
-    <b>Select Date Format</b>
+        <mat-radio-button value="alpha">
+          Alphabetically with files
+        </mat-radio-button>
+        <mat-radio-button value="first">
+          Before all files
+        </mat-radio-button>
+        <mat-radio-button value="last">
+          After all files
+        </mat-radio-button>
 
-    <mat-radio-button value="ago">
-      an hour ago
-    </mat-radio-button>
-    <mat-radio-button value="shortDate">
-      {{ today | date:'shortDate' }}
-    </mat-radio-button>
-    <mat-radio-button value="mediumDate">
-      {{ today | date:'mediumDate' }}
-    </mat-radio-button>
-    <mat-radio-button value="longDate">
-      {{ today | date:'longDate' }}
-    </mat-radio-button>
-    <mat-radio-button value="fullDate">
-      {{ today | date:'fullDate' }}
-    </mat-radio-button>
+      </mat-radio-group>
 
-  </mat-radio-group>
+    </mat-expansion-panel>
 
-  <mat-radio-group
-    class="group"
-    formControlName="timeFormat">
+    <mat-expansion-panel>
 
-    <b>Select Time Format</b>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Formatting Options
+        </mat-panel-title>
+      </mat-expansion-panel-header>
 
-    <mat-radio-button value="none">
-      Don't show time
-    </mat-radio-button>
-    <mat-radio-button value="shortTime">
-      {{ today | date:'shortTime' }}
-    </mat-radio-button>
-    <mat-radio-button value="mediumTime">
-      {{ today | date:'mediumTime' }}
-    </mat-radio-button>
-    <mat-radio-button value="longTime">
-      {{ today | date:'longTime' }}
-    </mat-radio-button>
-    <mat-radio-button value="fullTime">
-      {{ today | date:'fullTime' }}
-    </mat-radio-button>
+      <div class="group outer">
 
-  </mat-radio-group>
+        <mat-radio-group
+          class="group"
+          formControlName="quantityFormat">
 
-  <div class="group">
+          <div class="drawer-label">
+            How to Show Size
+          </div>
 
-    <mat-form-field>
-      <mat-select
-        formControlName="codeEditor"
-        placeholder="Select Code Editor">
-        <mat-option
-          [value]="''">
-          None
-        </mat-option>
-        <mat-option
-          [value]="editor"
-          *ngFor="let editor of editors">
-          {{ editor }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+          <mat-radio-button value="number">
+            {{ size | libNumeral:'0,0' }}
+          </mat-radio-button>
+          <mat-radio-button value="abbrev">
+            {{ size | libNumeral:'0a' }}
+          </mat-radio-button>
+          <mat-radio-button value="bytes">
+            {{ size | libNumeral:'0b' }}
+          </mat-radio-button>
 
-    <div class="info">
-      <fa-icon
-        [icon]="['fas', 'info-circle']">
-      </fa-icon>
-      If specified, double-click launches code files in selected editor window.
-    </div>
+        </mat-radio-group>
 
-  </div>
+        <mat-checkbox
+          formControlName="showGridLines">
+          Show grid lines
+        </mat-checkbox>
+
+      </div>
+
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Editing Options
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="group">
+
+        <mat-form-field>
+          <mat-select
+            formControlName="codeEditor"
+            placeholder="Select Code Editor">
+            <mat-option
+              [value]="''">
+              None
+            </mat-option>
+            <mat-option
+              [value]="editor"
+              *ngFor="let editor of editors">
+              {{ editor }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="drawer-label">
+          If specified, double-click launches code files in selected editor window.
+        </div>
+
+      </div>
+
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Date and Time
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="group outer">
+
+        <mat-radio-group
+          class="group"
+          formControlName="dateFormat">
+
+          <div class="drawer-label">
+            Select Date Format
+          </div>
+
+          <mat-radio-button value="ago">
+            an hour ago
+          </mat-radio-button>
+          <mat-radio-button value="shortDate">
+            {{ today | date:'shortDate' }}
+          </mat-radio-button>
+          <mat-radio-button value="mediumDate">
+            {{ today | date:'mediumDate' }}
+          </mat-radio-button>
+          <mat-radio-button value="longDate">
+            {{ today | date:'longDate' }}
+          </mat-radio-button>
+          <mat-radio-button value="fullDate">
+            {{ today | date:'fullDate' }}
+          </mat-radio-button>
+
+        </mat-radio-group>
+
+        <mat-radio-group
+          class="group"
+          formControlName="timeFormat">
+
+          <div class="drawer-label">
+            Select Time Format
+          </div>
+
+          <mat-radio-button value="none">
+            Don't show time
+          </mat-radio-button>
+          <mat-radio-button value="shortTime">
+            {{ today | date:'shortTime' }}
+          </mat-radio-button>
+          <mat-radio-button value="mediumTime">
+            {{ today | date:'mediumTime' }}
+          </mat-radio-button>
+          <mat-radio-button value="longTime">
+            {{ today | date:'longTime' }}
+          </mat-radio-button>
+          <mat-radio-button value="fullTime">
+            {{ today | date:'fullTime' }}
+          </mat-radio-button>
+
+        </mat-radio-group>
+
+      </div>
+
+    </mat-expansion-panel>
+
+  </mat-accordion>
 
   <div class="okAndCancel">
 

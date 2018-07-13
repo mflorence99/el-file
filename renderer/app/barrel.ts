@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material';
 import { MatButtonToggleModule } from '@angular/material';
 import { MatCheckboxModule } from '@angular/material';
 import { MatDividerModule } from '@angular/material';
+import { MatExpansionModule } from '@angular/material';
 import { MatFormFieldModule } from '@angular/material';
 import { MatInputModule } from '@angular/material';
 import { MatProgressBarModule } from '@angular/material';
@@ -38,6 +39,7 @@ const MODULES = [
   MatButtonToggleModule,
   MatCheckboxModule,
   MatDividerModule,
+  MatExpansionModule,
   MatFormFieldModule,
   MatInputModule,
   MatProgressBarModule,
