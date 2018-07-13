@@ -30,7 +30,7 @@
     "@angular/material": "6",
     "@angular/platform-browser": "6",
     "@angular/platform-browser-dynamic": "6",
-    "@fortawesome/angular-fontawesome": "0.1.0-10",
+    "@fortawesome/angular-fontawesome": "0.1.1",
     "@fortawesome/fontawesome-svg-core": "1",
     "@fortawesome/free-brands-svg-icons": "5",
     "@fortawesome/free-regular-svg-icons": "5",
@@ -84,10 +84,10 @@
     "electron-installer-debian": "^0.8.1",
     "electron-packager": "12",
     "electron-rebuild": "1",
-    "eslint": "4",
+    "eslint": "5",
     "markdown-toc": "1",
     "rimraf": "2",
-    "ts-node": "6",
+    "ts-node": "7",
     "tslint": "5",
     "typescript": "~2.7"
   }

@@ -26,9 +26,8 @@
       <fa-icon
         (click)="onExpand($event, desc)"
         [fixedWidth]="true"
-        [icon]="tree.isExpanded(desc)? ['fas', 'angle-down'] :
-               (tree.isExpanding(desc)? ['far', 'clock'] : ['fas', 'angle-right'])"
-        [ngStyle]="{visibility: desc.isDirectory && !tree.isEmpty(desc)? 'visible' : 'hidden'}"
+        [icon]="tree.isExpanding(desc)? ['far', 'clock'] : ['fas', 'caret-right']"
+        [ngStyle]="{visibility: (tree.isDirectory(desc) && !tree.isEmpty(desc))? 'visible' : 'hidden', transform: tree.isExpanded(desc)? 'rotate(45deg)' : ''}"
         [pulse]="tree.isExpanding(desc)"
         *ngIf="ix === 0"
         size="xs">
