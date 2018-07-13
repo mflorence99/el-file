@@ -52,7 +52,7 @@ export class PropsComponent extends LifecycleComponent {
         S_IROTH: '',
         S_IWOTH: '',
         S_IXOTH: '',
-        S_IRUSR: '',
+        S_IRUSR: { value: '', disabled: true },
         S_IWUSR: '',
         S_IXUSR: ''
       }),
