@@ -13,10 +13,12 @@ import { DeleteOperation } from '../services/delete';
 import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
 import { DictionaryService } from '../services/dictionary';
+import { ElectronService } from 'ngx-electron';
 import { FSService } from '../services/fs';
 import { FSStateModel } from '../state/fs';
 import { Input } from '@angular/core';
 import { LifecycleComponent } from 'ellib';
+import { Message } from '../state/status';
 import { MoveOperation } from '../services/move';
 import { NewDirOperation } from '../services/new-dir';
 import { NewFileOperation } from '../services/new-file';
@@ -81,6 +83,7 @@ export class TreeComponent extends LifecycleComponent
   /** ctor */
   constructor(private cdf: ChangeDetectorRef,
               private dictSvc: DictionaryService,
+              private electron: ElectronService,
               private fsSvc: FSService,
               private root: RootPageComponent,
               private store: Store) {
@@ -214,6 +217,11 @@ export class TreeComponent extends LifecycleComponent
     switch (command) {
 
       // these commands are singular
+
+      case 'copy-path':
+        this.electron.clipboard.writeText(desc.path);
+        this.store.dispatch(new Message({ text: `Copied ${desc.path} to clipboard` }));
+        break;
 
       case 'homedir':
         path = this.fsSvc.homedir();

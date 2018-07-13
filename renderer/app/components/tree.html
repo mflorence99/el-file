@@ -282,6 +282,13 @@
 
   <ng-template
     contextMenuItem
+    (execute)="onExecute($event, 'copy-path')"
+    [enabled]="isDescriptor.bind(this)">
+    <div>Copy path</div>
+  </ng-template>
+
+  <ng-template
+    contextMenuItem
     (execute)="onExecute($event, 'ctrl+v')"
     [enabled]="isPastable.bind(this)">
     <div>Paste</div>

@@ -555,18 +555,7 @@ export interface LayoutStateModel {
     LayoutState.visitTabs(layout, (tab: Tab) => {
       tab.paths.forEach(path => paths[path] = true);
     });
-    // only premptively load paths whose parent has been loaded
-    // NOTE: sorting guarantees that a parent is loaded before its children
-    const loaded = { };
-    Object.keys(paths)
-      .sort()
-      .forEach(path => {
-        const parent = this.fsSvc.dirname(path);
-        if ((path === '/') || loaded[parent]) {
-          loaded[path] = true;
-          dispatch(new LoadDirs({ paths: [path] }));
-        }
-      });
+    dispatch(new LoadDirs({ paths: Object.keys(paths) }));
   }
 
   private makeLabelFromPath(path: string): string {
