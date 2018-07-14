@@ -3,7 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { ContextMenuModule } from 'ngx-contextmenu';
-import { DragDropDirectiveModule } from 'angular4-drag-drop';
+import { DndModule } from 'ngx-drag-drop';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LibModule } from 'ellib';
 import { MatButtonModule } from '@angular/material';
@@ -32,7 +32,7 @@ const MODULES = [
   BrowserAnimationsModule,
   CommonModule,
   ContextMenuModule,
-  DragDropDirectiveModule,
+  DndModule,
   FontAwesomeModule,
   LibModule,
   MatButtonModule,

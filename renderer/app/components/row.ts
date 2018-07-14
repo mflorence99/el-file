@@ -9,6 +9,7 @@ import { Component } from '@angular/core';
 import { ContextMenuComponent } from 'ngx-contextmenu';
 import { Descriptor } from '../state/fs';
 import { Dictionary } from '../services/dictionary';
+import { DndDropEvent } from 'ngx-drag-drop';
 import { FSService } from '../services/fs';
 import { FSStateModel } from '../state/fs';
 import { Input } from '@angular/core';
@@ -72,16 +73,36 @@ export class RowComponent {
     }
   }
 
-  onDrop(desc: Descriptor): void {
-    if (desc.path !== this.desc.path) {
-      if (this.isOpRunning)
-        this.store.dispatch(new Alarm({ alarm: true }));
+  onDrag(event: DragEvent,
+         desc: Descriptor): void {
+    event.dataTransfer.setData('text/plain', `file://${desc.path}`);
+    event.dataTransfer.setData('text/uri-list', `file://${desc.path}`);
+  }
+
+  onDrop(event: DndDropEvent): void {
+    if (this.isOpRunning)
+      this.store.dispatch(new Alarm({ alarm: true }));
+    else {
+      let paths;
+      // an external drag may contain a list of files
+      if (event.isExternal && (event.event.dataTransfer.files.length > 0)) {
+        paths = Array.from(event.event.dataTransfer.files)
+          .filter(file => file.path)
+          .map(file => file.path);
+      }
+      // if there's anything in data, that means we generated the drag internally
       else {
-        // NOTE: if the supplied descriptor is not in the selection,
-        // that just means it is about to become the selection
-        let paths = this.selection.paths;
-        if (!paths.includes(desc.path))
-          paths = [desc.path];
+        const desc = event.data;
+        if (desc && (desc.path !== this.desc.path)) {
+          // NOTE: if the supplied descriptor is not in the selection,
+          // that just means it is about to become the selection
+          paths = this.selection.paths;
+          if (!paths.includes(desc.path))
+            paths = [desc.path];
+        }
+      }
+      // anything to drop?
+      if (paths) {
         const moveOp = MoveOperation.makeInstance(paths, this.desc.path, this.fsSvc);
         this.fsSvc.run(moveOp);
       }

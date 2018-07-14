@@ -2,7 +2,6 @@ import { Action } from '@ngxs/store';
 import { Actions } from '@ngxs/store';
 import { ClearSelection } from '../state/selection';
 import { DirUnloaded } from './fs';
-import { FSService } from '../services/fs';
 import { InitView } from './views';
 import { LoadDirs } from './fs';
 import { NgxsOnInit } from '@ngxs/store';
@@ -220,8 +219,7 @@ export interface LayoutStateModel {
   }
 
   /** ctor */
-  constructor(private actions$: Actions,
-              private fsSvc: FSService) { }
+  constructor(private actions$: Actions) { }
 
   @Action(AddPathToTab)
   addPathToTab({ dispatch, getState, setState }: StateContext<LayoutStateModel>,

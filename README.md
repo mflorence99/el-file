@@ -46,7 +46,7 @@ As always, in addition to `ngxs`, I have relied heavily on one of the best tech 
 * [Angular Material](https://material.angular.io/) for UI components.
 * [Font Awesome](https://fontawesome.com)'s awesome library of icons.
 * [angular-split](https://bertrandg.github.io/angular-split/#/) handles all the details of the splits that Elf supports.
-* [angular4-drag-drop](https://bitbucket.org/IpponMattRitter/angular4-drag-drop) allows tabs to be reordered.
+* [ngx-drag-drop](https://www.npmjs.com/package/ngx-drag-drop) supports file drag and drop operations and allows tabs to be reordered.
 
 ## How to Run in Development Mode
 
