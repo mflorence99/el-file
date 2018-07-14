@@ -1,20 +1,23 @@
 <div
-  (dropEvent)="onDrop($event)"
-  [dropHighlight]="'drop-target'"
+  (dndDrop)="onDrop($event)"
+  [dndAllowExternal]="true"
   *ngIf="hydrated"
-  dropDirective>
+  dndDragoverClass="drop-target"
+  dndDropzone>
 
   <div
     (click)="onSelect($event, desc)"
     (contextmenu)="onContextMenu($event, desc)"
     (dblclick)="onOpen($event, desc)"
+    (dndStart)="onDrag($event, desc)"
     [contextMenu]="contextMenu"
     [contextMenuSubject]="desc"
-    [dragDirective]="desc"
+    [dndDraggable]="desc"
     [ngClass]="{cut: tree.isCut(desc),
                 gridlines: prefs.showGridLines,
                 selected: selection.paths.includes(desc.path)}"
-    class="row">
+    class="row"
+    dndEffectAllowed="move">
 
     <div
       [ngClass]="{expander: (ix === 0), gridlines: prefs.showGridLines}"
