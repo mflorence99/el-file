@@ -105,11 +105,3 @@ npm run live
 * Ctrl+click on a folder's arrow attempts to open all the folders in the sub-tree
 * Right click on a tab's icon to customize the tab or remove it
 
-## Remaining Tasks
-
-Elf is still a work-in-progress and there are undoubtedly bugs lurking with. I am currently working on:
-
-* <s>Virtual scrolling: opening a large directory (eg: `mode_modules`) puts a strain on the UI. The idea will be to only render rows that are on-screen.</s>
-* Auto expand: when expanding a directory, if the sub-tree is itself just another single directory, then that too should be expanded, and so on recursively.
-* Native drag and drop
-
