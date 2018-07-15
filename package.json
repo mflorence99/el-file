@@ -15,7 +15,7 @@
     "deb64-install": "sudo apt install ./build/installers/elfile_1.0.0_amd64.deb",
     "live": "npm run build && electron . --ignore-gpu-blacklist",
     "package": "npm run build && rimraf build && electron-packager ./ --out=build",
-    "postinstall": "electron-rebuild -f && npm rebuild sass",
+    "postinstall": "npm rebuild sass && ./node_modules/.bin/electron-rebuild",
     "serve": "ng serve",
     "test": "tsc -p tsconfig.main.json && DEV_MODE=1 electron . --ignore-gpu-blacklist",
     "toc": "markdown-toc -i README.md"
