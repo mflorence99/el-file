@@ -84,7 +84,7 @@ export interface ViewsStateModel {
   }
 
   @Action(InitView)
-  initView({ dispatch, getState, patchState }: StateContext<ViewsStateModel>,
+  initView({ getState, patchState }: StateContext<ViewsStateModel>,
            { payload }: InitView) {
     const { viewID } = payload;
     const state = getState();
@@ -102,14 +102,14 @@ export interface ViewsStateModel {
   }
 
   @Action(UpdateView)
-  updateView({ dispatch, patchState }: StateContext<ViewsStateModel>,
+  updateView({ patchState }: StateContext<ViewsStateModel>,
              { payload }: UpdateView) {
     const { viewID, view } = payload;
     patchState({ [viewID]: { ... view } });
   }
 
   @Action(UpdateViewSort)
-  updateViewSort({ dispatch, getState, patchState }: StateContext<ViewsStateModel>,
+  updateViewSort({ getState, patchState }: StateContext<ViewsStateModel>,
                  { payload }: UpdateViewSort) {
     const { viewID, sortColumn, sortDir } = payload;
     const view = getState()[viewID];
@@ -137,7 +137,7 @@ export interface ViewsStateModel {
   }
 
   @Action(UpdateViewWidths)
-  updateViewWidths({ dispatch, getState, patchState }: StateContext<ViewsStateModel>,
+  updateViewWidths({ getState, patchState }: StateContext<ViewsStateModel>,
                    { payload }: UpdateViewWidths) {
     const { viewID, widths } = payload;
     const state = getState()[viewID];
