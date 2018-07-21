@@ -17,20 +17,25 @@ export type SortOrder = 'alpha' | 'first' | 'last';
 export type TimeFmt = 'none' | 'shortTime' | 'mediumTime' | 'longTime' | 'fullTime';
 
 export interface PrefsStateModel {
-  codeEditor?: string;
-  dateFormat?: DateFmt;
-  quantityFormat?: QuantityFmt;
-  showGridLines?: boolean;
-  showHiddenFiles?: boolean;
-  showOnlyWritableFiles?: boolean;
-  sortDirectories?: SortOrder;
+  codeEditor: string;
+  dateFormat: DateFmt;
+  quantityFormat: QuantityFmt;
+  showGridLines: boolean;
+  showHiddenFiles: boolean;
+  showOnlyWritableFiles: boolean;
+  sortDirectories: SortOrder;
   submitted?: boolean;
-  timeFormat?: TimeFmt;
+  timeFormat: TimeFmt;
 }
+
+export type PrefsStateModelFormGroup = {
+  [P in keyof PrefsStateModel]: any;
+};
 
 @State<PrefsStateModel>({
   name: 'prefs',
   defaults: {
+    codeEditor: null,
     dateFormat: 'mediumDate',
     quantityFormat: 'bytes',
     showGridLines: true,

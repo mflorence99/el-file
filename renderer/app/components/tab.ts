@@ -34,9 +34,9 @@ export class TabComponent extends LifecycleComponent {
               private store: Store) {
     super();
     this.tabForm = this.formBuilder.group({
+      color: ['', Validators.required],
       label: ['', Validators.required],
-      icon: ['', Validators.required],
-      color: ['', Validators.required]
+      icon: ['', Validators.required]
     });
   }
 

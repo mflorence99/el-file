@@ -8,6 +8,7 @@ import { LifecycleComponent } from 'ellib';
 import { OnChange } from 'ellib';
 import { PrefsState } from '../state/prefs';
 import { PrefsStateModel } from '../state/prefs';
+import { PrefsStateModelFormGroup } from '../state/prefs';
 
 /**
  * Prefs component
@@ -45,7 +46,7 @@ export class PrefsComponent extends LifecycleComponent {
       showOnlyWritableFiles: false,
       sortDirectories: '',
       timeFormat: ''
-    });
+    } as PrefsStateModelFormGroup);
   }
 
   /** Close drawer */
