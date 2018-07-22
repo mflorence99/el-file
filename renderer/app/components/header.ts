@@ -78,7 +78,7 @@ export class HeaderComponent extends LifecycleComponent
 
   // bind OnChange handlers
 
-  @OnChange('view') onView(): void {
+  @OnChange('view') newState(): void {
     if (this.view)
       this.dictionary = this.dictSvc.dictionaryForView(this.view);
   }

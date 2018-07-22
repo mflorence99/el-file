@@ -38,7 +38,7 @@ export class StatusbarComponent extends LifecycleComponent {
 
   // bind OnChange handlers
 
-  @OnChange('status') soundAlarm() {
+  @OnChange('status') newState() {
     if (this.status && this.ding.nativeElement) {
       if (this.status.alarm) {
         this.ding.nativeElement

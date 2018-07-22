@@ -82,7 +82,7 @@ export class PropsComponent extends LifecycleComponent {
 
   // bind OnChange handlers
 
-  @OnChange('desc') patchProps(): void {
+  @OnChange('desc') newState(): void {
     if (this.desc) {
       this.propsForm.reset();
       this.propsForm.patchValue({

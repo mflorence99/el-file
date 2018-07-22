@@ -46,7 +46,7 @@ export class PaneComponent extends LifecycleComponent {
 
   // bind OnChange handlers
 
-  @OnChange('tabs', 'views') onTabs(): void {
+  @OnChange('tabs', 'views') newState(): void {
     if (this.tabs) {
       this.tab = { ...this.tabs.find(tab => tab.selected) };
       this.tabIndex = this.tabs.findIndex(tab => tab.selected);

@@ -31,7 +31,7 @@ export class AlertComponent extends LifecycleComponent {
 
   // bind OnChange handlers
 
-  @OnChange('status') onAlert(): void {
+  @OnChange('status') newState(): void {
     if (this.status && (this.status.message.level === 'error')) {
       this.explanation = this.status.message.explanation;
       this.message = this.status.message.text;

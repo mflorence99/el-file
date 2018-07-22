@@ -9,14 +9,14 @@ import { View } from '../state/views';
  */
 
 export interface Dictionary {
-  isDate: boolean;
-  isQuantity: boolean;
-  isString: boolean;
+  isDate?: boolean;
+  isQuantity?: boolean;
+  isString?: boolean;
   name: string;
-  showIcon: boolean;
-  showMono: boolean;
+  showIcon?: boolean;
+  showMono?: boolean;
   tag: string;
-  width: number;
+  width?: number;
 }
 
 /**
@@ -37,7 +37,7 @@ export class DictionaryService {
       { name: 'mode', tag: 'Mode', isString: true, showMono: true },
       { name: 'user', tag: 'User', isString: true },
       { name: 'group', tag: 'Group', isString: true }
-    ] as Dictionary[];
+    ];
   }
 
   /** Return the dictionary for a particular view */

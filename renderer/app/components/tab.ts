@@ -58,7 +58,7 @@ export class TabComponent extends LifecycleComponent {
 
   // bind OnChange handlers
 
-  @OnChange('tab') patchTab(): void {
+  @OnChange('tab') newState(): void {
     if (this.tab)
       this.tabForm.patchValue(this.tab, { emitEvent: false });
   }

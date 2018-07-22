@@ -320,7 +320,7 @@ export class TreeComponent extends LifecycleComponent
 
   // bind OnChange handlers
 
-  @OnChange('fs', 'prefs', 'tab', 'view') onChange(): void {
+  @OnChange('fs', 'prefs', 'tab', 'view') newState(): void {
     if (this.fs && this.prefs && this.tab && this.view)
       this.updateDescriptors();
   }

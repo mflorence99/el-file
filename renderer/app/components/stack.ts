@@ -27,7 +27,7 @@ export class StackComponent extends LifecycleComponent {
 
   // bind OnChange handlers
 
-  @OnChange('redoStack', 'undoStack') onChange() {
+  @OnChange('redoStack', 'undoStack') newState() {
     this.zipped = [];
     const max = Math.max(this.redoStack.length, this.undoStack.length);
     for (let ix = 0; ix < max; ix++) {
