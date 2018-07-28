@@ -81,7 +81,7 @@ export interface ClipboardStateModel {
     if (paths.length === 1)
       text = `${paths[0]} ${op} to clipboard`;
     else if (paths.length > 1) {
-      const others = pluralize(paths.length, {
+      const others = pluralize(paths.length - 1, {
         '=1': 'one other', 'other': '# others'
       });
       text = `${paths[0]} and ${others} ${op} to clipboard`;

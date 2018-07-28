@@ -103,7 +103,7 @@ export interface SelectionStateModel {
     if (paths.length === 1)
       text = `${paths[0]} selected`;
     else if (paths.length > 1) {
-      const others = pluralize(paths.length, {
+      const others = pluralize(paths.length - 1, {
         '=1': 'one other', 'other': '# others'
       });
       text = `${paths[0]} and ${others} selected`;
