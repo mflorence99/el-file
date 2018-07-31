@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Electron Main",
+      "env": { "DEV_MODE": "1" },
+      "preLaunchTask": "build-main",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "runtimeArgs": [
+        "--nolazy",
+        "--ignore-gpu-blacklist"
+      ],
+      "program": "${workspaceFolder}/dist/electron.js",
+      "protocol": "inspector"
+    }
+  ]
+}

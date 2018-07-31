@@ -9,7 +9,8 @@
     "appId": "elfile"
   },
   "scripts": {
-    "build": "rimraf dist && ng build --aot && tsc -p tsconfig.main.json",
+    "build": "rimraf dist && ng build --aot && npm run build-main",
+    "build-main": "tsc -p tsconfig.main.json",
     "clean": "rm -rf node_modules && rm package-lock.json && npm install",
     "deb64": "electron-installer-debian --src build/elfile-linux-x64/ --arch amd64 --config installer.json",
     "deb64-install": "sudo apt install ./build/installers/elfile_1.0.0_amd64.deb",
@@ -17,7 +18,7 @@
     "package": "npm run build && rimraf build && electron-packager ./ --out=build",
     "postinstall": "npm rebuild sass && ./node_modules/.bin/electron-rebuild",
     "serve": "ng serve",
-    "test": "tsc -p tsconfig.main.json && DEV_MODE=1 electron . --ignore-gpu-blacklist",
+    "test": "npm run build-main && DEV_MODE=1 electron . --ignore-gpu-blacklist",
     "toc": "markdown-toc -i README.md"
   },
   "dependencies": {
