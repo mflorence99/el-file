@@ -44,6 +44,12 @@ export class BranchComponent implements OnInit {
   constructor(private store: Store,
               public tree: TreeComponent) { }
 
+  /** *ngFor assist */
+  trackDesc(index: number,
+            desc: Descriptor): string {
+    return desc.path;
+  }
+
   // lifecycle methods
 
   ngOnInit(): void {
