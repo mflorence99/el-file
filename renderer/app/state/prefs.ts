@@ -24,13 +24,8 @@ export interface PrefsStateModel {
   showHiddenFiles: boolean;
   showOnlyWritableFiles: boolean;
   sortDirectories: SortOrder;
-  submitted?: boolean;
   timeFormat: TimeFmt;
 }
-
-export type PrefsStateModelFormGroup = {
-  [P in keyof PrefsStateModel]: any;
-};
 
 @State<PrefsStateModel>({
   name: 'prefs',

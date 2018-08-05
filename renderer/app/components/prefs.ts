@@ -6,9 +6,9 @@ import { FormGroup } from '@angular/forms';
 import { Input } from '@angular/core';
 import { LifecycleComponent } from 'ellib';
 import { OnChange } from 'ellib';
+import { PrefsFormGroup } from '../pages/root/ctrl';
 import { PrefsState } from '../state/prefs';
 import { PrefsStateModel } from '../state/prefs';
-import { PrefsStateModelFormGroup } from '../state/prefs';
 
 /**
  * Prefs component
@@ -38,15 +38,17 @@ export class PrefsComponent extends LifecycleComponent {
     super();
     // create prefs form controls
     this.prefsForm = this.formBuilder.group({
-      codeEditor: '',
-      dateFormat: '',
-      quantityFormat: '',
-      showGridLines: false,
-      showHiddenFiles: false,
-      showOnlyWritableFiles: false,
-      sortDirectories: '',
-      timeFormat: ''
-    } as PrefsStateModelFormGroup);
+      prefs: this.formBuilder.group({
+        codeEditor: '',
+        dateFormat: '',
+        quantityFormat: '',
+        showGridLines: false,
+        showHiddenFiles: false,
+        showOnlyWritableFiles: false,
+        sortDirectories: '',
+        timeFormat: ''
+      } as PrefsFormGroup)
+    });
   }
 
   /** Close drawer */

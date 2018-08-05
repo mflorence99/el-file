@@ -9,6 +9,7 @@ import { LifecycleComponent } from 'ellib';
 import { OnChange } from 'ellib';
 import { Validators } from '@angular/forms';
 import { View } from '../state/views';
+import { ViewVisibilityFormGroup } from '../pages/root/ctrl';
 
 import { map } from 'rxjs/operators';
 
@@ -39,7 +40,7 @@ export class ViewComponent extends LifecycleComponent {
     const visibility = this.dictSvc.dictionary().reduce((acc, entry) => {
       acc[entry.name] = '';
       return acc;
-    }, { });
+    }, {} as ViewVisibilityFormGroup);
     // create view form controls
     this.viewForm = this.formBuilder.group({
       allTheSame: '',
