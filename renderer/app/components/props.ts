@@ -99,7 +99,7 @@ export class PropsComponent extends LifecycleComponent {
         } : { },
         name: this.desc.name,
         path: this.desc.path
-      }, { emitEvent: false });
+      });
     }
   }
 

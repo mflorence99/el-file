@@ -47,7 +47,7 @@ export type PrefsFormGroup = {
 };
 
 export interface PrefsForm {
-  prefs: PrefsFormGroup;
+  prefs: PrefsStateModel;
   submitted: boolean;
 }
 
@@ -67,7 +67,7 @@ export interface ViewForm {
   allTheSame: boolean;
   atLeastOne: boolean;
   viewID: string;
-  visibility: ViewVisibilityFormGroup;
+  visibility: ViewVisibility;
   submitted: boolean;
 }
 

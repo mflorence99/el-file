@@ -67,13 +67,13 @@ export class ViewComponent extends LifecycleComponent {
 
   @OnChange('view') newView(): void {
     if (this.view && this.view.visibility)
-      this.viewForm.patchValue({ visibility: this.view.visibility }, { emitEvent: true });
+      this.viewForm.patchValue({ visibility: this.view.visibility });
   }
 
   @OnChange('viewID') newViewID(): void {
     if (this.viewID) {
       this.viewForm.reset();
-      this.viewForm.patchValue({ viewID: this.viewID }, { emitEvent: false });
+      this.viewForm.patchValue({ viewID: this.viewID });
     }
   }
 
