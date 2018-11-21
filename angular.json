@@ -27,6 +27,19 @@
               "node_modules/hammerjs/hammer.min.js",
               "node_modules/numeral/min/numeral.min.js"
             ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            }
           }
         },
         "serve": {

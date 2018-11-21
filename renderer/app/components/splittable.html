@@ -1,4 +1,4 @@
-<split
+<as-split
   (dragProgress)="onSplitSizeChange($event)"
   [direction]="layout.direction"
   [useTransition]="true"
@@ -11,7 +11,7 @@
     [ngForOf]="layout.splits"
     let-ix="index">
 
-    <split-area
+    <as-split-area
       [order]="ix"
       [size]="split.size">
 
@@ -44,8 +44,8 @@
 
       </ng-template>
 
-    </split-area>
+    </as-split-area>
 
   </ng-template>
 
-</split>
+</as-split>

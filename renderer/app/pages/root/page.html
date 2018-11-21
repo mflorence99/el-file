@@ -10,13 +10,13 @@
 
   <main>
 
-    <split
+    <as-split
       [useTransition]="true"
       direction="vertical"
       gutterColor="#424242"
       gutterSize="5">
 
-      <split-area
+      <as-split-area
         [size]="90">
 
         <elfile-splittable
@@ -29,9 +29,9 @@
           [views]="ctrl.views$ | async">
         </elfile-splittable>
 
-      </split-area>
+      </as-split-area>
 
-      <split-area
+      <as-split-area
         [size]="10"
         *ngIf="(ctrl.window$ | async).showLog">
 
@@ -41,9 +41,9 @@
           [prefs]="ctrl.prefs$ | async">
         </elfile-log>
 
-      </split-area>
+      </as-split-area>
 
-    </split>
+    </as-split>
 
   </main>
 
