@@ -1,4 +1,4 @@
-<split
+<as-split
   (dragEnd)="onSplitSizeChange($event)"
   (dragProgress)="onOutlinerShow($event)"
   (gutterClick)="onOutlinerShow($event)"
@@ -9,7 +9,7 @@
   gutterImageH="url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=')"
   gutterSize="2">
 
-  <split-area
+  <as-split-area
     *ngFor="let entry of dictionary"
     class="column"
     [size]="entry.width">
@@ -20,9 +20,9 @@
       [viewID]="viewID">
     </elfile-column>
 
-  </split-area>
+  </as-split-area>
 
-</split>
+</as-split>
 
 <div 
   class="outliner" 

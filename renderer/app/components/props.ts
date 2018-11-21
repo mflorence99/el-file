@@ -46,15 +46,15 @@ export class PropsComponent extends LifecycleComponent {
     // create prefs form controls
     this.propsForm = this.formBuilder.group({
       flags: this.formBuilder.group({
+        S_IRUSR: '',
+        S_IWUSR: '',
+        S_IXUSR: '',
         S_IRGRP: '',
         S_IWGRP: '',
         S_IXGRP: '',
         S_IROTH: '',
         S_IWOTH: '',
-        S_IXOTH: '',
-        S_IRUSR: { value: '', disabled: true },
-        S_IWUSR: '',
-        S_IXUSR: ''
+        S_IXOTH: ''
       }),
       mode: '',
       name: ['', Validators.required],
@@ -87,15 +87,15 @@ export class PropsComponent extends LifecycleComponent {
       this.propsForm.reset();
       this.propsForm.patchValue({
         flags: this.desc.mode? {
+          S_IRUSR: this.desc.mode[1] === 'r',
+          S_IWUSR: this.desc.mode[2] === 'w',
+          S_IXUSR: this.desc.mode[3] === 'x',
           S_IRGRP: this.desc.mode[4] === 'r',
           S_IWGRP: this.desc.mode[5] === 'w',
           S_IXGRP: this.desc.mode[6] === 'x',
           S_IROTH: this.desc.mode[7] === 'r',
           S_IWOTH: this.desc.mode[8] === 'w',
-          S_IXOTH: this.desc.mode[9] === 'x',
-          S_IRUSR: this.desc.mode[1] === 'r',
-          S_IWUSR: this.desc.mode[2] === 'w',
-          S_IXUSR: this.desc.mode[3] === 'x'
+          S_IXOTH: this.desc.mode[9] === 'x'
         } : { },
         name: this.desc.name,
         path: this.desc.path
