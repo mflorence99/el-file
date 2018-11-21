@@ -3,7 +3,6 @@
   <button
     (click)="fsSvc.redo()"
     [disabled]="!canRedo()"
-    [matTooltip]="fsSvc.peekRedo()?.toString()"
     mat-icon-button>
     <fa-icon
       [icon]="['fas', 'redo']"
@@ -14,7 +13,6 @@
   <button
     (click)="isOpRunning || fsSvc.undo()"
     [disabled]="!canUndo()"
-    [matTooltip]="fsSvc.peekUndo()?.toString()"
     mat-icon-button>
     <fa-icon
       [icon]="['fas', 'undo']"
@@ -29,7 +27,6 @@
 
     <mat-button-toggle
       [checked]="isStandardOrientation()"
-      mat-tooltip="Single view"
       value="standard">
       <fa-icon
         [icon]="['far', 'square']"
@@ -39,7 +36,6 @@
 
     <mat-button-toggle
       [checked]="isVerticalOrientation()"
-      mat-tooltip="Split vertically"
       value="vertical">
       <fa-icon
         [icon]="['fas', 'arrows-alt-v']"
@@ -49,7 +45,6 @@
 
     <mat-button-toggle
       [checked]="isHorizontalOrientation()"
-      mat-tooltip="Split horizontally"
       value="horizontal">
       <fa-icon
         [icon]="['fas', 'arrows-alt-h']"
@@ -61,8 +56,7 @@
 
   <mat-button-toggle
     (change)="showLog($event.source.checked)"
-    [checked]="window.showLog"
-    mat-tooltip="Show log">
+    [checked]="window.showLog">
     <fa-icon
       [icon]="['far', 'file-alt']"
       size="lg">
@@ -73,7 +67,6 @@
 
   <button
     (click)="reload()"
-    matTooltip="Reload app"
     mat-icon-button>
     <fa-icon
       [icon]="['fas', 'sync']"
@@ -83,7 +76,6 @@
 
   <button
     (click)="devTools()"
-    matTooltip="Open dev tools"
     mat-icon-button>
     <fa-icon
       [icon]="['fas', 'bug']"
@@ -93,7 +85,6 @@
 
   <button
     (click)="openPrefs.emit()"
-    matTooltip="Edit preferences"
     mat-icon-button>
     <fa-icon
       [icon]="['fas', 'cog']"
