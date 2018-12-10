@@ -28,7 +28,7 @@
     "@angular/compiler": "7",
     "@angular/core": "7",
     "@angular/forms": "7",
-    "@angular/material": "6.4.7",
+    "@angular/material": "7",
     "@angular/platform-browser": "7",
     "@angular/platform-browser-dynamic": "7",
     "@fortawesome/angular-fontawesome": "0.3.0",
@@ -36,10 +36,10 @@
     "@fortawesome/free-brands-svg-icons": "5",
     "@fortawesome/free-regular-svg-icons": "5",
     "@fortawesome/free-solid-svg-icons": "5",
-    "@ngxs/devtools-plugin": "3.2.0",
-    "@ngxs/logger-plugin": "3.2.0",
-    "@ngxs/storage-plugin": "3.2.0",
-    "@ngxs/store": "3.2.0",
+    "@ngxs/devtools-plugin": "3",
+    "@ngxs/logger-plugin": "3",
+    "@ngxs/storage-plugin": "3",
+    "@ngxs/store": "3",
     "angular-split": "1",
     "angular2-uuid": "1",
     "async": "2",
@@ -90,6 +90,6 @@
     "rimraf": "2",
     "ts-node": "7",
     "tslint": "5",
-    "typescript": "3"
+    "typescript": "3.1.1"
   }
 }
