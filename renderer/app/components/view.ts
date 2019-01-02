@@ -40,7 +40,7 @@ export class ViewComponent extends LifecycleComponent {
     const visibility = this.dictSvc.dictionary().reduce((acc, entry) => {
       acc[entry.name] = '';
       return acc;
-    }, {} as ViewVisibilityFormGroup);
+    }, { } as ViewVisibilityFormGroup);
     // create view form controls
     this.viewForm = this.formBuilder.group({
       allTheSame: '',
