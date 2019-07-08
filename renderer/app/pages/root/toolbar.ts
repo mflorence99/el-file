@@ -7,7 +7,7 @@ import { FSService } from '../../services/fs';
 import { Input } from '@angular/core';
 import { LayoutStateModel } from '../../state/layout';
 import { MakeSplit } from '../../state/layout';
-import { MatButtonToggleChange } from '@angular/material';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { Output } from '@angular/core';
 import { Reorient } from '../../state/layout';
 import { ShowLog } from '../../state/window';
