@@ -68,7 +68,7 @@ export class TreeComponent extends LifecycleComponent
   @Input() tab = { } as Tab;
   @Input() view = { } as View;
 
-  @ViewChild(ContextMenuComponent) contextMenu: ContextMenuComponent;
+  @ViewChild(ContextMenuComponent, { static: true }) contextMenu: ContextMenuComponent;
 
   descriptorsByPath: { [path: string]: Descriptor[] } = { };
   dictionary: Dictionary[] = [];

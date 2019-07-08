@@ -32,7 +32,7 @@ export class TabsComponent {
   @Input() tabIndex: number;
   @Input() view = { } as View;
 
-  @ViewChild(ContextMenuComponent) contextMenu: ContextMenuComponent;
+  @ViewChild(ContextMenuComponent, { static: true }) contextMenu: ContextMenuComponent;
 
   /** ctor */
   constructor(private root: RootPageComponent,

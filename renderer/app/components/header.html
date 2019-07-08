@@ -1,13 +1,10 @@
 <as-split
   (dragEnd)="onSplitSizeChange($event)"
-  (dragProgress)="onOutlinerShow($event)"
   (gutterClick)="onOutlinerShow($event)"
   [ngClass]="{gridlines: prefs.showGridLines}"
   class="row"
   direction="horizontal"
-  gutterColor="transparent"
-  gutterImageH="url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=')"
-  gutterSize="2">
+  gutterSize="1">
 
   <as-split-area
     *ngFor="let entry of dictionary"

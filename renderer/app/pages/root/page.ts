@@ -28,11 +28,11 @@ import { ViewChild } from '@angular/core';
 
 export class RootPageComponent {
 
-  @ViewChild(SplittableComponent) splittable: SplittableComponent;
+  @ViewChild(SplittableComponent, { static: true }) splittable: SplittableComponent;
 
-  @ViewChild('propsDrawer') propsDrawer: DrawerPanelComponent;
-  @ViewChild('tabDrawer') tabDrawer: DrawerPanelComponent;
-  @ViewChild('viewDrawer') viewDrawer: DrawerPanelComponent;
+  @ViewChild('propsDrawer', { static: true }) propsDrawer: DrawerPanelComponent;
+  @ViewChild('tabDrawer', { static: true }) tabDrawer: DrawerPanelComponent;
+  @ViewChild('viewDrawer', { static: true }) viewDrawer: DrawerPanelComponent;
 
   editDesc = { } as Descriptor;
 

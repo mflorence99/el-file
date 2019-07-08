@@ -15,7 +15,12 @@ app.on('ready', () => {
   theWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    resizable: true
+    resizable: true,
+    webPreferences: {
+      nodeIntegration: true,
+      scrollBounce: true,
+      webSecurity: !isDev
+    }  
   });
   if (isDev) {
     require('devtron').install();

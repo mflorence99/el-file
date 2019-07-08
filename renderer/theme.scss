@@ -38,3 +38,15 @@ body {
   color: var(--text-color);
   user-select: none;
 }
+
+elfile-header {
+
+  .as-split-gutter {
+    background-color: transparent !important;
+  }
+
+}
+
+.mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+  line-height: 36px !important;
+}

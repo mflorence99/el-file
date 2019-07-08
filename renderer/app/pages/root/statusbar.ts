@@ -24,7 +24,7 @@ export class StatusbarComponent extends LifecycleComponent {
 
   @Input() status = { } as StatusStateModel;
 
-  @ViewChild('ding') ding;
+  @ViewChild('ding', { static: true }) ding;
 
   /** ctor */
   constructor(private store: Store) {

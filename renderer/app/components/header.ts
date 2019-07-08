@@ -1,3 +1,4 @@
+import { AfterViewInit } from '@angular/core';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { Component } from '@angular/core';
 import { Dictionary } from '../services/dictionary';
@@ -10,6 +11,7 @@ import { OnDestroy } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { PaneComponent } from './pane';
 import { PrefsStateModel } from '../state/prefs';
+import { SplitComponent } from 'angular-split';
 import { Store } from '@ngxs/store';
 import { UpdateViewWidths } from '../state/views';
 import { View } from '../state/views';
@@ -28,13 +30,14 @@ import { ViewWidths } from '../state/views';
 })
 
 export class HeaderComponent extends LifecycleComponent
-                             implements OnDestroy, OnInit {
+                             implements AfterViewInit, OnDestroy, OnInit {
 
   @Input() prefs = { } as PrefsStateModel;
   @Input() view = { } as View;
   @Input() viewID: string;
 
-  @ViewChild('outliner') outliner: ElementRef;
+  @ViewChild('outliner', { static: true }) outliner: ElementRef;
+  @ViewChild(SplitComponent, { static: true }) split: SplitComponent;
 
   dictionary: Dictionary[] = [];
 
@@ -84,6 +87,10 @@ export class HeaderComponent extends LifecycleComponent
   }
 
   // lifecycle methods
+
+  ngAfterViewInit(): void {
+    this.split.dragProgress$.subscribe((event: any) => this.onOutlinerShow(event));
+  }
 
   ngOnDestroy(): void {
     document.body.removeChild(this.outliner.nativeElement);
