@@ -78,7 +78,7 @@
     "@types/trash": "5",
     "codelyzer": "^5.0.1",
     "devtron": "1",
-    "electron": "5",
+    "electron": "18",
     "electron-devtools-installer": "2",
     "electron-installer-debian": "2",
     "electron-packager": "14",
